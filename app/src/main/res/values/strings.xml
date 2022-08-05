@@ -6,4 +6,7 @@
     <string name="title_account">Account</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sousuo">搜索</string>
+    <string name="commodityname">CommodityName</string>
+    <string name="commodityprice">CommodityPrice</string>
 </resources>
