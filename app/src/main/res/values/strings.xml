@@ -5,8 +5,23 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_account">Account</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="sousuo">搜索</string>
     <string name="commodityname">CommodityName</string>
     <string name="commodityprice">CommodityPrice</string>
+    <string name="username">登录/注册</string>
+    <string name="waitforpay">未付款</string>
+    <string name="waitforsend">未发货</string>
+    <string name="waitforreceive">待收货</string>
+    <string name="signed">已完成</string>
+    <string name="refund">退款</string>
+    <string name="text_notifications">消息列表</string>
+    <string name="config">设置</string>
+    <string name="myaddress">我的地址</string>
+    <string name="myrelease">我的发布</string>
+    <string name="mycart">购物车</string>
+    <string name="accounthint">账户</string>
+    <string name="passwordhint">密码</string>
+    <string name="loginbtn">登录</string>
+    <string name="forgetpwd">忘记密码？</string>
+    <string name="signin">注册</string>
 </resources>
