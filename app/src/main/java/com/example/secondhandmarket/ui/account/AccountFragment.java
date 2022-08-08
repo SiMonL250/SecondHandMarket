@@ -1,5 +1,6 @@
 package com.example.secondhandmarket.ui.account;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,7 +8,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.example.secondhandmarket.LoginActivity;
+import com.example.secondhandmarket.MainActivity;
 import com.example.secondhandmarket.R;
 
 /**
@@ -26,9 +30,8 @@ public class AccountFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public AccountFragment() {
-        // Required empty public constructor
-    }
+    private TextView userName;
+    public AccountFragment() {}
 
     /**
      * Use this factory method to create a new instance of
@@ -55,12 +58,18 @@ public class AccountFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_account, container, false);
+        View view =  inflater.inflate(R.layout.fragment_account, container, false);
+
+        userName = (TextView) view.findViewById(R.id.account_name);
+        userName.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), LoginActivity.class)));
+
+        return view;
     }
 }
