@@ -1,7 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.release.ReleaseFragment">
-</RelativeLayout>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.release.ReleaseFragment"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="335dp"
+        android:src="@drawable/ic_baseline_add_photo_alternate_24"
+        android:contentDescription="@string/tianjiatupian" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/tvname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nameofcommodity"
+            android:textSize="24sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/input_released_commodity_name"
+            app:layout_constraintEnd_toStartOf="@id/input_released_commodity_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/input_released_commodity_name"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvname"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvprice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/priceofcommodity"
+            android:textSize="24sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/input_released_commodity_price"
+            app:layout_constraintEnd_toStartOf="@id/input_released_commodity_price"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvname" />
+
+        <EditText
+            android:id="@+id/input_released_commodity_price"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/yuan"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvprice"
+            app:layout_constraintTop_toBottomOf="@id/input_released_commodity_name" />
+
+        <TextView
+            android:id="@+id/tvdescribtion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/describtionofcommodity"
+            android:textSize="24sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/input_released_commodity_describtion"
+            app:layout_constraintEnd_toStartOf="@id/input_released_commodity_describtion"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvprice" />
+
+        <EditText
+            android:id="@+id/input_released_commodity_describtion"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvdescribtion"
+            app:layout_constraintTop_toBottomOf="@id/input_released_commodity_price"
+            android:inputType="text" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black"
+            app:layout_constraintTop_toTopOf="@id/release_button"/>
+        <TextView
+            android:id="@+id/release_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tvdescribtion"
+            android:text="@string/buttontorelease"
+            android:textSize="24sp"
+            android:textAlignment="center"
+            android:layout_marginTop="24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/release_button"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

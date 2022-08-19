@@ -24,4 +24,13 @@
     <string name="loginbtn">登录</string>
     <string name="forgetpwd">忘记密码？</string>
     <string name="signin">注册</string>
+    <string name="nameofcommodity">商品名称:</string>
+    <string name="priceofcommodity">商品价格:</string>
+    <string name="describtionofcommodity">商品描述:</string>
+    <string name="buttontorelease">上传商品</string>
+    <string name="yuan">元</string>
+    <string name="tianjiatupian">添加图片</string>
+    <string name="signinbutton">注册</string>
+    <string name="name">商品名称</string>
+    <string name="jiage">价格</string>
 </resources>

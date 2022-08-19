@@ -8,9 +8,11 @@
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/drawable/ic_baseline_remove_red_eye_24.xml" value="0.187" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout-w1240dp/activity_login.xml" value="0.2031459170013387" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout-w936dp/activity_login.xml" value="0.237109375" />
+        <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/activity_commodity_information.xml" value="0.24739583333333334" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/activity_login2.xml" value="0.31614583333333335" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/activity_main.xml" value="0.2604166666666667" />
+        <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/activity_signin.xml" value="0.24739583333333334" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/commodity_list_item.xml" value="0.22" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/fragment_account.xml" value="0.25" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/fragment_blank.xml" value="0.33" />
@@ -28,5 +30,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.2989583333333333" />
+      </ProjectState>
+    </option>
   </component>
 </project>
