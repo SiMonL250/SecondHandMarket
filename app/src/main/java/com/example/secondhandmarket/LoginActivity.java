@@ -2,6 +2,7 @@ package com.example.secondhandmarket;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.InputType;
@@ -50,5 +51,21 @@ public class LoginActivity extends AppCompatActivity {
              }
          });
         
+    }
+
+    public void loginActivityListener(View view) {
+        int id = view.getId();
+        switch (id){
+            case R.id.login_button:
+                String account = inputAccount.getText().toString();
+                String password = inputPassword.getText().toString();
+                //将账号密码获取验证，登录
+                System.out.println(account+",,"+password);
+                break;
+            case R.id.sign_in:
+                startActivity(new Intent(LoginActivity.this, signinActivity.class));
+                break;
+
+        }
     }
 }

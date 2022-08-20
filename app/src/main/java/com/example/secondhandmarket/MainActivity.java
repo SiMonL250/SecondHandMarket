@@ -1,8 +1,8 @@
 package com.example.secondhandmarket;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -11,6 +11,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.secondhandmarket.databinding.ActivityMainBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,5 +34,30 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
+    //完善点击事件
+    public void MainActivityClickListener(View view) {//account Fragment 的点击监听
+        int id = view.getId();
 
-}
+        //release Fragment
+        if(id == R.id.upload_picture){
+            System.out.println(1);
+        }
+        if(id == R.id.release_button){
+            System.out.println(1);
+        }
+        //home 和 message 有List View或RecycleView 可能需要设定自己的itemClick
+        //account Fragment
+        if(id == R.id.mycart){
+            startActivity(new Intent(MainActivity.this, MyCartActivity.class));
+        }
+        if(id == R.id.myrelease){
+            System.out.println(1);
+        }
+        if(id == R.id.myaddress){
+            System.out.println(1);
+        }
+        if(id == R.id.configuration){
+            System.out.println(1);
+        }
+    }
+    }

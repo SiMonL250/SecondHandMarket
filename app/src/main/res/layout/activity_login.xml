@@ -69,7 +69,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/input_password" />
+        app:layout_constraintTop_toBottomOf="@id/input_password"
+        android:clickable="true"
+        android:onClick="loginActivityListener"
+        tools:ignore="UsingOnClickInXml"
+        android:focusable="true" />
 
     <TextView
         android:id="@+id/forgot_pwd"
@@ -89,6 +93,10 @@
         android:layout_marginEnd="44dp"
         android:text="@string/signin"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/login_button" />
+        app:layout_constraintTop_toBottomOf="@id/login_button"
+        android:clickable="true"
+        android:onClick="loginActivityListener"
+        tools:ignore="UsingOnClickInXml"
+        android:focusable="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

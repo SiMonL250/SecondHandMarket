@@ -8,6 +8,7 @@
     android:orientation="vertical">
 
     <ImageView
+        android:id="@+id/upload_picture"
         android:layout_width="match_parent"
         android:layout_height="335dp"
         android:src="@drawable/ic_baseline_add_photo_alternate_24"
@@ -39,7 +40,9 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tvname"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:singleLine="true"
+            android:inputType="text"/>
 
         <TextView
             android:id="@+id/tvprice"
@@ -59,7 +62,9 @@
             android:hint="@string/yuan"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tvprice"
-            app:layout_constraintTop_toBottomOf="@id/input_released_commodity_name" />
+            app:layout_constraintTop_toBottomOf="@id/input_released_commodity_name"
+            android:singleLine="true"
+            android:inputType="text"/>
 
         <TextView
             android:id="@+id/tvdescribtion"
@@ -86,17 +91,21 @@
             android:layout_height="1dp"
             android:background="@color/black"
             app:layout_constraintTop_toTopOf="@id/release_button"/>
+
         <TextView
             android:id="@+id/release_button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tvdescribtion"
+            android:layout_height="36dp"
+            android:layout_marginTop="52dp"
             android:text="@string/buttontorelease"
-            android:textSize="24sp"
             android:textAlignment="center"
-            android:layout_marginTop="24dp"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/tvdescribtion"
+            android:onClick="MainActivityClickListener"/>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
