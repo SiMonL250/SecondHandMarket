@@ -10,10 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="36dp"
         app:layout_constraintBottom_toTopOf="@+id/commodityList">
+
         <SearchView
             android:id="@+id/searchview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
     </LinearLayout>
     <ListView
         android:id="@+id/commodityList"
