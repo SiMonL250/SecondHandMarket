@@ -19,6 +19,9 @@ public class signinActivity extends AppCompatActivity {
 
         signinButton.setOnClickListener(view -> {
             //获取账号密码并上传
+            String signInAccountString = signInAccount.getText().toString();
+            String singINPasswordString = signInPassword.getText().toString();
+
         });
     }
 }

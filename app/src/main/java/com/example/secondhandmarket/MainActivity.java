@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
+
     //完善点击事件
     public void MainActivityClickListener(View view) {//account Fragment 的点击监听
         int id = view.getId();
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, MyCartActivity.class));
         }
         if(id == R.id.myrelease){
-            System.out.println(1);
+            startActivity(new Intent(MainActivity.this, MyReleaseActivity.class));
         }
         if(id == R.id.myaddress){
             System.out.println(1);
