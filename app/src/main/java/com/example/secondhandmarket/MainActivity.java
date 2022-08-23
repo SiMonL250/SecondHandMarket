@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     //完善点击事件
     public void MainActivityClickListener(View view) {//account Fragment 的点击监听
         int id = view.getId();
-
         //release Fragment
         if(id == R.id.upload_picture){
             System.out.println(1);

@@ -64,7 +64,7 @@
             app:layout_constraintStart_toEndOf="@id/tvprice"
             app:layout_constraintTop_toBottomOf="@id/input_released_commodity_name"
             android:singleLine="true"
-            android:inputType="text"/>
+            android:inputType="number|numberDecimal"/>
 
 <!--        <TextView-->
 <!--            android:id="@+id/tvdescribtion"-->

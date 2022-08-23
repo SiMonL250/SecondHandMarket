@@ -16,12 +16,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/search_bar"/>
     <ListView
         android:id="@+id/commodityList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:divider="@color/black"
+        android:divider="@android:color/black"
+        android:dividerHeight="1dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_bar"  />
+        app:layout_constraintTop_toBottomOf="@id/search_bar" />
 </androidx.constraintlayout.widget.ConstraintLayout>
