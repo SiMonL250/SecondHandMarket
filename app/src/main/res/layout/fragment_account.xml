@@ -11,8 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="156dp"
         android:layout_margin="2dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -35,8 +36,33 @@
             android:layout_marginTop="12dp"
             android:text="@string/username"
             android:textSize="24sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_column="2"
+            android:layout_marginTop="80dp"
+            android:text="@string/money1"
+            android:textSize="18sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_column="3"
+            android:layout_marginTop="80dp"
+            android:text="@string/money2"
+            android:textSize="18sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_column="4"
+            android:layout_marginTop="80dp"
+            android:text="@string/yuan"
+            android:textSize="18sp" />
     </GridLayout>
-   
+
     <LinearLayout
         android:id="@+id/post_balnk"
         android:layout_width="match_parent"
@@ -81,14 +107,14 @@
             android:background="#ffffff"
             android:text="@string/signed"
             style="?android:attr/buttonBarButtonStyle" />
-        <Button
-            android:id="@+id/btn5"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#ffffff"
-            android:text="@string/refund"
-            style="?android:attr/buttonBarButtonStyle" />
+<!--        <Button-->
+<!--            android:id="@+id/btn5"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="1"-->
+<!--            android:background="#ffffff"-->
+<!--            android:text="@string/refund"-->
+<!--            style="?android:attr/buttonBarButtonStyle" />-->
     </LinearLayout>
 
     <View
@@ -104,7 +130,8 @@
         android:text="@string/mycart"
         android:textSize="36sp"
         app:layout_constraintTop_toBottomOf="@id/post_balnk"
-        android:onClick="MainActivityClickListener"/>
+        android:onClick="MainActivityClickListener"
+        tools:ignore="UsingOnClickInXml" />
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -117,32 +144,22 @@
         android:text="@string/myrelease"
         android:textSize="36sp"
         app:layout_constraintTop_toBottomOf="@id/mycart"
-        android:onClick="MainActivityClickListener"/>
+        android:onClick="MainActivityClickListener"
+        tools:ignore="UsingOnClickInXml" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/black"
-        app:layout_constraintTop_toTopOf="@id/myaddress"/>
-    <TextView
-        android:id="@+id/myaddress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/myaddress"
-        android:textSize="36sp"
-        app:layout_constraintTop_toBottomOf="@id/myrelease"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/black"
         app:layout_constraintTop_toTopOf="@id/configuration"/>
+
     <TextView
         android:id="@+id/configuration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/config"
         android:textSize="36sp"
-        app:layout_constraintTop_toBottomOf="@id/myaddress"
+        app:layout_constraintTop_toBottomOf="@id/myrelease"
         tools:layout_editor_absoluteX="2dp" />
     <View
         android:layout_width="match_parent"

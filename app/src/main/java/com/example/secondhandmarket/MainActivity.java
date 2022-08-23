@@ -53,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
         if(id == R.id.myrelease){
             startActivity(new Intent(MainActivity.this, MyReleaseActivity.class));
         }
-        if(id == R.id.myaddress){
-            System.out.println(1);
-        }
         if(id == R.id.configuration){
             System.out.println(1);
         }

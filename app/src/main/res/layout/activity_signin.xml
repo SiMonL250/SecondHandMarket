@@ -33,27 +33,51 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="23dp"
         android:layout_marginTop="206dp"
-        android:text="@string/passwordhint"
+        android:text="@string/phone"
         android:textSize="28sp" />
 
     <EditText
-        android:id="@+id/sign_in_password"
+        android:id="@+id/sign_in_phone"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="200dp"
-        android:layout_marginEnd="14dp"
+        android:layout_marginEnd="16dp"
+        android:singleLine="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="271dp"
+        android:text="@string/code"
+        android:textSize="28sp" />
+
+    <EditText
+        android:id="@+id/sign_in_code"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="267dp"
+        android:layout_marginEnd="12dp"
         android:singleLine="true" />
 
     <Button
         android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="291dp"
+        android:layout_marginStart="147dp"
+        android:layout_marginTop="438dp"
         android:text="@string/signinbutton"
         android:textSize="28sp" />
+
 
 </RelativeLayout>

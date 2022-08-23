@@ -32,7 +32,7 @@ public class AccountFragment extends Fragment {
 
     private TextView userName;
     public AccountFragment() {}
-
+    public boolean islogin = false;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -68,7 +68,12 @@ public class AccountFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_account, container, false);
 
         userName = (TextView) view.findViewById(R.id.account_name);
-        userName.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), LoginActivity.class)));
+        userName.setOnClickListener(view1 -> {
+            if(!islogin){
+                startActivity(new Intent(getActivity(), LoginActivity.class));
+            }
+            //true,打开个人信息页面
+        });
 
         return view;
     }

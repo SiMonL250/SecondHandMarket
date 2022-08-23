@@ -13,18 +13,18 @@
         android:layout_height="36dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="452dp"
-        android:src="@drawable/ic_baseline_account_box_24"
+        android:src="@drawable/ic_baseline_phone_24"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/input_account"
+        app:layout_constraintEnd_toStartOf="@id/input_phone"
         tools:ignore="MissingConstraints" />
 
     <EditText
-        android:id="@+id/input_account"
+        android:id="@+id/input_phone"
         android:layout_width="267dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="194dp"
-        android:hint="@string/accounthint"
-        android:inputType="text"
+        android:hint="@string/phone"
+        android:inputType="number"
         app:layout_constraintStart_toEndOf="@id/ivac"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
@@ -36,18 +36,18 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="4dp"
         android:src="@drawable/ic_baseline_lock_24"
-        app:layout_constraintEnd_toStartOf="@id/input_password"
+        app:layout_constraintEnd_toStartOf="@id/input_code"
         app:layout_constraintTop_toBottomOf="@id/ivac" />
 
     <EditText
-        android:id="@+id/input_password"
+        android:id="@+id/input_code"
         android:layout_width="267dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:hint="@string/passwordhint"
+        android:hint="@string/code"
         android:inputType="textPassword"
         app:layout_constraintStart_toEndOf="@id/ivpwd"
-        app:layout_constraintTop_toBottomOf="@id/input_account" />
+        app:layout_constraintTop_toBottomOf="@id/input_phone" />
 
     <ImageView
         android:id="@+id/password_isvisible"
@@ -56,7 +56,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="248dp"
         android:src="@drawable/ic_baseline_visibility_off_24"
-        app:layout_constraintStart_toEndOf="@id/input_password"
+        app:layout_constraintStart_toEndOf="@id/input_code"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -69,7 +69,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/input_password"
+        app:layout_constraintTop_toBottomOf="@id/input_code"
         android:clickable="true"
         android:onClick="loginActivityListener"
         tools:ignore="UsingOnClickInXml"

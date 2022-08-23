@@ -2,6 +2,7 @@ package com.example.secondhandmarket;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -11,11 +12,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.Headers;
 
 public class LoginActivity extends AppCompatActivity {
     private ImageView visibleButton;
-    private EditText inputPassword;
-    private EditText inputAccount;
+    private EditText inputCode;
+    private EditText inputPhone;
     private boolean isVisible = false;
 
     private Button loginButton;
@@ -27,8 +34,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         
          visibleButton = findViewById(R.id.password_isvisible);
-         inputPassword = findViewById(R.id.input_password);
-         inputAccount = findViewById(R.id.input_account);
+         inputCode = findViewById(R.id.input_code);
+         inputPhone= findViewById(R.id.input_phone);
 
          loginButton = findViewById(R.id.login_button);
          forgetPassword = findViewById(R.id.forgot_pwd);
@@ -40,27 +47,31 @@ public class LoginActivity extends AppCompatActivity {
                  isVisible = !isVisible;
                  if(isVisible){
                      visibleButton.setImageResource(R.drawable.ic_baseline_remove_red_eye_24);
-                     inputPassword.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                     inputPassword.setSelection(inputPassword.getText().length());//光标重回文字末尾
+                     inputCode.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                     inputCode.setSelection(inputCode.getText().length());//光标重回文字末尾
                  }else{
                      visibleButton.setImageResource(R.drawable.ic_baseline_visibility_off_24);
-                     inputPassword.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
-                     inputPassword.setTypeface(Typeface.DEFAULT);
-                     inputPassword.setSelection(inputPassword.getText().length());
+                     inputCode.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
+                     inputCode.setTypeface(Typeface.DEFAULT);
+                     inputCode.setSelection(inputCode.getText().length());
                  }
              }
          });
         
     }
 
+    @SuppressLint("NonConstantResourceId")
     public void loginActivityListener(View view) {
         int id = view.getId();
         switch (id){
-            case R.id.login_button:
-                String account = inputAccount.getText().toString();
-                String password = inputPassword.getText().toString();
-                //将账号密码获取验证，登录
-                System.out.println(account+",,"+password);
+            case R.id.login_button://请求。登录
+                String Phone = inputPhone.getText().toString();
+                String Code = inputCode.getText().toString();
+                if(!Phone.equals("") && !Code.equals("")){
+                    post();
+                }else{
+                    Toast.makeText(this, "账号格式不正确", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.sign_in:
                 startActivity(new Intent(LoginActivity.this, signinActivity.class));
@@ -68,4 +79,21 @@ public class LoginActivity extends AppCompatActivity {
 
         }
     }
+
+    private void post() {
+        new Thread(()->{
+            String url ="http://47.107.52.7:88/member/tran/user/login";
+
+            Headers headers = new Headers.Builder()
+                    .add("Accept", "application/json, text/plain, */*")
+                    .add("appId", "6e7ad529141b4ec18c355eff7abfd160")
+                    .add("appSecret", "63421994d54e2abe54902b678072a31a94e66")
+                    .add("Content-Type", "application/json")
+                    .build();
+
+            Map<String,Object> bodyMAp = new HashMap<>();
+
+        }).start();
+    }
+
 }

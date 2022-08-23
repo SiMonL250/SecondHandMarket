@@ -7,7 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class signinActivity extends AppCompatActivity {
-    private EditText signInAccount, signInPassword;
+    private EditText signInAccount, signInPhone, sigInCode;
     private Button signinButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,12 +15,12 @@ public class signinActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signin);
         signinButton = findViewById(R.id.sign_in_button);
         signInAccount = findViewById(R.id.sign_in_account);
-        signInPassword = findViewById(R.id.sign_in_password);
+        signInPhone = findViewById(R.id.sign_in_phone);
 
         signinButton.setOnClickListener(view -> {
-            //获取账号密码并上传
+            //获取账号并上传
             String signInAccountString = signInAccount.getText().toString();
-            String singINPasswordString = signInPassword.getText().toString();
+            String singINPasswordString = signInPhone.getText().toString();
 
         });
     }
