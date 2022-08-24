@@ -4,18 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
     tools:context=".LoginActivity">
 
     <ImageView
         android:id="@+id/ivac"
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:layout_marginTop="204dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginBottom="452dp"
         android:src="@drawable/ic_baseline_phone_24"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/input_phone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
     <EditText
@@ -33,10 +33,11 @@
         android:id="@+id/ivpwd"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="4dp"
         android:src="@drawable/ic_baseline_lock_24"
         app:layout_constraintEnd_toStartOf="@id/input_code"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ivac" />
 
     <EditText
@@ -49,15 +50,6 @@
         app:layout_constraintStart_toEndOf="@id/ivpwd"
         app:layout_constraintTop_toBottomOf="@id/input_phone" />
 
-    <ImageView
-        android:id="@+id/password_isvisible"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="248dp"
-        android:src="@drawable/ic_baseline_visibility_off_24"
-        app:layout_constraintStart_toEndOf="@id/input_code"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/login_button"
@@ -65,25 +57,25 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:background="@color/btn"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="loginActivityListener"
         android:text="@string/loginbtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/input_code"
-        android:clickable="true"
-        android:onClick="loginActivityListener"
-        tools:ignore="UsingOnClickInXml"
-        android:focusable="true" />
+        tools:ignore="UsingOnClickInXml" />
 
-    <TextView
-        android:id="@+id/forgot_pwd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/forgetpwd"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/login_button" />
+<!--    <TextView-->
+<!--        android:id="@+id/forgot_pwd"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="36dp"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:text="@string/forgetpwd"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/login_button" />-->
 
     <TextView
         android:id="@+id/sign_in"
@@ -91,12 +83,23 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="44dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="loginActivityListener"
         android:text="@string/signin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/login_button"
-        android:clickable="true"
-        android:onClick="loginActivityListener"
-        tools:ignore="UsingOnClickInXml"
-        android:focusable="true" />
+        tools:ignore="UsingOnClickInXml" />
+
+    <Button
+        android:id="@+id/buttongetcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="28dp"
+        android:text="@string/getcode"
+        app:layout_constraintBottom_toTopOf="@+id/login_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/input_code" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -30,10 +30,9 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
-    private ImageView visibleButton;
+    private Button visibleButton;
     private EditText inputCode;
     private EditText inputPhone;
-    private boolean isVisible = false;
 
     private Button loginButton;
     private TextView forgetPassword;
@@ -43,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         
-         visibleButton = findViewById(R.id.password_isvisible);
+         visibleButton = findViewById(R.id.buttongetcode);
          inputCode = findViewById(R.id.input_code);
          inputPhone= findViewById(R.id.input_phone);
 
@@ -54,17 +53,6 @@ public class LoginActivity extends AppCompatActivity {
          visibleButton.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View view) {
-                 isVisible = !isVisible;
-                 if(isVisible){
-                     visibleButton.setImageResource(R.drawable.ic_baseline_remove_red_eye_24);
-                     inputCode.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                     inputCode.setSelection(inputCode.getText().length());//光标重回文字末尾
-                 }else{
-                     visibleButton.setImageResource(R.drawable.ic_baseline_visibility_off_24);
-                     inputCode.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
-                     inputCode.setTypeface(Typeface.DEFAULT);
-                     inputCode.setSelection(inputCode.getText().length());
-                 }
              }
          });
         
