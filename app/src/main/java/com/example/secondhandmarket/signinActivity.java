@@ -48,7 +48,6 @@ public class signinActivity extends AppCompatActivity {
             //获取账号并上传
             if(!codeString.equals("") && !accountString.equals("") && !phoneString.equals("")){
                 post(accountString, phoneString, codeString);
-                Toast.makeText(signinActivity.this, "success", Toast.LENGTH_SHORT).show();
             }else {
                 Toast.makeText(signinActivity.this, "格式不正确", Toast.LENGTH_SHORT).show();
             }
@@ -114,7 +113,9 @@ public class signinActivity extends AppCompatActivity {
         }
         @Override
         public void onResponse(@NonNull Call call, Response response) throws IOException {
-
+            Looper.prepare();
+            Toast.makeText(signinActivity.this, "success", Toast.LENGTH_SHORT).show();
+            Looper.loop();
             System.out.println(response.toString());
         }
     };
