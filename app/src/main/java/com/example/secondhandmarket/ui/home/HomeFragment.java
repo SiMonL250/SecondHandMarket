@@ -117,6 +117,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
     };
 
     private void processData(Response responce) {//Responce类处理成一个commodityBean类再获取数据，okHTTP3 Responce转换成Json
+
     }
 
     @Override
