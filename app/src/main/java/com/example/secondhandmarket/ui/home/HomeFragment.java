@@ -1,9 +1,9 @@
 package com.example.secondhandmarket.ui.home;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Looper;
-import android.os.NetworkOnMainThreadException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +18,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.secondhandmarket.R;
+import com.example.secondhandmarket.appkey.appMobSDK;
 import com.example.secondhandmarket.databinding.FragmentHomeBinding;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,9 +32,9 @@ import java.util.Map;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class HomeFragment extends Fragment implements AdapterView.OnItemClickListener {
     private  ListView goodsList;
@@ -56,6 +59,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
 
        //adapter
         mAdapter = new SimpleAdapter(getActivity(), initData(),R.layout.commodity_list_item,new String[]{"title","p"},new int[]{R.id.commodityName,R.id.commodityPrice});
+
         goodsList.setAdapter(mAdapter);
         goodsList.setOnItemClickListener(this);
         return view;
@@ -81,8 +85,8 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
 
             // 请求头
             Headers headers = new Headers.Builder()
-                    .add("appId", "6e7ad529141b4ec18c355eff7abfd160")
-                    .add("appSecret", "63421994d54e2abe54902b678072a31a94e66")
+                    .add("appId", new appMobSDK().appID)
+                    .add("appSecret", new appMobSDK().appSecret)
                     .add("Accept", "application/json, text/plain, */*")
                     .build();
 
@@ -116,8 +120,21 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
         }
     };
 
-    private void processData(Response responce) {//Responce类处理成一个commodityBean类再获取数据，okHTTP3 Responce转换成Json
+    private commodityBean processData(Response responce) {//Responce类处理成一个commodityBean类再获取数据，okHTTP3 Responce转换成Json
+        commodityBean obj = null;
+        ResponseBody body= responce.body();
+        java.lang.reflect.Type type = new TypeToken<commodityBean>() {}.getType();
 
+        try{
+            assert body != null;
+            String json = new String(body.bytes());
+            Gson gson = new Gson();
+            obj  = gson.fromJson(json,type);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return obj;
     }
 
     @Override
@@ -128,7 +145,8 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        System.out.println("click");
+
     }
 
 }
+

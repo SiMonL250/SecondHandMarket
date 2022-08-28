@@ -47,4 +47,5 @@
         android:src="@drawable/ic_baseline_add_shopping_cart_24"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

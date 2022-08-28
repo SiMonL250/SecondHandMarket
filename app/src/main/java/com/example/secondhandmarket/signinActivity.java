@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.secondhandmarket.appkey.appMobSDK;
+import com.google.gson.Gson;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,12 +26,14 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class signinActivity extends AppCompatActivity {
     private EditText signInAccount, signInPhone, sigInCode;
-    private Button signinButton,getCodeButton;
+    private Button signinButton, getCodeButton;
     private boolean tag = true;
     private int i = 60;
+    private String codetocheck;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,14 +50,21 @@ public class signinActivity extends AppCompatActivity {
             String codeString = sigInCode.getText().toString();
             String accountString = signInAccount.getText().toString();
             String phoneString = signInPhone.getText().toString();
-            //获取账号并上传
-            if(!codeString.equals("") && !accountString.equals("") && !phoneString.equals("")){
-                post(accountString, phoneString, codeString);
-            }else {
-                Toast.makeText(signinActivity.this, "格式不正确", Toast.LENGTH_SHORT).show();
-            }
 
+            //检查验证码是否正确
+            if(codetocheck.equals(codeString)){//对上才会post
+//                Toast.makeText(signinActivity.this, "correct", Toast.LENGTH_SHORT).show();
+                //post 注册
+                if(!codeString.equals("") && !accountString.equals("") && !phoneString.equals("")){
+                    post(phoneString, codeString);
+                }else {
+                    Toast.makeText(signinActivity.this, "格式不正确", Toast.LENGTH_SHORT).show();
+                }
+            }else {
+                Toast.makeText(signinActivity.this, "验证码不正确", Toast.LENGTH_SHORT).show();
+            }
         });
+
         getCodeButton.setOnClickListener(view -> {
             String phoneString = signInPhone.getText().toString();
             if(isMobileNO(phoneString)){
@@ -63,22 +75,22 @@ public class signinActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void post(String account,String phone, String code) {
+//local object user to save userName userId phone avatar addr,etc
+    //还要对phone进行检查，看是否已经注册。
+    private void post(String phone, String code) {
         new Thread(()->{
             String url = "http://47.107.52.7:88/member/tran/user/register";
 
             Headers headers = new Headers.Builder()
                     .add("Accept", "application/json, text/plain, */*")
-                    .add("appId", "6e7ad529141b4ec18c355eff7abfd160")
-                    .add("appSecret", "63421994d54e2abe54902b678072a31a94e66")
+                    .add("appId", new appMobSDK().appID)
+                    .add("appSecret", new appMobSDK().appSecret)
                     .add("Content-Type", "application/json")
                     .build();
 
             Map<String, Object> bodyMap = new HashMap<>();
             bodyMap.put("code", code);
             bodyMap.put("phone", phone);
-            bodyMap.put("account", account);
             // 将Map转换为字符串类型加入请求体中
             String body = bodyMap.toString();
 
@@ -91,21 +103,18 @@ public class signinActivity extends AppCompatActivity {
                     .headers(headers)
                     .post(RequestBody.create(MEDIA_TYPE_JSON, body))
                     .build();
-
             try {
                 OkHttpClient client = new OkHttpClient();
                 //发起请求，传入callback进行回调
-                client.newCall(request).enqueue(callback);
+                client.newCall(request).enqueue(callbackSignin);
             }catch (NetworkOnMainThreadException ex){
                 ex.printStackTrace();
             }
-
         }).start();
-
 
     }
     //回调
-    private final Callback callback = new Callback() {
+    private final Callback callbackSignin = new Callback() {
         @Override
         public void onFailure(@NonNull Call call, IOException e) {
             //TODO 请求失败处理
@@ -116,7 +125,8 @@ public class signinActivity extends AppCompatActivity {
             Looper.prepare();
             Toast.makeText(signinActivity.this, "success", Toast.LENGTH_SHORT).show();
             Looper.loop();
-            System.out.println(response.toString());
+            ResponseBody Responsebody = response.body();
+            System.out.println(Responsebody.string());
         }
     };
 
@@ -149,15 +159,29 @@ public class signinActivity extends AppCompatActivity {
     private final Callback callbackGetCode = new Callback() {
         @Override
         public void onFailure(@NonNull Call call, IOException e) {
-            //TODO 请求失败处理
-            e.printStackTrace();
+           Looper.prepare();
+            Toast.makeText(signinActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Looper.loop();
         }
         @Override
         public void onResponse(@NonNull Call call, Response response) throws IOException {
-            //TODO 请求成功处理
-            System.out.println(response.toString());
+            //关闭此页面，应用为以登录状态
+            ResponseBody body = response.body();
+            assert body != null;
+            codeResponce codeResponcebean = new codeResponce();
+            try{
+                String json = new String(body.bytes());
+                Gson gson = new Gson();
+                codeResponcebean = gson.fromJson(json, codeResponcebean.getClass());
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            Toast.makeText(signinActivity.this, codeResponcebean.getMsg(), Toast.LENGTH_SHORT).show();
+            codetocheck = codeResponcebean.getData();
         }
     };
+
+
     //当发送验证码成功时，按钮样式变成倒计时
     private void changeBtnGetCode() {
         new Thread(()->{
@@ -196,5 +220,34 @@ public class signinActivity extends AppCompatActivity {
             return sphone.matches(telRegex);
 
     }
+    //responceBody 的类
+    private class codeResponce{
+        //{"code":500,"msg":"当前验证码未失效，请勿频繁获取验证码","data":null}
+        private int code;
+        private String msg;
+        private String data;
+        public int getCode() {
+            return code;
+        }
 
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public String getMsg() {
+            return msg;
+        }
+
+        public void setMsg(String msg) {
+            this.msg = msg;
+        }
+
+        public String getData() {
+            return data;
+        }
+
+        public void setData(String data) {
+            this.data = data;
+        }
+    }
 }

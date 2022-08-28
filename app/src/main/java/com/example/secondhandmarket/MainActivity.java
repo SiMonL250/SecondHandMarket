@@ -38,13 +38,6 @@ public class MainActivity extends AppCompatActivity {
     //完善点击事件
     public void MainActivityClickListener(View view) {//account Fragment 的点击监听
         int id = view.getId();
-        //release Fragment
-        if(id == R.id.upload_picture){
-            System.out.println(1);
-        }
-        if(id == R.id.release_button){
-            System.out.println(1);
-        }
         //home 和 message 有List View或RecycleView 可能需要设定自己的itemClick
         //account Fragment
         if(id == R.id.mycart){

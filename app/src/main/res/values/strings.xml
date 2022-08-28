@@ -44,4 +44,5 @@
     <string name="getcode">获取验证码</string>
     <string name="messager_name">name</string>
     <string name="notification">notification</string>
+    <string name="typeName">商品类型</string>
 </resources>

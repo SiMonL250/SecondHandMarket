@@ -9,12 +9,15 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.NetworkOnMainThreadException;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.secondhandmarket.appkey.appMobSDK;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,29 +33,29 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
-    private Button visibleButton;
+    private Button getCodeButton;
     private EditText inputCode;
     private EditText inputPhone;
 
     private Button loginButton;
-    private TextView forgetPassword;
     private TextView signIn;
+    private boolean tag = true;
+    private int i = 60;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         
-         visibleButton = findViewById(R.id.buttongetcode);
+         getCodeButton = findViewById(R.id.buttongetcode);
          inputCode = findViewById(R.id.input_code);
          inputPhone= findViewById(R.id.input_phone);
 
          loginButton = findViewById(R.id.login_button);
          signIn = findViewById(R.id.sign_in);
          
-         visibleButton.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-             }
+         getCodeButton.setOnClickListener(view -> {
+             //获取验证码
+             changeBtnGetCode();
          });
         
     }
@@ -64,8 +67,8 @@ public class LoginActivity extends AppCompatActivity {
             case R.id.login_button://请求。登录
                 String Phone = inputPhone.getText().toString();
                 String Code = inputCode.getText().toString();
-                if(!Phone.equals("") && !Code.equals("")){
-                    post();
+                if(isMobileNO(Phone) && !Code.equals("")){
+                    post(Code, Phone);
                 }else{
                     Toast.makeText(this, "账号格式不正确", Toast.LENGTH_SHORT).show();
                 }
@@ -77,21 +80,21 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void post() {
+    private void post(String phone, String code) {
         new Thread(()->{
             String url ="http://47.107.52.7:88/member/tran/user/login";
 
             Headers headers = new Headers.Builder()
                     .add("Accept", "application/json, text/plain, */*")
-                    .add("appId", "6e7ad529141b4ec18c355eff7abfd160")
-                    .add("appSecret", "63421994d54e2abe54902b678072a31a94e66")
+                    .add("appId", new appMobSDK().appID)
+                    .add("appSecret", new appMobSDK().appSecret)
                     .add("Content-Type", "application/json")
                     .build();
 
 
             Map<String, Object> bodyMap = new HashMap<>();
-            bodyMap.put("code", inputCode);
-            bodyMap.put("phone", inputPhone);
+            bodyMap.put("code", code);
+            bodyMap.put("phone", phone);
             // 将Map转换为字符串类型加入请求体中
             String body = bodyMap.toString();
 
@@ -126,7 +129,46 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onResponse(@NonNull Call call, Response response) throws IOException {
             //TODO 请求成功处理
-            System.out.println(response.toString());
+            assert response.body() != null;
+            System.out.println(response.body().string());
         }
     };
+
+    private void changeBtnGetCode() {
+        new Thread(()->{
+            if (tag) {
+                while (i > 0) {
+                    i--;
+                    //如果活动为空
+                    LoginActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            getCodeButton.setText( i + "s");
+                            getCodeButton.setClickable(false);
+                        }
+                    });
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                tag = false;
+            }
+            i = 60;
+            tag = true;
+            LoginActivity.this.runOnUiThread(() -> {
+                getCodeButton.setText("获取验证码");
+                getCodeButton.setClickable(true);
+            });
+        }).start();
+    }
+    private boolean isMobileNO(String sphone) {
+        String telRegex = "[1][358]\\d{9}";
+        if (TextUtils.isEmpty(sphone))
+            return false;
+        else
+            return sphone.matches(telRegex);
+
+    }
 }

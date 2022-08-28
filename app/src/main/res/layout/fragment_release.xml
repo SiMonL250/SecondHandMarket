@@ -27,15 +27,15 @@
             android:id="@+id/tvname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/nameofcommodity"
+            android:text="@string/describtionofcommodity"
             android:textSize="24sp"
-            app:layout_constraintBaseline_toBaselineOf="@id/input_released_commodity_name"
-            app:layout_constraintEnd_toStartOf="@id/input_released_commodity_name"
+            app:layout_constraintBaseline_toBaselineOf="@id/input_released_commodity_contents"
+            app:layout_constraintEnd_toStartOf="@id/input_released_commodity_contents"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/input_released_commodity_name"
+            android:id="@+id/input_released_commodity_contents"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -62,29 +62,29 @@
             android:hint="@string/yuan"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tvprice"
-            app:layout_constraintTop_toBottomOf="@id/input_released_commodity_name"
+            app:layout_constraintTop_toBottomOf="@id/input_released_commodity_contents"
             android:singleLine="true"
             android:inputType="number|numberDecimal"/>
 
-<!--        <TextView-->
-<!--            android:id="@+id/tvdescribtion"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@string/describtionofcommodity"-->
-<!--            android:textSize="24sp"-->
-<!--            app:layout_constraintBaseline_toBaselineOf="@id/input_released_commodity_describtion"-->
-<!--            app:layout_constraintEnd_toStartOf="@id/input_released_commodity_describtion"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/tvprice" />-->
+        <TextView
+            android:id="@+id/tvdescribtion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/typeName"
+            android:textSize="24sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/input_released_commodity_typename"
+            app:layout_constraintEnd_toStartOf="@id/input_released_commodity_typename"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvprice" />
 
-<!--        <EditText-->
-<!--            android:id="@+id/input_released_commodity_describtion"-->
-<!--            android:layout_width="300dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toEndOf="@id/tvdescribtion"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/input_released_commodity_price"-->
-<!--            android:inputType="text" />-->
+        <EditText
+            android:id="@+id/input_released_commodity_typename"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvdescribtion"
+            app:layout_constraintTop_toBottomOf="@id/input_released_commodity_price" />
 
         <View
             android:layout_width="match_parent"
@@ -103,8 +103,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvprice"
-            android:onClick="MainActivityClickListener"/>
+            app:layout_constraintTop_toBottomOf="@id/tvdescribtion"/>
 
         <View
             android:layout_width="match_parent"
