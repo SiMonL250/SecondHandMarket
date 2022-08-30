@@ -1,22 +1,20 @@
-package com.example.secondhandmarket;
+package com.example.secondhandmarket.ui.account;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.NetworkOnMainThreadException;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.appkey.appMobSDK;
 
 import java.io.IOException;
@@ -41,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView signIn;
     private boolean tag = true;
     private int i = 60;
+    private String check;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.sign_in:
-                startActivity(new Intent(LoginActivity.this, signinActivity.class));
+                startActivity(new Intent(LoginActivity.this, SigninActivity.class));
                 break;
 
         }

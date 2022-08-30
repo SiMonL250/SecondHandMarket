@@ -1,8 +1,9 @@
-package com.example.secondhandmarket;
+package com.example.secondhandmarket.ui.account;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.NetworkOnMainThreadException;
@@ -11,12 +12,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.secondhandmarket.MainActivity;
+import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.appkey.appMobSDK;
 import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -28,12 +32,14 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public class signinActivity extends AppCompatActivity {
+public class SigninActivity extends AppCompatActivity {
+    private static SigninActivity.codeResponce codeResponcebean;
     private EditText signInAccount, signInPhone, sigInCode;
     private Button signinButton, getCodeButton;
     private boolean tag = true;
     private int i = 60;
-    private String codetocheck;
+    private registerResponce registerResponce;
+    private String check;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,36 +50,38 @@ public class signinActivity extends AppCompatActivity {
         sigInCode = findViewById(R.id.sign_in_code);
         getCodeButton = findViewById(R.id.btn_getcode);
 
+        getCodeButton.setOnClickListener(view -> {
 
+            String phoneString = signInPhone.getText().toString();
+            if(isMobileNO(phoneString)){
+                changeBtnGetCode();
+                get(phoneString);
+                check = codeResponcebean.getData();
+            }else {
+                Toast.makeText(SigninActivity.this, "号码格式错误", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         signinButton.setOnClickListener(view -> {
             String codeString = sigInCode.getText().toString();
             String accountString = signInAccount.getText().toString();
             String phoneString = signInPhone.getText().toString();
 
-            //检查验证码是否正确
-            if(codetocheck.equals(codeString)){//对上才会post
-//                Toast.makeText(signinActivity.this, "correct", Toast.LENGTH_SHORT).show();
-                //post 注册
-                if(!codeString.equals("") && !accountString.equals("") && !phoneString.equals("")){
-                    post(phoneString, codeString);
-                }else {
-                    Toast.makeText(signinActivity.this, "格式不正确", Toast.LENGTH_SHORT).show();
-                }
+            if(!codeString.equals("") && !accountString.equals("") && !phoneString.equals("")){
+                post(phoneString, codeString);
+                //UUID生成唯一userId ，初始注册只有userId。phone。account三个元素。
+                user user = new user(UUID.randomUUID().toString(),accountString,phoneString);
+                Intent intent = new Intent(this, MainActivity.class);// 传递user对象
+                intent.putExtra("user",user);
+                startActivity(intent);
+                setResult(RESULT_OK, intent);
+                finish();
+
             }else {
-                Toast.makeText(signinActivity.this, "验证码不正确", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SigninActivity.this, "格式不正确", Toast.LENGTH_SHORT).show();
             }
         });
 
-        getCodeButton.setOnClickListener(view -> {
-            String phoneString = signInPhone.getText().toString();
-            if(isMobileNO(phoneString)){
-                changeBtnGetCode();
-                get(phoneString);
-            }else {
-                Toast.makeText(signinActivity.this, "号码格式错误", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 //local object user to save userName userId phone avatar addr,etc
     //还要对phone进行检查，看是否已经注册。
@@ -118,57 +126,74 @@ public class signinActivity extends AppCompatActivity {
         @Override
         public void onFailure(@NonNull Call call, IOException e) {
             //TODO 请求失败处理
-            e.printStackTrace();
+            Looper.prepare();
+            Toast.makeText(SigninActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Looper.loop();
         }
         @Override
         public void onResponse(@NonNull Call call, Response response) throws IOException {
+
+            ResponseBody body = response.body();
+            registerResponce = new registerResponce();
+            assert body != null;
+            try{
+                String json = new String(body.bytes());
+                Gson gson = new Gson();
+                registerResponce = gson.fromJson(json, registerResponce.getClass());
+                System.out.println(json);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
             Looper.prepare();
-            Toast.makeText(signinActivity.this, "success", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SigninActivity.this, registerResponce.getMsg(), Toast.LENGTH_SHORT).show();
             Looper.loop();
-            ResponseBody Responsebody = response.body();
-            System.out.println(Responsebody.string());
+            System.out.println(registerResponce.getData());
         }
     };
 
     private void get(String phone){
-        new Thread(()->{
-            String url = "http://47.107.52.7:88/member/tran/user/send?phone="+ phone;
-            System.out.println(url);
-            Headers headers = new Headers.Builder()
-                    .add("appId", "6e7ad529141b4ec18c355eff7abfd160")
-                    .add("appSecret", "63421994d54e2abe54902b678072a31a94e66")
-                    .add("Accept", "application/json, text/plain, */*")
-                    .build();
 
-            //请求组合创建
-            Request request = new Request.Builder()
-                    .url(url)
-                    // 将请求头加至请求中
-                    .headers(headers)
-                    .get()
-                    .build();
-            try {
-                OkHttpClient client = new OkHttpClient();
-                //发起请求，传入callback进行回调
-               client.newCall(request).enqueue(callbackGetCode);
-            }catch (NetworkOnMainThreadException ex){
-                ex.printStackTrace();
-            }
-        }).start();
+                String url = "http://47.107.52.7:88/member/tran/user/send?phone="+ phone;
+//                System.out.println(url);
+                Headers headers = new Headers.Builder()
+                        .add("appId", "6e7ad529141b4ec18c355eff7abfd160")
+                        .add("appSecret", "63421994d54e2abe54902b678072a31a94e66")
+                        .add("Accept", "application/json, text/plain, */*")
+                        .build();
+
+                //请求组合创建
+                Request request = new Request.Builder()
+                        .url(url)
+                        // 将请求头加至请求中
+                        .headers(headers)
+                        .get()
+                        .build();
+                try {
+
+                    OkHttpClient client = new OkHttpClient();
+                    //发起请求，传入callback进行回调
+                    client.newCall(request).enqueue(callGetCode);
+
+                }catch (NetworkOnMainThreadException ex){
+                    ex.printStackTrace();
+                }
+
+
     }
-    private final Callback callbackGetCode = new Callback() {
+    Callback callGetCode =new Callback() {
+
         @Override
         public void onFailure(@NonNull Call call, IOException e) {
-           Looper.prepare();
-            Toast.makeText(signinActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Looper.prepare();
+            Toast.makeText(SigninActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             Looper.loop();
         }
         @Override
         public void onResponse(@NonNull Call call, Response response) throws IOException {
             //关闭此页面，应用为以登录状态
             ResponseBody body = response.body();
+            codeResponcebean= new codeResponce();
             assert body != null;
-            codeResponce codeResponcebean = new codeResponce();
             try{
                 String json = new String(body.bytes());
                 Gson gson = new Gson();
@@ -176,10 +201,12 @@ public class signinActivity extends AppCompatActivity {
             }catch (IOException e){
                 e.printStackTrace();
             }
-            Toast.makeText(signinActivity.this, codeResponcebean.getMsg(), Toast.LENGTH_SHORT).show();
-            codetocheck = codeResponcebean.getData();
+            Looper.prepare();
+            Toast.makeText(SigninActivity.this, codeResponcebean.getMsg(), Toast.LENGTH_SHORT).show();
+            Looper.loop();
         }
     };
+
 
 
     //当发送验证码成功时，按钮样式变成倒计时
@@ -189,7 +216,7 @@ public class signinActivity extends AppCompatActivity {
                 while (i > 0) {
                     i--;
                     //如果活动为空
-                    signinActivity.this.runOnUiThread(new Runnable() {
+                    SigninActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             getCodeButton.setText( i + "s");
@@ -206,9 +233,9 @@ public class signinActivity extends AppCompatActivity {
             }
             i = 60;
             tag = true;
-            signinActivity.this.runOnUiThread(() -> {
-                getCodeButton.setText("获取验证码");
-                getCodeButton.setClickable(true);
+            SigninActivity.this.runOnUiThread(() -> {
+                getCodeButton.setText("输入验证码");
+                getCodeButton.setClickable(false);
             });
         }).start();
     }
@@ -221,6 +248,36 @@ public class signinActivity extends AppCompatActivity {
 
     }
     //responceBody 的类
+
+    private static class registerResponce{
+        private String msg;
+        private int code;
+        private String data;
+
+        public String getMsg() {
+            return msg;
+        }
+
+        public void setMsg(String msg) {
+            this.msg = msg;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public String getData() {
+            return data;
+        }
+
+        public void setData(String data) {
+            this.data = data;
+        }
+    }
     private class codeResponce{
         //{"code":500,"msg":"当前验证码未失效，请勿频繁获取验证码","data":null}
         private int code;

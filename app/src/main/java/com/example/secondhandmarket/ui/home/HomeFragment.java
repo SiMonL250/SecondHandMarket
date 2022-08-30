@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.NetworkOnMainThreadException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import java.util.Map;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -41,7 +43,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
     private FragmentHomeBinding binding;
     private SimpleAdapter mAdapter;
     private Context mcontext;
-
+    public String userId;//获取当前用户id
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +83,8 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
     private void get() {
 
             // url路径
-            String url = "http://47.107.52.7:88/member/tran/goods/all?userId=0";
+
+        String url = "http://47.107.52.7:88/member/tran/goods/all?userId="+userId;
 
             // 请求头
             Headers headers = new Headers.Builder()
@@ -97,13 +100,13 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
                     .headers(headers)
                     .get()
                     .build();
-//            try {
-//                OkHttpClient client = new OkHttpClient();
-//                //发起请求，传入callback进行回调
-//                client.newCall(request).enqueue(callback);
-//            }catch (NetworkOnMainThreadException ex){
-//                ex.printStackTrace();
-//            }
+            try {
+                OkHttpClient client = new OkHttpClient();
+                //发起请求，传入callback进行回调
+                client.newCall(request).enqueue(callback);
+            }catch (NetworkOnMainThreadException ex){
+                ex.printStackTrace();
+            }
     }
     private final Callback callback = new Callback() {
         @Override
@@ -119,11 +122,11 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
            processData(response);
         }
     };
-
+//commodityBean有商品类数组，可以直接调用作Adpater的数据。
     private commodityBean processData(Response responce) {//Responce类处理成一个commodityBean类再获取数据，okHTTP3 Responce转换成Json
         commodityBean obj = null;
         ResponseBody body= responce.body();
-        java.lang.reflect.Type type = new TypeToken<commodityBean>() {}.getType();
+        java.lang.reflect.Type type = new TypeToken<commodityBean>() {}.getType();//?
 
         try{
             assert body != null;

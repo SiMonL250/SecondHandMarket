@@ -27,10 +27,10 @@
             android:name=".CommodityInformationActivity"
             android:exported="false" />
         <activity
-            android:name=".signinActivity"
+            android:name=".ui.account.SigninActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.account.LoginActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
