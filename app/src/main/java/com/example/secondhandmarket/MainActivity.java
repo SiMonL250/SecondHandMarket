@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         ResponseBody usernow= (ResponseBody) intent.getSerializableExtra("user");
         if (usernow != null) {
 
-            System.out.println(usernow.getData());
+            System.out.println(usernow.getData().toString());
         }
     }
 
@@ -53,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
         int id = view.getId();
         //home 和 message 有List View或RecycleView 可能需要设定自己的itemClick
         //account Fragment
-        if(id == R.id.mycart){
-            startActivity(new Intent(MainActivity.this, MyCartActivity.class));
-        }
         if(id == R.id.myrelease){
             startActivity(new Intent(MainActivity.this, MyReleaseActivity.class));
         }

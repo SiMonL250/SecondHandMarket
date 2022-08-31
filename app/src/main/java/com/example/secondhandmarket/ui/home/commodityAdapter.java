@@ -29,7 +29,6 @@ public class commodityAdapter extends CursorAdapter {
             vh.tvName = itemView.findViewById(R.id.commodityName);
             vh.tvPrice = itemView.findViewById(R.id.commodityPrice);
             vh.ivPicture = itemView.findViewById(R.id.commodityImg);
-            vh.addToCart = itemView.findViewById(R.id.addToCart);
             itemView.setTag(vh);
             return itemView;
         }

@@ -1,14 +1,23 @@
-package com.example.secondhandmarket.release.newrelease;
+package com.example.secondhandmarket.myrelease.newrelease;
+
+import static com.example.secondhandmarket.databinding.FragmentNewReleaseSoldoutBinding.inflate;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewbinding.ViewBinding;
+
 import com.example.secondhandmarket.R;
+import com.example.secondhandmarket.myrelease.MyReleaseAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,7 +25,9 @@ import com.example.secondhandmarket.R;
  * create an instance of this fragment.
  */
 public class NewReleaseFragment extends Fragment {
-
+    private RecyclerView mRecyclerViewList;
+    private MyReleaseAdapter myReleaseAdapter;
+    List<String> mDataList = new ArrayList<>();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -38,7 +49,6 @@ public class NewReleaseFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment NewReleaseFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static NewReleaseFragment newInstance(String param1, String param2) {
         NewReleaseFragment fragment = new NewReleaseFragment();
         Bundle args = new Bundle();
@@ -58,9 +68,19 @@ public class NewReleaseFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_new_release, container, false);
+        ViewBinding binding = inflate(inflater,container,false);
+        View view = binding.getRoot();
+        mRecyclerViewList = view.findViewById(R.id.recyeView);
+        for(int i=0; i<10; i++){
+            mDataList.add("test" +1);
+        }
+        myReleaseAdapter = new MyReleaseAdapter(mDataList);
+        mRecyclerViewList.setAdapter(myReleaseAdapter);
+
+        mRecyclerViewList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        return view;
     }
 }

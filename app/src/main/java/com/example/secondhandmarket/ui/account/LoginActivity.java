@@ -132,8 +132,6 @@ public class LoginActivity extends AppCompatActivity {
             }catch (NetworkOnMainThreadException ex){
                 ex.printStackTrace();
             }
-
-
         }).start();
     }
     //回调
@@ -161,7 +159,11 @@ public class LoginActivity extends AppCompatActivity {
             if(dataResponseBody.getCode()==200){
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 intent.putExtra("user",dataResponseBody);
-                startActivity(intent);
+                startActivity(intent);//或者保存到一个json文件中，用的时候调用。
+            }
+            if(dataResponseBody.getCode() == 500){
+                Looper.prepare();
+                Toast.makeText(LoginActivity.this, "验证码已失效或服务器内部错误，请稍后获取", Toast.LENGTH_SHORT).show();
             }
 
         }

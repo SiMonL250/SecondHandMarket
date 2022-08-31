@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.secondhandmarket.release.newrelease.NewReleaseFragment;
-import com.example.secondhandmarket.release.soldout.SoldOutFragment;
+import com.example.secondhandmarket.myrelease.newrelease.NewReleaseFragment;
+import com.example.secondhandmarket.myrelease.soldout.SoldOutFragment;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -38,19 +38,15 @@ public class MyReleaseActivity extends AppCompatActivity {
         mViewPager.setAdapter(myFragmentStateAdapter);
         //绑定tabLayout
         mViewPager.registerOnPageChangeCallback(changeCallback);
-        mediator = new TabLayoutMediator(mTabLayout, mViewPager, new TabLayoutMediator.TabConfigurationStrategy() {
+        mediator = new TabLayoutMediator(mTabLayout, mViewPager, (tab, position) -> {
+            TextView tabView = new TextView(MyReleaseActivity.this);
+            int[][] states = new int[2][];
+            states[0] = new int[]{android.R.attr.state_selected};
+            states[1] = new int[]{};
 
-            @Override
-            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                TextView tabView = new TextView(MyReleaseActivity.this);
-                int[][] states = new int[2][];
-                states[0] = new int[]{android.R.attr.state_selected};
-                states[1] = new int[]{};
+            tabView.setText(tabs[position]);
 
-                tabView.setText(tabs[position]);
-
-                tab.setCustomView(tabView);
-            }
+            tab.setCustomView(tabView);
         });
         mediator.attach();
     }

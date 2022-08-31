@@ -22,10 +22,12 @@
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/fragment_blank.xml" value="0.33" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/fragment_home.xml" value="0.3067708333333333" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/fragment_new_release.xml" value="0.246875" />
+        <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/fragment_new_release_soldout.xml" value="0.13697916666666668" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/fragment_notifications.xml" value="0.25" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/fragment_release.xml" value="0.33" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/fragment_sold_out.xml" value="0.246875" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/my_cart_item_layout.xml" value="0.2328125" />
+        <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/mynewreleaseorsoldoutlayout.xml" value="0.33" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/notification_items_layout.xml" value="0.25" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/menu/bottom_nav_menu.xml" value="0.30052083333333335" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/menu/post_blank_menu.xml" value="0.25" />
