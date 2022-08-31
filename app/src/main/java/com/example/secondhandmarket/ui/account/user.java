@@ -3,16 +3,23 @@ package com.example.secondhandmarket.ui.account;
 import java.io.Serializable;
 
 public class user implements Serializable {
-    private final String userId;
-    private final String userNmae;
+    private  String userId;
+    private  String userNmae;
     private String phone;
     private String avatar;
     private String addr;
 
-    public user(String id,String un, String ph) {
-        this.userId = id;
+
+
+    private int money = 100;
+
+    public user(String un, String ph) {
         this.userNmae = un;
         this.phone = ph;
+    }
+
+    public user() {
+
     }
 
     public String getUserid() {
@@ -33,4 +40,31 @@ public class user implements Serializable {
         return addr;
     }
 
+    public int getMoney() {
+        return money;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setUserNmae(String userNmae) {
+        this.userNmae = userNmae;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public void setAddr(String addr) {
+        this.addr = addr;
+    }
 }

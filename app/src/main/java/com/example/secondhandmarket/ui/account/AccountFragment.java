@@ -64,7 +64,7 @@ public class AccountFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_account, container, false);
-        Intent intent = new Intent();
+
 
         userName = (TextView) view.findViewById(R.id.account_name);
         userName.setOnClickListener(view1 -> {

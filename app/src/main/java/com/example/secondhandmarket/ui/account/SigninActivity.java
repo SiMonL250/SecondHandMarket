@@ -39,13 +39,11 @@ public class SigninActivity extends AppCompatActivity {
     private boolean tag = true;
     private int i = 60;
     private registerResponce registerResponce;
-    private String check;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
         signinButton = findViewById(R.id.sign_in_button);
-        signInAccount = findViewById(R.id.sign_in_account);
         signInPhone = findViewById(R.id.sign_in_phone);
         sigInCode = findViewById(R.id.sign_in_code);
         getCodeButton = findViewById(R.id.btn_getcode);
@@ -56,7 +54,6 @@ public class SigninActivity extends AppCompatActivity {
             if(isMobileNO(phoneString)){
                 changeBtnGetCode();
                 get(phoneString);
-                check = codeResponcebean.getData();
             }else {
                 Toast.makeText(SigninActivity.this, "号码格式错误", Toast.LENGTH_SHORT).show();
             }
@@ -64,17 +61,12 @@ public class SigninActivity extends AppCompatActivity {
 
         signinButton.setOnClickListener(view -> {
             String codeString = sigInCode.getText().toString();
-            String accountString = signInAccount.getText().toString();
             String phoneString = signInPhone.getText().toString();
 
-            if(!codeString.equals("") && !accountString.equals("") && !phoneString.equals("")){
+            if(!codeString.equals("") && !phoneString.equals("")){
                 post(phoneString, codeString);
-                //UUID生成唯一userId ，初始注册只有userId。phone。account三个元素。
-                user user = new user(UUID.randomUUID().toString(),accountString,phoneString);
-                Intent intent = new Intent(this, MainActivity.class);// 传递user对象
-                intent.putExtra("user",user);
-                startActivity(intent);
-                setResult(RESULT_OK, intent);
+                //注册完跳到登录
+                startActivity(new Intent(SigninActivity.this, LoginActivity.class));
                 finish();
 
             }else {
@@ -185,7 +177,7 @@ public class SigninActivity extends AppCompatActivity {
         @Override
         public void onFailure(@NonNull Call call, IOException e) {
             Looper.prepare();
-            Toast.makeText(SigninActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText( SigninActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             Looper.loop();
         }
         @Override
@@ -278,7 +270,7 @@ public class SigninActivity extends AppCompatActivity {
             this.data = data;
         }
     }
-    private class codeResponce{
+    private static class codeResponce{
         //{"code":500,"msg":"当前验证码未失效，请勿频繁获取验证码","data":null}
         private int code;
         private String msg;

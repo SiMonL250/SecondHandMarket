@@ -6,18 +6,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.os.NetworkOnMainThreadException;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.secondhandmarket.MainActivity;
 import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.appkey.appMobSDK;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +36,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
+import okhttp3.internal.http.RealResponseBody;
 
 public class LoginActivity extends AppCompatActivity {
     private Button getCodeButton;
@@ -39,7 +48,8 @@ public class LoginActivity extends AppCompatActivity {
     private TextView signIn;
     private boolean tag = true;
     private int i = 60;
-    private String check;
+    private LoginActivity.codeResponce codeResponcebean;
+    private final Gson gson = new Gson();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +64,14 @@ public class LoginActivity extends AppCompatActivity {
          
          getCodeButton.setOnClickListener(view -> {
              //获取验证码
-             changeBtnGetCode();
+             String phone = inputPhone.getText().toString();
+             if(isMobileNO(phone)){
+                 changeBtnGetCode();
+                 get(phone);
+             }else {
+                 Toast.makeText(this, "号码格式错误", Toast.LENGTH_SHORT).show();
+             }
+
          });
         
     }
@@ -67,13 +84,14 @@ public class LoginActivity extends AppCompatActivity {
                 String Phone = inputPhone.getText().toString();
                 String Code = inputCode.getText().toString();
                 if(isMobileNO(Phone) && !Code.equals("")){
-                    post(Code, Phone);
+                    post(Phone, Code);
                 }else{
                     Toast.makeText(this, "账号格式不正确", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.sign_in:
                 startActivity(new Intent(LoginActivity.this, SigninActivity.class));
+                finish();
                 break;
 
         }
@@ -110,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 OkHttpClient client = new OkHttpClient();
                 //发起请求，传入callback进行回调
-                client.newCall(request).enqueue(callback);
+                client.newCall(request).enqueue(callbackLogin);
             }catch (NetworkOnMainThreadException ex){
                 ex.printStackTrace();
             }
@@ -119,17 +137,90 @@ public class LoginActivity extends AppCompatActivity {
         }).start();
     }
     //回调
-    private final Callback callback = new Callback() {
+    private final Callback callbackLogin = new Callback() {
         @Override
         public void onFailure(@NonNull Call call, IOException e) {
             //TODO 请求失败处理
-            e.printStackTrace();
+            Looper.prepare();
+            Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Looper.loop();
+        }
+        @Override
+        public void onResponse(@NonNull Call call, Response response) throws IOException {//处理responce
+
+            Type jsonType = new TypeToken<ResponseBody<Object>>(){}.getType();
+            // 获取响应体的json串
+            assert response.body() != null;
+            String body = response.body().string();
+            Log.d("info", body);
+            // 解析json串到自己封装的状态
+            ResponseBody<Object> dataResponseBody = gson.fromJson(body,jsonType);
+            Log.d("info", dataResponseBody.toString());
+            //成功登录 把数据传给MainActivity，
+
+            if(dataResponseBody.getCode()==200){
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                intent.putExtra("user",dataResponseBody);
+                startActivity(intent);
+            }
+
+        }
+    };
+
+
+    private void get(String phone){
+
+        String url = "http://47.107.52.7:88/member/tran/user/send?phone="+ phone;
+//                System.out.println(url);
+        Headers headers = new Headers.Builder()
+                .add("appId", "6e7ad529141b4ec18c355eff7abfd160")
+                .add("appSecret", "63421994d54e2abe54902b678072a31a94e66")
+                .add("Accept", "application/json, text/plain, */*")
+                .build();
+
+        //请求组合创建
+        Request request = new Request.Builder()
+                .url(url)
+                // 将请求头加至请求中
+                .headers(headers)
+                .get()
+                .build();
+        try {
+
+            OkHttpClient client = new OkHttpClient();
+            //发起请求，传入callback进行回调
+            client.newCall(request).enqueue(callGetCode);
+
+        }catch (NetworkOnMainThreadException ex){
+            ex.printStackTrace();
+        }
+    }
+    Callback callGetCode =new Callback() {
+
+        @Override
+        public void onFailure(@NonNull Call call, IOException e) {
+            Looper.prepare();
+            Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Looper.loop();
         }
         @Override
         public void onResponse(@NonNull Call call, Response response) throws IOException {
-            //TODO 请求成功处理
-            assert response.body() != null;
-            System.out.println(response.body().string());
+            //关闭此页面，应用为以登录状态
+            okhttp3.ResponseBody body = response.body();
+            codeResponcebean= new codeResponce();
+            assert body != null;
+            try{
+                String json = new String(body.bytes());
+                Gson gson = new Gson();
+                codeResponcebean = gson.fromJson(json, codeResponcebean.getClass());
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            Looper.prepare();
+            Toast.makeText(LoginActivity.this, codeResponcebean.getMsg(), Toast.LENGTH_SHORT).show();
+            Looper.loop();
+
+
         }
     };
 
@@ -157,8 +248,8 @@ public class LoginActivity extends AppCompatActivity {
             i = 60;
             tag = true;
             LoginActivity.this.runOnUiThread(() -> {
-                getCodeButton.setText("获取验证码");
-                getCodeButton.setClickable(true);
+                getCodeButton.setText("输入验证码");
+                getCodeButton.setClickable(false);
             });
         }).start();
     }
@@ -169,5 +260,85 @@ public class LoginActivity extends AppCompatActivity {
         else
             return sphone.matches(telRegex);
 
+    }
+
+    private class codeResponce{
+        //{"code":500,"msg":"当前验证码未失效，请勿频繁获取验证码","data":null}
+        private int code;
+        private String msg;
+        private String data;
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public String getMsg() {
+            return msg;
+        }
+
+        public void setMsg(String msg) {
+            this.msg = msg;
+        }
+
+        public String getData() {
+            return data;
+        }
+
+        public void setData(String data) {
+            this.data = data;
+        }
+    }
+    /*
+     {
+    msg:"string"
+    code:0
+    data:{
+        appKey:"string"
+        avatar:"string"
+        id:0//user 类的userId
+        money:0
+        username:"string"
+        }
+    }
+     */
+    public static class ResponseBody <T> implements Serializable {
+
+        /**
+         * 业务响应码
+         */
+        private int code;
+        /**
+         * 响应提示信息
+         */
+        private String msg;
+        /**
+         * 响应数据
+         */
+        private T data;
+
+        public ResponseBody(){}
+
+        public int getCode() {
+            return code;
+        }
+        public String getMsg() {
+            return msg;
+        }
+        public T getData() {
+            return data;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return "ResponseBody{" +
+                    "code=" + code +
+                    ", msg='" + msg + '\'' +
+                    ", data=" + data +
+                    '}';
+        }
     }
 }
