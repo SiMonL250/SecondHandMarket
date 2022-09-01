@@ -33,7 +33,9 @@
                 android:layout_width="72dp"
                 android:layout_height="72dp"
                 android:contentDescription="@string/avatar"
-                android:src="@drawable/ic_baseline_account_box_24" />
+                android:onClick="ChangeInfoClick"
+                android:src="@drawable/ic_baseline_account_box_24"
+                tools:ignore="UsingOnClickInXml" />
         </RelativeLayout>
 
 
@@ -69,7 +71,7 @@
                 android:layout_width="176dp"
                 android:layout_height="match_parent"
                 android:height="24dp"
-                android:autofillHints="username" />
+                android:autofillHints="username"/>
         </RelativeLayout>
     </LinearLayout>
     <View
@@ -116,11 +118,14 @@
         app:layout_constraintTop_toBottomOf="@id/linear_addr" />
 
     <Button
+        android:id="@+id/btn_sumbit"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginTop="40dp"
         android:text="@string/submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linear_addr" />
+        app:layout_constraintTop_toBottomOf="@id/linear_addr"
+        android:onClick="ChangeInfoClick"
+        tools:ignore="UsingOnClickInXml"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
