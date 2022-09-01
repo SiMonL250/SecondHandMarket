@@ -15,7 +15,7 @@
     <string name="signed">已完成</string>
     <string name="refund">退款</string>
     <string name="text_notifications">消息列表</string>
-    <string name="config">设置</string>
+    <string name="myinformation">修改信息</string>
     <string name="myaddress">我的地址</string>
     <string name="myrelease">我的发布</string>
     <string name="mycart">购物车</string>
@@ -47,4 +47,9 @@
     <string name="typeName">商品类型</string>
     <string name="deletecommodity">deletecommodity</string>
     <string name="commoditypicture">commodityPicture</string>
+    <string name="avatar">我的头像</string>
+    <string name="yhm">用户名</string>
+    <string name="id">用户ID</string>
+    <string name="addr">我的地址</string>
+    <string name="submit">确认修改</string>
 </resources>

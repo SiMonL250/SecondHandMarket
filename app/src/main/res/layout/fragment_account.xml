@@ -133,19 +133,20 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/black"
-        app:layout_constraintTop_toTopOf="@id/configuration"/>
+        app:layout_constraintTop_toTopOf="@id/my_information"/>
 
     <TextView
-        android:id="@+id/configuration"
+        android:id="@+id/my_information"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/config"
+        android:text="@string/myinformation"
         android:textSize="36sp"
         app:layout_constraintTop_toBottomOf="@id/myrelease"
-        tools:layout_editor_absoluteX="2dp" />
+        tools:layout_editor_absoluteX="-1dp" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/configuration"/>
+        app:layout_constraintTop_toBottomOf="@id/my_information"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

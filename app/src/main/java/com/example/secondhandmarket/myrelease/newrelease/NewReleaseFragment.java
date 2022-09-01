@@ -3,9 +3,11 @@ package com.example.secondhandmarket.myrelease.newrelease;
 import static com.example.secondhandmarket.databinding.FragmentNewReleaseSoldoutBinding.inflate;
 
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,10 +16,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 
 import com.example.secondhandmarket.R;
+import com.example.secondhandmarket.commoditybean.ResponseBodyBean;
 import com.example.secondhandmarket.myrelease.MyReleaseAdapter;
+import com.example.secondhandmarket.myrelease.Requestget;
+import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,6 +38,7 @@ import java.util.List;
 public class NewReleaseFragment extends Fragment {
     private RecyclerView mRecyclerViewList;
     private MyReleaseAdapter myReleaseAdapter;
+    private ResponseBodyBean responseBodyBean;
     List<String> mDataList = new ArrayList<>();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -83,4 +95,29 @@ public class NewReleaseFragment extends Fragment {
         mRecyclerViewList.setLayoutManager(new LinearLayoutManager(getActivity()));
         return view;
     }
+    private void initdata(){
+        //String url2, int currentint, int sizeint, String userid, Callback callback
+        new Requestget().get(new Requestget().getUrlmyRelease(),0,100,12,callback);
+    }
+    private final Callback callback = new Callback() {
+        @Override
+        public void onFailure(@NonNull Call call, IOException e) {
+            Looper.prepare();
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            Looper.prepare();
+        }
+
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            ResponseBody body = response.body();
+            responseBodyBean = new ResponseBodyBean();
+            try {
+                assert body != null;
+                responseBodyBean = new Gson().fromJson(new String(body.bytes()), responseBodyBean.getClass());
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+
+    };
 }

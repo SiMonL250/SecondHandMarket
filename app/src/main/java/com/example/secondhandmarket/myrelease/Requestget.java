@@ -3,6 +3,8 @@ package com.example.secondhandmarket.myrelease;
 import android.os.NetworkOnMainThreadException;
 import android.util.Log;
 
+import com.example.secondhandmarket.appkey.appMobSDK;
+
 import okhttp3.Callback;
 import okhttp3.Headers;
 import okhttp3.OkHttpClient;
@@ -10,13 +12,30 @@ import okhttp3.Request;
 
 public class Requestget {
     private String url = "http://47.107.52.7:88/member/tran/";
+
+    public String getUrlsouldout() {
+        return urlsouldout;
+    }
+
+    public void setUrlsouldout(String urlsouldout) {
+        this.urlsouldout = urlsouldout;
+    }
+
+    public String getUrlmyRelease() {
+        return urlmyRelease;
+    }
+
+    public void setUrlmyRelease(String urlmyRelease) {
+        this.urlmyRelease = urlmyRelease;
+    }
+
     private String urlsouldout = "trading/sell?";//url2
     private String urlmyRelease = "goods/myself?";//url2
     private String current = "current=";
     private String size = "&size=";
     private String userId = "&userId=";
 
-    private void get(String url2, int currentint, int sizeint, String userid, Callback callback) {
+    public void get(String url2, int currentint, int sizeint, int userid, Callback callback) {
         new Thread(() -> {
 
             // url路径
@@ -28,8 +47,8 @@ public class Requestget {
             // 请求头
             Headers headers = new Headers.Builder()
                     .add("Accept", "application/json, text/plain, */*")
-                    .add("appId", "用户所申请的应用ID")
-                    .add("appSecret", "用户所申请的应用密钥")
+                    .add("appId", new appMobSDK().appID)
+                    .add("appSecret", new appMobSDK().appSecret)
                     .build();
 
             //请求组合创建

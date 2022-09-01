@@ -20,11 +20,9 @@ import com.example.secondhandmarket.MainActivity;
 import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.appkey.appMobSDK;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,8 +34,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
-import okhttp3.internal.http.RealResponseBody;
 
 public class LoginActivity extends AppCompatActivity {
     private Button getCodeButton;
@@ -49,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
     private boolean tag = true;
     private int i = 60;
     private LoginActivity.codeResponce codeResponcebean;
+    private LoginResponseBean responseBodylogin;
     private final Gson gson = new Gson();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +80,7 @@ public class LoginActivity extends AppCompatActivity {
             case R.id.login_button://请求。登录
                 String Phone = inputPhone.getText().toString();
                 String Code = inputCode.getText().toString();
+                Log.d("info", Phone + Code);
                 if(isMobileNO(Phone) && !Code.equals("")){
                     post(Phone, Code);
                 }else{
@@ -109,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
                     .build();
 
 
-            Map<String, Object> bodyMap = new HashMap<>();
+            Map<String, String> bodyMap = new HashMap<>();
             bodyMap.put("code", code);
             bodyMap.put("phone", phone);
             // 将Map转换为字符串类型加入请求体中
@@ -138,32 +136,35 @@ public class LoginActivity extends AppCompatActivity {
     private final Callback callbackLogin = new Callback() {
         @Override
         public void onFailure(@NonNull Call call, IOException e) {
-            //TODO 请求失败处理
             Looper.prepare();
             Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             Looper.loop();
         }
         @Override
         public void onResponse(@NonNull Call call, Response response) throws IOException {//处理responce
-
-            Type jsonType = new TypeToken<ResponseBody<Object>>(){}.getType();
+            //TODO 可能存到本地的json文件中好点。
             // 获取响应体的json串
             assert response.body() != null;
-            String body = response.body().string();
-            Log.d("info", body);
-            // 解析json串到自己封装的状态
-            ResponseBody<Object> dataResponseBody = gson.fromJson(body,jsonType);
-            Log.d("info", dataResponseBody.toString());
+            okhttp3.ResponseBody body = response.body();
             //成功登录 把数据传给MainActivity，
+            String json = new String(body.bytes());
+            responseBodylogin = new LoginResponseBean();
+            Gson gson = new Gson();
+            responseBodylogin = gson.fromJson(json, responseBodylogin.getClass());
 
-            if(dataResponseBody.getCode()==200){
+            Log.d("info", responseBodylogin.getMsg());
+
+            if(responseBodylogin.getCode()==200){
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                intent.putExtra("user",dataResponseBody);
+                intent.putExtra("user",responseBodylogin);
                 startActivity(intent);//或者保存到一个json文件中，用的时候调用。
+                finish();
             }
-            if(dataResponseBody.getCode() == 500){
+            if(responseBodylogin.getCode() == 500){
                 Looper.prepare();
                 Toast.makeText(LoginActivity.this, "验证码已失效或服务器内部错误，请稍后获取", Toast.LENGTH_SHORT).show();
+                Looper.loop();
+                Log.d("info","no");
             }
 
         }
@@ -306,7 +307,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
      */
-    public static class ResponseBody <T> implements Serializable {
+    public static class LoginResponseBean implements Serializable {
 
         /**
          * 业务响应码
@@ -319,18 +320,61 @@ public class LoginActivity extends AppCompatActivity {
         /**
          * 响应数据
          */
-        private T data;
+         class data{
+            private String appKey;
+            private String avatar;
+            private int id;//user 类的userId
+            private int money;
+            private String username;
 
-        public ResponseBody(){}
+            public String getAvatar() {
+                return avatar;
+            }
+
+            public void setAvatar(String avatar) {
+                this.avatar = avatar;
+            }
+
+            public String getAppKey() {
+                return appKey;
+            }
+
+            public void setAppKey(String appKey) {
+                this.appKey = appKey;
+            }
+
+            public int getId() {
+                return id;
+            }
+
+            public void setId(int id) {
+                this.id = id;
+            }
+
+            public int getMoney() {
+                return money;
+            }
+
+            public void setMoney(int money) {
+                this.money = money;
+            }
+
+            public String getUsername() {
+                return username;
+            }
+
+            public void setUsername(String username) {
+                this.username = username;
+            }
+        }
+
+        public LoginResponseBean(){}
 
         public int getCode() {
             return code;
         }
         public String getMsg() {
             return msg;
-        }
-        public T getData() {
-            return data;
         }
 
         @NonNull
@@ -339,7 +383,7 @@ public class LoginActivity extends AppCompatActivity {
             return "ResponseBody{" +
                     "code=" + code +
                     ", msg='" + msg + '\'' +
-                    ", data=" + data +
+                    ", data=" +
                     '}';
         }
     }

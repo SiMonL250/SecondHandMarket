@@ -11,7 +11,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.secondhandmarket.databinding.ActivityMainBinding;
-import com.example.secondhandmarket.ui.account.LoginActivity.ResponseBody;
+import com.example.secondhandmarket.ui.account.LoginActivity.LoginResponseBean;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,10 +41,10 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         Intent intent = getIntent();
-        ResponseBody usernow= (ResponseBody) intent.getSerializableExtra("user");
+        LoginResponseBean usernow= (LoginResponseBean) intent.getSerializableExtra("user");
         if (usernow != null) {
 
-            System.out.println(usernow.getData().toString());
+            System.out.println(usernow.getMsg());
         }
     }
 
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         if(id == R.id.myrelease){
             startActivity(new Intent(MainActivity.this, MyReleaseActivity.class));
         }
-        if(id == R.id.configuration){
+        if(id == R.id.my_information){
             System.out.println(1);
         }
     }
