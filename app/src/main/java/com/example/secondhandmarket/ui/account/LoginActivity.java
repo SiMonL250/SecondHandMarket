@@ -1,10 +1,9 @@
 package com.example.secondhandmarket.ui.account;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.NetworkOnMainThreadException;
@@ -13,13 +12,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.secondhandmarket.MainActivity;
 import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.appkey.appMobSDK;
 import com.google.gson.Gson;
+
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -40,26 +42,23 @@ public class LoginActivity extends AppCompatActivity {
     private EditText inputCode;
     private EditText inputPhone;
 
-    private Button loginButton;
-    private TextView signIn;
     private boolean tag = true;
     private int i = 60;
-    private LoginActivity.codeResponce codeResponcebean;
     private LoginResponseBean responseBodylogin;
+
     private final Gson gson = new Gson();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         
-         getCodeButton = findViewById(R.id.buttongetcode);
-         inputCode = findViewById(R.id.input_code);
-         inputPhone= findViewById(R.id.input_phone);
+        getCodeButton = findViewById(R.id.buttongetcode);
+        inputCode = findViewById(R.id.input_code);
+        inputPhone= findViewById(R.id.input_phone);
+        Button loginButton = findViewById(R.id.login_button);
 
-         loginButton = findViewById(R.id.login_button);
-         signIn = findViewById(R.id.sign_in);
-         
-         getCodeButton.setOnClickListener(view -> {
+
+        getCodeButton.setOnClickListener(view -> {
              //获取验证码
              String phone = inputPhone.getText().toString();
              if(isMobileNO(phone)){
@@ -70,28 +69,25 @@ public class LoginActivity extends AppCompatActivity {
              }
 
          });
+
+        loginButton.setOnClickListener(v->{
+            String Phone = inputPhone.getText().toString().trim();
+            String Code = inputCode.getText().toString().trim();
+             if(isMobileNO(Phone)){
+                 post(Phone, Code);
+             }else{
+                 Toast.makeText(this, "账号格式不正确", Toast.LENGTH_SHORT).show();
+             }
+         });
         
     }
 
     @SuppressLint("NonConstantResourceId")
     public void loginActivityListener(View view) {
         int id = view.getId();
-        switch (id){
-            case R.id.login_button://请求。登录
-                String Phone = inputPhone.getText().toString();
-                String Code = inputCode.getText().toString();
-                Log.d("info", Phone + Code);
-                if(isMobileNO(Phone) && !Code.equals("")){
-                    post(Phone, Code);
-                }else{
-                    Toast.makeText(this, "账号格式不正确", Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case R.id.sign_in:
-                startActivity(new Intent(LoginActivity.this, SigninActivity.class));
-                finish();
-                break;
-
+        if (id == R.id.sign_in) {
+            startActivity(new Intent(LoginActivity.this, SigninActivity.class));
+            finish();
         }
     }
 
@@ -100,9 +96,9 @@ public class LoginActivity extends AppCompatActivity {
             String url ="http://47.107.52.7:88/member/tran/user/login";
 
             Headers headers = new Headers.Builder()
-                    .add("Accept", "application/json, text/plain, */*")
                     .add("appId", new appMobSDK().appID)
                     .add("appSecret", new appMobSDK().appSecret)
+                    .add("Accept", "application/json, text/plain, */*")
                     .add("Content-Type", "application/json")
                     .build();
 
@@ -118,6 +114,7 @@ public class LoginActivity extends AppCompatActivity {
             //请求组合创建
             Request request = new Request.Builder()
                     .url(url)
+
                     // 将请求头加至请求中
                     .headers(headers)
                     .post(RequestBody.create(MEDIA_TYPE_JSON, body))
@@ -142,8 +139,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         @Override
         public void onResponse(@NonNull Call call, Response response) throws IOException {//处理responce
-            //TODO 可能存到本地的json文件中好点。
-            // 获取响应体的json串
+
             assert response.body() != null;
             okhttp3.ResponseBody body = response.body();
             //成功登录 把数据传给MainActivity，
@@ -152,14 +148,23 @@ public class LoginActivity extends AppCompatActivity {
             Gson gson = new Gson();
             responseBodylogin = gson.fromJson(json, responseBodylogin.getClass());
 
-            Log.d("info", responseBodylogin.getMsg());
 
-            if(responseBodylogin.getCode()==200){
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                intent.putExtra("user",responseBodylogin);
-                startActivity(intent);//或者保存到一个json文件中，用的时候调用。
+//ShareePreference 保存数据
+            SharedPreferences sp = getSharedPreferences("mysp", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString("test","test");
+
+            if(responseBodylogin.getCode() == 200){
+                editor.putString("islogin","true");
+                editor.putString("userName",responseBodylogin.getData().getUsername());
+                editor.putString("avatar",responseBodylogin.getData().getAvatar());
+                editor.putInt("userId",responseBodylogin.getData().getId());
+                editor.putInt("money",responseBodylogin.getData().getMoney());
+                editor.apply();
                 finish();
             }
+
+            Log.d("info", responseBodylogin.getMsg());
             if(responseBodylogin.getCode() == 500){
                 Looper.prepare();
                 Toast.makeText(LoginActivity.this, "验证码已失效或服务器内部错误，请稍后获取", Toast.LENGTH_SHORT).show();
@@ -167,9 +172,14 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("info","no");
             }
 
+
         }
     };
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
     private void get(String phone){
 
@@ -210,7 +220,7 @@ public class LoginActivity extends AppCompatActivity {
         public void onResponse(@NonNull Call call, Response response) throws IOException {
             //关闭此页面，应用为以登录状态
             okhttp3.ResponseBody body = response.body();
-            codeResponcebean= new codeResponce();
+            codeResponce codeResponcebean = new codeResponce();
             assert body != null;
             try{
                 String json = new String(body.bytes());
@@ -226,6 +236,7 @@ public class LoginActivity extends AppCompatActivity {
 
         }
     };
+
 
     private void changeBtnGetCode() {
         new Thread(()->{
@@ -252,7 +263,7 @@ public class LoginActivity extends AppCompatActivity {
             tag = true;
             LoginActivity.this.runOnUiThread(() -> {
                 getCodeButton.setText("输入验证码");
-                getCodeButton.setClickable(false);
+               // getCodeButton.setClickable(false);
             });
         }).start();
     }
@@ -274,25 +285,14 @@ public class LoginActivity extends AppCompatActivity {
             return code;
         }
 
-        public void setCode(int code) {
-            this.code = code;
-        }
-
         public String getMsg() {
             return msg;
-        }
-
-        public void setMsg(String msg) {
-            this.msg = msg;
         }
 
         public String getData() {
             return data;
         }
 
-        public void setData(String data) {
-            this.data = data;
-        }
     }
     /*
      {
@@ -317,10 +317,12 @@ public class LoginActivity extends AppCompatActivity {
          * 响应提示信息
          */
         private String msg;
+
         /**
          * 响应数据
          */
-         class data{
+        private data data;
+        class data{
             private String appKey;
             private String avatar;
             private int id;//user 类的userId
@@ -377,13 +379,16 @@ public class LoginActivity extends AppCompatActivity {
             return msg;
         }
 
+        public LoginResponseBean.data getData() {
+            return data;
+        }
         @NonNull
         @Override
         public String toString() {
             return "ResponseBody{" +
                     "code=" + code +
                     ", msg='" + msg + '\'' +
-                    ", data=" +
+                    ", data=" +data.toString()+
                     '}';
         }
     }

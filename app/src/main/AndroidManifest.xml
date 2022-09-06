@@ -4,8 +4,13 @@
     package="com.example.secondhandmarket">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -25,21 +30,19 @@
             android:name=".MyReleaseActivity"
             android:exported="false" />
         <activity
-            android:name=".MyCartActivity"
-            android:exported="false" />
-        <activity
             android:name=".CommodityInformationActivity"
             android:exported="false" />
         <activity
             android:name=".ui.account.SigninActivity"
+            android:label="@string/signin"
             android:exported="false" />
         <activity
             android:name=".ui.account.LoginActivity"
+            android:label="@string/loginbtn"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

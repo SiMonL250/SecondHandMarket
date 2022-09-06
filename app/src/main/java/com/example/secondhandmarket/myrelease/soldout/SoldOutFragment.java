@@ -3,9 +3,11 @@ package com.example.secondhandmarket.myrelease.soldout;
 import static com.example.secondhandmarket.databinding.FragmentNewReleaseSoldoutBinding.inflate;
 
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,10 +15,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 
 import com.example.secondhandmarket.R;
+import com.example.secondhandmarket.commoditybean.ResponseBodyBean;
 import com.example.secondhandmarket.myrelease.MyReleaseAdapter;
+import com.example.secondhandmarket.myrelease.Requestget;
+import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +37,8 @@ import java.util.List;
 public class SoldOutFragment extends Fragment {
     private RecyclerView mRecyclerViewList;
     private List<String> mDataList = new ArrayList<>();
+    private MyReleaseAdapter myReleaseAdapter;
+    private ResponseBodyBean responseBodyBean;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,6 +49,7 @@ public class SoldOutFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private RecyclerView mList;
+
 
     public SoldOutFragment() {
         // Required empty public constructor
@@ -78,9 +92,35 @@ public class SoldOutFragment extends Fragment {
         for(int i=0; i<10; i++){//TODO 修改list
             mDataList.add("test" +1);
         }
-        mRecyclerViewList.setAdapter(new MyReleaseAdapter(mDataList));
+        //initData();
+        myReleaseAdapter = new MyReleaseAdapter(mDataList);
+        mRecyclerViewList.setAdapter(myReleaseAdapter);
 
         mRecyclerViewList.setLayoutManager(new LinearLayoutManager(getActivity()));
         return view;
     }
+    void initData(){
+        new Requestget().get(new Requestget().getUrlmyRelease(),0,100,12,callback);
+    }
+    private final Callback callback = new Callback() {
+        @Override
+        public void onFailure(Call call, IOException e) {
+            Looper.prepare();
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            Looper.prepare();
+        }
+
+        @Override
+        public void onResponse(Call call, Response response) throws IOException {
+            ResponseBody body = response.body();
+            responseBodyBean = new ResponseBodyBean();
+            try {
+                assert body != null;
+                responseBodyBean = new Gson().fromJson(new String(body.bytes()), responseBodyBean.getClass());
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+        
+    };
 }

@@ -16,7 +16,8 @@
         app:layout_constraintEnd_toStartOf="@id/input_phone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        android:contentDescription="@string/phone" />
 
     <EditText
         android:id="@+id/input_phone"
@@ -27,10 +28,11 @@
         android:inputType="number"
         app:layout_constraintStart_toEndOf="@id/ivac"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints,TextFields"
+        android:autofillHints="电话" />
 
     <ImageView
-        android:id="@+id/ivpwd"
+        android:id="@+id/iv_code"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_marginTop="5dp"
@@ -38,7 +40,8 @@
         android:src="@drawable/ic_baseline_lock_24"
         app:layout_constraintEnd_toStartOf="@id/input_code"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ivac" />
+        app:layout_constraintTop_toBottomOf="@id/ivac"
+        android:contentDescription="@string/code" />
 
     <EditText
         android:id="@+id/input_code"
@@ -46,8 +49,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:hint="@string/code"
-        app:layout_constraintStart_toEndOf="@id/ivpwd"
-        app:layout_constraintTop_toBottomOf="@id/input_phone" />
+        android:inputType="number"
+        app:layout_constraintStart_toEndOf="@id/iv_code"
+        app:layout_constraintTop_toBottomOf="@id/input_phone"
+        android:singleLine="true"
+        android:autofillHints="验证码" />
 
 
     <Button
@@ -58,13 +64,11 @@
         android:background="@color/btn"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="loginActivityListener"
         android:text="@string/loginbtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/input_code"
-        tools:ignore="UsingOnClickInXml" />
+        app:layout_constraintTop_toBottomOf="@id/input_code"/>
 
 <!--    <TextView-->
 <!--        android:id="@+id/forgot_pwd"-->

@@ -1,8 +1,10 @@
 package com.example.secondhandmarket;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -11,12 +13,14 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.secondhandmarket.databinding.ActivityMainBinding;
-import com.example.secondhandmarket.ui.account.LoginActivity.LoginResponseBean;
+import com.example.secondhandmarket.ui.account.LoginActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private String str;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,27 +38,26 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
+       // AccountFragment accountFragment = getFragmentManager().findFragmentById();
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        Intent intent = getIntent();
-        LoginResponseBean usernow= (LoginResponseBean) intent.getSerializableExtra("user");
-        if (usernow != null) {
-
-            System.out.println(usernow.getMsg());
+        SharedPreferences sp = getSharedPreferences("mysp",Context.MODE_PRIVATE);
+        str = sp.getString("username","null");
+        if(str.equals("null")){
+            startActivity(new Intent(this, LoginActivity.class));
+        }else{
+            Log.d("TAG", str);
         }
     }
 
-    //完善点击事件
-    public void MainActivityClickListener(View view) {//account Fragment 的点击监听
-        int id = view.getId();
-        //home 和 message 有List View或RecycleView 可能需要设定自己的itemClick
-        //account Fragment
-        if(id == R.id.myrelease){
-            startActivity(new Intent(MainActivity.this, MyReleaseActivity.class));
-        }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
     }
-    }
+
+
+}

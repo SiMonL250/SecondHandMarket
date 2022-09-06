@@ -1,8 +1,5 @@
 package com.example.secondhandmarket.ui.account;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
@@ -12,7 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.secondhandmarket.MainActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.appkey.appMobSDK;
 import com.google.gson.Gson;
@@ -20,7 +19,6 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -34,7 +32,7 @@ import okhttp3.ResponseBody;
 
 public class SigninActivity extends AppCompatActivity {
     private static SigninActivity.codeResponce codeResponcebean;
-    private EditText signInAccount, signInPhone, sigInCode;
+    private EditText signInPhone, sigInCode;
     private Button signinButton, getCodeButton;
     private boolean tag = true;
     private int i = 60;
@@ -63,7 +61,7 @@ public class SigninActivity extends AppCompatActivity {
             String codeString = sigInCode.getText().toString();
             String phoneString = signInPhone.getText().toString();
 
-            if(!codeString.equals("") && !phoneString.equals("")){
+            if(isMobileNO(phoneString)){
                 post(phoneString, codeString);
                 //注册完跳到登录
                 startActivity(new Intent(SigninActivity.this, LoginActivity.class));
@@ -208,12 +206,9 @@ public class SigninActivity extends AppCompatActivity {
                 while (i > 0) {
                     i--;
                     //如果活动为空
-                    SigninActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            getCodeButton.setText( i + "s");
-                            getCodeButton.setClickable(false);
-                        }
+                    SigninActivity.this.runOnUiThread(() -> {
+                        getCodeButton.setText( i + "s");
+                        getCodeButton.setClickable(false);
                     });
                     try {
                         Thread.sleep(1000);
@@ -227,7 +222,7 @@ public class SigninActivity extends AppCompatActivity {
             tag = true;
             SigninActivity.this.runOnUiThread(() -> {
                 getCodeButton.setText("输入验证码");
-                getCodeButton.setClickable(false);
+                //getCodeButton.setClickable(false);
             });
         }).start();
     }
@@ -250,25 +245,14 @@ public class SigninActivity extends AppCompatActivity {
             return msg;
         }
 
-        public void setMsg(String msg) {
-            this.msg = msg;
-        }
-
         public int getCode() {
             return code;
-        }
-
-        public void setCode(int code) {
-            this.code = code;
         }
 
         public String getData() {
             return data;
         }
 
-        public void setData(String data) {
-            this.data = data;
-        }
     }
     private static class codeResponce{
         //{"code":500,"msg":"当前验证码未失效，请勿频繁获取验证码","data":null}
@@ -279,24 +263,13 @@ public class SigninActivity extends AppCompatActivity {
             return code;
         }
 
-        public void setCode(int code) {
-            this.code = code;
-        }
-
         public String getMsg() {
             return msg;
-        }
-
-        public void setMsg(String msg) {
-            this.msg = msg;
         }
 
         public String getData() {
             return data;
         }
 
-        public void setData(String data) {
-            this.data = data;
-        }
     }
 }
