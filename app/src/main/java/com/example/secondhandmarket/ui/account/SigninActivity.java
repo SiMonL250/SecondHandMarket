@@ -235,7 +235,13 @@ public class SigninActivity extends AppCompatActivity {
 
     }
     //responceBody 的类
+/*{
+code:200
+msg:"成功"
+data:"注册成功"
+}
 
+ */
     private static class registerResponce{
         private String msg;
         private int code;

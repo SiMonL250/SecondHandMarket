@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,11 +20,13 @@ import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.commoditybean.ResponseBodyBean;
 import com.example.secondhandmarket.myrelease.MyReleaseAdapter;
 import com.example.secondhandmarket.myrelease.Requestget;
+import com.example.secondhandmarket.myrelease.callbackForMyGoods;
 import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -39,9 +42,9 @@ public class NewReleaseFragment extends Fragment {
     private RecyclerView mRecyclerViewList;
     private MyReleaseAdapter myReleaseAdapter;
     private ResponseBodyBean responseBodyBean;
-    List<String> mDataList = new ArrayList<>();
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private List<Map<String,String>> mDataList = new ArrayList<>();
+    private ImageView delete;
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -86,38 +89,20 @@ public class NewReleaseFragment extends Fragment {
         ViewBinding binding = inflate(inflater,container,false);
         View view = binding.getRoot();
         mRecyclerViewList = view.findViewById(R.id.recyeView);
-        for(int i=0; i<10; i++){
-            mDataList.add("test" +1);
-        }
+        delete = view.findViewById(R.id.iv_my_del);
+        initdata();
+
         myReleaseAdapter = new MyReleaseAdapter(mDataList);
         mRecyclerViewList.setAdapter(myReleaseAdapter);
 
         mRecyclerViewList.setLayoutManager(new LinearLayoutManager(getActivity()));
         return view;
     }
+
     private void initdata(){
         //String url2, int currentint, int sizeint, String userid, Callback callback
-        new Requestget().get(new Requestget().getUrlmyRelease(),0,100,12,callback);
+        //userid 从sharedPreference 里拿
+        new Requestget().get(new Requestget().getUrlmyRelease(),1,100,12
+                ,new callbackForMyGoods().callback(0,getContext()));
     }
-    private final Callback callback = new Callback() {
-        @Override
-        public void onFailure(@NonNull Call call, IOException e) {
-            Looper.prepare();
-            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            Looper.prepare();
-        }
-
-        @Override
-        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-            ResponseBody body = response.body();
-            responseBodyBean = new ResponseBodyBean();
-            try {
-                assert body != null;
-                responseBodyBean = new Gson().fromJson(new String(body.bytes()), responseBodyBean.getClass());
-            }catch (IOException e){
-                e.printStackTrace();
-            }
-        }
-
-    };
 }

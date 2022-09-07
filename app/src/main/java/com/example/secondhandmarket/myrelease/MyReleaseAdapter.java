@@ -9,11 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.secondhandmarket.R;
 
 import java.util.List;
+import java.util.Map;
 
 public class MyReleaseAdapter extends RecyclerView.Adapter<MyReleaseViewHolder> {
-    private List<String> mDataList;//TODO 修改List
+    private List<Map<String,String>> mDataList;//TODO 修改List
 
-    public MyReleaseAdapter(List<String> list){
+    public MyReleaseAdapter(List<Map<String,String>> list){
         this.mDataList = list;
     }
     @NonNull
@@ -25,9 +26,10 @@ public class MyReleaseAdapter extends RecyclerView.Adapter<MyReleaseViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull MyReleaseViewHolder holder, int position) {
-        String ms = mDataList.get(position);
-        holder.myReleaseName.setText(ms);
-        holder.myReleasePrice.setText(ms);
+        Map<String,String> ms = mDataList.get(position);
+        holder.myReleaseName.setText(ms.get("commodityName"));
+        holder.myReleasePrice.setText(ms.get("commodityPrice"));
+        holder.myReleaseID.setText(ms.get("commodityId"));//主键id
     }
 
     @Override

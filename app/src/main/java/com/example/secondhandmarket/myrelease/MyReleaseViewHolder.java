@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.secondhandmarket.R;
 
 public class MyReleaseViewHolder extends RecyclerView.ViewHolder {
-    TextView myReleaseName, myReleasePrice;
+    TextView myReleaseName, myReleasePrice, myReleaseID;
     ImageView myReleaseImage, myReleaseDelete;
     public MyReleaseViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -18,5 +18,6 @@ public class MyReleaseViewHolder extends RecyclerView.ViewHolder {
         myReleasePrice = itemView.findViewById(R.id.tv_my_pri);
         myReleaseImage = itemView.findViewById(R.id.iv_my_pic);
         myReleaseDelete = itemView.findViewById(R.id.iv_my_del);
+        myReleaseID = itemView.findViewById(R.id.tv_my_id);
     }
 }

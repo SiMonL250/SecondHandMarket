@@ -53,4 +53,5 @@
     <string name="addr">我的地址</string>
     <string name="submit">确认修改</string>
     <string name="p">id:</string>
+    <string name="goodid">货物id</string>
 </resources>
