@@ -54,4 +54,8 @@
     <string name="submit">确认修改</string>
     <string name="p">id:</string>
     <string name="goodid">货物id</string>
+    <string name="nogoods">无商品</string>
+    <string name="selleraddr">卖家地址：</string>
+    <string name="test">test</string>
+    <string name="buyitnow">立刻购买</string>
 </resources>

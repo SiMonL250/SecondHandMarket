@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/commodityImg"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
         android:src="@drawable/ic_baseline_broken_image_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/commodityname"
-        android:textSize="22sp"
+        android:textSize="28sp"
         app:layout_constraintStart_toEndOf="@id/commodityImg"
         android:layout_marginStart="7sp"
         android:layout_marginTop="3sp"
@@ -31,25 +31,42 @@
         android:id="@+id/commodityPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="28dp"
         android:text="@string/commodityprice"
-        android:textSize="18sp"
         android:textColor="@color/black"
+        android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@id/commodityImg"
         app:layout_constraintTop_toBottomOf="@id/commodityName" />
 
     <TextView
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/yuan"
-        android:textSize="18sp"
-        app:layout_constraintBaseline_toBaselineOf="@id/commodityPrice"
         android:layout_marginStart="3dp"
         android:layout_marginTop="8dp"
+        android:text="@string/yuan"
         android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/commodityPrice"
         app:layout_constraintStart_toEndOf="@+id/commodityPrice"
         app:layout_constraintTop_toBottomOf="@+id/commodityName" />
+
+    <TextView
+        android:id="@+id/textViewidd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:text="@string/goodid"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="invisible"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/commodityImg"/>
 
     <!--    <ImageView-->
 <!--        android:id="@+id/addToCart"-->

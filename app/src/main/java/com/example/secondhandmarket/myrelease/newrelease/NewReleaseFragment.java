@@ -2,12 +2,16 @@ package com.example.secondhandmarket.myrelease.newrelease;
 
 import static com.example.secondhandmarket.databinding.FragmentNewReleaseSoldoutBinding.inflate;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,19 +23,12 @@ import androidx.viewbinding.ViewBinding;
 import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.commoditybean.ResponseBodyBean;
 import com.example.secondhandmarket.myrelease.MyReleaseAdapter;
+import com.example.secondhandmarket.myrelease.RequestDelete;
 import com.example.secondhandmarket.myrelease.Requestget;
 import com.example.secondhandmarket.myrelease.callbackForMyGoods;
-import com.google.gson.Gson;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,8 +39,8 @@ public class NewReleaseFragment extends Fragment {
     private RecyclerView mRecyclerViewList;
     private MyReleaseAdapter myReleaseAdapter;
     private ResponseBodyBean responseBodyBean;
-    private List<Map<String,String>> mDataList = new ArrayList<>();
-    private ImageView delete;
+
+
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -82,6 +79,7 @@ public class NewReleaseFragment extends Fragment {
         }
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -89,20 +87,27 @@ public class NewReleaseFragment extends Fragment {
         ViewBinding binding = inflate(inflater,container,false);
         View view = binding.getRoot();
         mRecyclerViewList = view.findViewById(R.id.recyeView);
-        delete = view.findViewById(R.id.iv_my_del);
-        initdata();
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("mysp", Context.MODE_PRIVATE);
 
-        myReleaseAdapter = new MyReleaseAdapter(mDataList);
+        //get id  editor.putInt("userId",responseBodylogin.getData().getId());
+        int userId = sharedPreferences.getInt("userId",12);
+
+        List<Map<String, String>> list = initData(userId);
+
+        myReleaseAdapter = new MyReleaseAdapter(list);
         mRecyclerViewList.setAdapter(myReleaseAdapter);
 
         mRecyclerViewList.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         return view;
     }
-
-    private void initdata(){
-        //String url2, int currentint, int sizeint, String userid, Callback callback
-        //userid 从sharedPreference 里拿
-        new Requestget().get(new Requestget().getUrlmyRelease(),1,100,12
-                ,new callbackForMyGoods().callback(0,getContext()));
+    //String url2, int currentint, int sizeint, String userid, Callback callback
+    //userid 从sharedPreference 里拿
+    private List<Map<String,String>> initData(int id){
+        //TODO 用SharedPreference 获取ID
+        callbackForMyGoods callback = new callbackForMyGoods();
+        new Requestget().get(new Requestget().getUrlmyRelease(),1,100, id
+                ,callback.callback(1,getContext()));
+        return callback.getL()==null?null:callback.getL();
     }
 }

@@ -80,7 +80,7 @@ public class AccountFragment extends Fragment {
         }
 
         userName.setOnClickListener(view1 -> {//如果没登陆，没登陆获取到的就是“null”
-            if(!sharedPreferences.getString("islogin","null").equals("null")){
+            if(sharedPreferences.getString("islogin","null").equals("null")){
                 startActivity(new Intent(getActivity(), LoginActivity.class));
             }
         });

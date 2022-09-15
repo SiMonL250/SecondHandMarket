@@ -45,13 +45,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        SharedPreferences sp = getSharedPreferences("mysp",Context.MODE_PRIVATE);
-        str = sp.getString("username","null");
-        if(str.equals("null")){
-            startActivity(new Intent(this, LoginActivity.class));
-        }else{
-            Log.d("TAG", str);
-        }
+//        SharedPreferences sp = getSharedPreferences("mysp",Context.MODE_PRIVATE);
+//        str = sp.getString("username","null");
+//        if(str.equals("null")){
+//            startActivity(new Intent(this, LoginActivity.class));
+//        }else{
+//            Log.d("TAG", str);
+//        }
     }
 
     @Override

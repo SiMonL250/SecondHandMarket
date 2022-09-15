@@ -3,12 +3,12 @@ package com.example.secondhandmarket.commoditybean;
 import java.util.List;
 
 public class ResponceBodyDataBean {
-    private int current;
+    private long current;
     private List<GotCommodityBean> records;
-    private int size;
-    private int total;
+    private long size;
+    private long total;
 
-    public int getCurrent() {
+    public long getCurrent() {
         return current;
     }
 
@@ -24,7 +24,7 @@ public class ResponceBodyDataBean {
         this.records = records;
     }
 
-    public int getSize() {
+    public long getSize() {
         return size;
     }
 
@@ -32,12 +32,22 @@ public class ResponceBodyDataBean {
         this.size = size;
     }
 
-    public int getTotal() {
+    public long getTotal() {
         return total;
     }
 
     public void setTotal(int total) {
         this.total = total;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "\"current\":" + current +
+                ", \"records\":" + records +
+                ", \"size\":" + size +
+                ", \"total\":" +  total +
+                '}';
     }
 }
 /*

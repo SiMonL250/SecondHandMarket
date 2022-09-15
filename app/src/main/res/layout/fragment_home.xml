@@ -5,29 +5,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
-    <LinearLayout
-        android:id="@+id/search_bar"
-        android:layout_width="match_parent"
-        android:layout_height="36dp"
-        app:layout_constraintBottom_toTopOf="@+id/commodityList">
+<!--    <LinearLayout-->
+<!--        android:id="@+id/search_bar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="36dp"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/commodityList">-->
 
-        <SearchView
-            android:id="@+id/searchview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/search_bar"/>
+<!--        <SearchView-->
+<!--            android:id="@+id/searchview"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent" />-->
+<!--    </LinearLayout>-->
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:background="@color/black"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/search_bar"/>-->
     <ListView
         android:id="@+id/commodityList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:divider="@android:color/black"
-        android:dividerHeight="1dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_bar" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="PxUsage" />
+    <TextView
+        android:id="@+id/ng"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/commodityList"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:text="@string/nogoods"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

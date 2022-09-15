@@ -28,4 +28,14 @@ public class ResponseBodyBean {//可以用来获取商品信息
     public void setData(ResponceBodyDataBean data) {
         this.data = data;
     }
+
+
+    @Override
+    public String toString() {
+        return "{" +
+                "\"msg\":" +"\""+ msg + '\"' +
+                ", \"code\":" + code +
+                ", \"data\":" + data +
+                '}';
+    }
 }

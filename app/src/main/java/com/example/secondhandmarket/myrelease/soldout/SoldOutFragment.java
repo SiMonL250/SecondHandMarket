@@ -2,6 +2,7 @@ package com.example.secondhandmarket.myrelease.soldout;
 
 import static com.example.secondhandmarket.databinding.FragmentNewReleaseSoldoutBinding.inflate;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Looper;
@@ -42,9 +43,7 @@ import okhttp3.ResponseBody;
  */
 public class SoldOutFragment extends Fragment {
     private RecyclerView mRecyclerViewList;
-    private List<Map<String,String>> mDataList = new ArrayList<>();
     private MyReleaseAdapter myReleaseAdapter;
-    private ImageView delete;
 
 
     private static final String ARG_PARAM1 = "param1";
@@ -93,23 +92,22 @@ public class SoldOutFragment extends Fragment {
         ViewBinding binding = inflate(inflater,container,false);
         View view= binding.getRoot();
         mRecyclerViewList = view.findViewById(R.id.recyeView);
-        delete = view.findViewById(R.id.iv_my_del);
-        initData();
+
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("mysp", Context.MODE_PRIVATE);
+        int userId = sharedPreferences.getInt("userId",0);
         //对mDataList初始化
-        myReleaseAdapter = new MyReleaseAdapter(mDataList);
+        //List<Map<String,String>>
+        myReleaseAdapter = new MyReleaseAdapter(initData(userId));
         mRecyclerViewList.setAdapter(myReleaseAdapter);
         mRecyclerViewList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        delete.setOnClickListener(view1 -> {
-            //TODO 获取两个Id
-            new RequestDelete().delete("0", "12");
-        });
         return view;
     }
-    void initData(){
+    private List<Map<String,String>> initData(int id){
+        //TODO 用SharedPreference 获取ID
         callbackForMyGoods callback = new callbackForMyGoods();
-        new Requestget().get(new Requestget().getUrlmyRelease(),1,100,12
+        new Requestget().get(new Requestget().getUrlmyRelease(),1,100, id
                 ,callback.callback(1,getContext()));
-        mDataList = callback.getL();
+        return callback.getL();
     }
 }

@@ -41,7 +41,6 @@ public class callbackForMyGoods {
                 }catch (IOException e){
                     e.printStackTrace();
                 }
-                Toast.makeText(context, responseBodyBean.getMsg(), Toast.LENGTH_SHORT).show();
                 if(responseBodyBean.getCode() == 200){
                     List<GotCommodityBean> listtemp = responseBodyBean.getData().getRecords();
                     //遍历listtemp 存数据

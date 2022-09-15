@@ -1,16 +1,16 @@
 package com.example.secondhandmarket.ui.home;
 
 import android.content.Context;
-import android.database.Cursor;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Looper;
 import android.os.NetworkOnMainThreadException;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,18 +18,24 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.secondhandmarket.CommodityInformationActivity;
 import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.appkey.appMobSDK;
+import com.example.secondhandmarket.commoditybean.GotCommodityBean;
+import com.example.secondhandmarket.commoditybean.ResponseBodyBean;
 import com.example.secondhandmarket.databinding.FragmentHomeBinding;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import kotlin.jvm.internal.Intrinsics;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
@@ -40,10 +46,17 @@ import okhttp3.ResponseBody;
 
 public class HomeFragment extends Fragment implements AdapterView.OnItemClickListener {
     private  ListView goodsList;
+    private TextView tvEmpty;
     private FragmentHomeBinding binding;
-    private SimpleAdapter mAdapter;
+    private commodityAdapter mAdapter;
     private Context mcontext;
-    public String userId;//获取当前用户id
+    private ResponseBodyBean responseBodyBeanGoods = new ResponseBodyBean();
+    String FILENAME = "goods_file.json";
+    private long userId;
+
+    private String jsonStr;
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,33 +71,68 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
         goodsList = view.findViewById(R.id.commodityList);
+        tvEmpty = view.findViewById(R.id.ng);
+//        try{
+//            SharedPreferences sp = getContext().getSharedPreferences("mysp",Context.MODE_PRIVATE);
+//            userId = sp.getLong("userId",0);
+//        }catch (NullPointerException e){
+//            Log.d("NullPointer", e.getMessage());
+//        }
+
+        //getAllCommodity(14);
 
        //adapter
-        mAdapter = new SimpleAdapter(getActivity(), initData(),R.layout.commodity_list_item,new String[]{"title","p"},new int[]{R.id.commodityName,R.id.commodityPrice});
+        //货物id 在这个list里面
 
-        goodsList.setAdapter(mAdapter);
+        List<GotCommodityBean> l = new ArrayList<>();
+        if((l= initData()) != null){
+            mAdapter = new commodityAdapter(l,mcontext);
+            goodsList.setAdapter(mAdapter);
+            tvEmpty.setVisibility(View.GONE);
+        }
+
+
         goodsList.setOnItemClickListener(this);
         return view;
     }
-//将List改一改，将Commodity类放进去，直接用SimpleAdapter；
-    private List<Map<String,String>> initData() {
-        get();
-        String [] titles={"水果1","水果2","水果3","水果4","水果5","水果6","水果7"};
-        List<Map<String,String>> list= new ArrayList<>();
-        for(int i=0;i<7;i++){
-            Map map = new HashMap();
-            map.put("title",titles[i]);
-            map.put("p",titles[i]);
-            list.add(map);
-        }
-        return list;
+
+
+
+
+    //将List改一改，将Commodity类放进去，直接用SimpleAdapter；
+    private  List<GotCommodityBean> initData() {
+
+        jsonStr = getFileFromSD(mcontext.getFilesDir()+"/"+FILENAME);
+
+        ResponseBodyBean bean = new ResponseBodyBean();
+        bean = new Gson().fromJson(jsonStr, bean.getClass());
+
+        return bean.getData().getRecords();
+
     }
 
-    private void get() {
+    //从手机存储卡路径下解析json,并返回String
+    public static String getFileFromSD(String path) {
+        String result = "";
+
+        try {
+            FileInputStream f = new FileInputStream(path);
+            BufferedReader bis = new BufferedReader(new InputStreamReader(f));
+            String line = "";
+            while ((line = bis.readLine()) != null) {
+                result += line;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+
+    }
+    private void getAllCommodity(long userId) {
 
             // url路径
-
-        String url = "http://47.107.52.7:88/member/tran/goods/all?userId="+userId;
+        //String url = "http://47.107.52.7:88/member/tran/goods/all?current=0&size=0&typeId=0&keyword=string&userId=0";
+        String url = "http://47.107.52.7:88/member/tran/goods/all?current=1&size=10000"+"&userId="+userId;
 
             // 请求头
             Headers headers = new Headers.Builder()
@@ -112,42 +160,41 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
         @Override
         public void onFailure(@NonNull Call call, IOException e) {
             //TODO 请求失败处理
-            Looper.prepare();
             Toast.makeText(mcontext, e.getMessage(), Toast.LENGTH_SHORT).show();
-            Looper.loop();
         }
         @Override
         public void onResponse(@NonNull Call call, Response response) throws IOException {
             //TODO 请求成功处理
-           processData(response);
+            responseBodyBeanGoods = new ResponseBodyBean();
+            ResponseBody body = response.body();
+            assert body != null;
+            responseBodyBeanGoods = new Gson().fromJson(new String(body.bytes())
+                    ,responseBodyBeanGoods.getClass());
+
+            FileOutputStream fos = null;
+            try{
+                fos = getContext().openFileOutput(FILENAME,Context.MODE_PRIVATE);
+                fos.write(responseBodyBeanGoods.toString().getBytes(StandardCharsets.UTF_8));
+                fos.close();
+            }catch (IOException e){
+                Log.d("IOExption", e.getMessage());
+            }
+
+
         }
     };
-//commodityBean有商品类数组，可以直接调用作Adpater的数据。
-    private commodityBean processData(Response responce) {//Responce类处理成一个commodityBean类再获取数据，okHTTP3 Responce转换成Json
-        commodityBean obj = null;
-        ResponseBody body= responce.body();
-        java.lang.reflect.Type type = new TypeToken<commodityBean>() {}.getType();//?
-
-        try{
-            assert body != null;
-            String json = new String(body.bytes());
-            Gson gson = new Gson();
-            obj  = gson.fromJson(json,type);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return obj;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        TextView tvcommodityID = view.findViewById(R.id.textViewidd);
+        Long commodityId = Long.parseLong(tvcommodityID.getText().toString());
+        //可以用view.findViewById()方法来获取所点击item中的控件。
+
+//        System.out.println(commodityId);
+        Intent intent = new Intent(HomeFragment.this.mcontext, CommodityInformationActivity.class);
+        //send id to get infor
+        intent.putExtra("commodityId",commodityId);
+        startActivity(intent);
 
     }
 

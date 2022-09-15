@@ -22,21 +22,21 @@ public class GotCommodityBean {
 //        typeName:"string"
 //        username:"string"
 //    }
-    private String addr;
-    private String appKey;
-    private String avatar;
-    private String content;
-    private int createTime;
-    private int id;
-    private int imageCode;
-    private List<String> imageUrlList;
-    private int price;
-    private int status;
-    private int tUserId;
-    private int tuserId;
-    private int typeId;
-    private String typeName;
-    private String username;
+    protected String addr;
+    protected String appKey;
+    protected String avatar;
+    protected String content;
+    protected long createTime;
+    protected long id;
+    protected long imageCode;
+    protected List<String> imageUrlList;
+    protected int price;
+    protected int status;
+    protected long tUserId;
+    protected long tuserId;
+    protected int typeId;
+    protected String typeName;
+    protected String username;
 
     public String getAddr() {
         return addr;
@@ -70,7 +70,7 @@ public class GotCommodityBean {
         this.content = content;
     }
 
-    public int getCreateTime() {
+    public long getCreateTime() {
         return createTime;
     }
 
@@ -78,7 +78,7 @@ public class GotCommodityBean {
         this.createTime = createTime;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -86,7 +86,7 @@ public class GotCommodityBean {
         this.id = id;
     }
 
-    public int getImageCode() {
+    public long getImageCode() {
         return imageCode;
     }
 
@@ -118,7 +118,7 @@ public class GotCommodityBean {
         this.status = status;
     }
 
-    public int gettUserId() {
+    public long gettUserId() {
         return tUserId;
     }
 
@@ -126,7 +126,7 @@ public class GotCommodityBean {
         this.tUserId = tUserId;
     }
 
-    public int getTuserId() {
+    public long getTuserId() {
         return tuserId;
     }
 
@@ -156,5 +156,33 @@ public class GotCommodityBean {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String img(List<String> imageUrlList){
+        String s = "";
+        for(int i=0; i<imageUrlList.size(); i++){
+            s = s +"\""+ imageUrlList.get(i)+"\""+",";
+        }
+        return "["+s.substring(0,s.length()-1)+"]";
+    }
+    @Override
+    public String toString() {
+        return "{" +
+                "\"addr\":" +      "\""+addr +  '\"' +
+                ", \"appKey\":" +  "\""+appKey + '\"' +
+                ", \"avatar\":" +  "\""+avatar + '\"' +
+                ", \"content\":" + "\""+content + '\"' +
+                ", \"createTime\":" +createTime +
+                ", \"id\":" + id +
+                ", \"imageCode\":" +imageCode +
+                ", \"imageUrlList\":" + img(this.imageUrlList) +
+                ", \"price\":" +  price +
+                ", \"status\":" + status +
+                ", \"tUserId\":" + tUserId +
+                ", \"tuserId\":" +tuserId +
+                ", \"typeId\":" +typeId +
+                ", \"typeName\":" +"\""+ typeName + '\"' +
+                ", \"username\":" + "\""+username + '\"' +
+                '}';
     }
 }

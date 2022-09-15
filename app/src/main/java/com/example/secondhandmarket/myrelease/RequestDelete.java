@@ -16,8 +16,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class RequestDelete {
-    private String url = "http://47.107.52.7:88/member/tran/goods/delete?";
-    public void delete(String goodsId, String userId){
+    private final String url = "http://47.107.52.7:88/member/tran/goods/delete?";
+    public void delete(String goodsId, int userId){ //userId从文件获取，所以用int就行
         new Thread(() -> {
 
             // url路径
