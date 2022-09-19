@@ -30,8 +30,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public class SigninActivity extends AppCompatActivity {
-    private static SigninActivity.codeResponce codeResponcebean;
+public class SignupActivity extends AppCompatActivity {
+    private static SignupActivity.codeResponce codeResponcebean;
     private EditText signInPhone, sigInCode;
     private Button signinButton, getCodeButton;
     private boolean tag = true;
@@ -53,7 +53,7 @@ public class SigninActivity extends AppCompatActivity {
                 changeBtnGetCode();
                 get(phoneString);
             }else {
-                Toast.makeText(SigninActivity.this, "号码格式错误", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignupActivity.this, "号码格式错误", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -64,11 +64,11 @@ public class SigninActivity extends AppCompatActivity {
             if(isMobileNO(phoneString)){
                 post(phoneString, codeString);
                 //注册完跳到登录
-                startActivity(new Intent(SigninActivity.this, LoginActivity.class));
+                startActivity(new Intent(SignupActivity.this, LoginActivity.class));
                 finish();
 
             }else {
-                Toast.makeText(SigninActivity.this, "格式不正确", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignupActivity.this, "格式不正确", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -117,7 +117,7 @@ public class SigninActivity extends AppCompatActivity {
         public void onFailure(@NonNull Call call, IOException e) {
             //TODO 请求失败处理
             Looper.prepare();
-            Toast.makeText(SigninActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(SignupActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             Looper.loop();
         }
         @Override
@@ -135,7 +135,7 @@ public class SigninActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             Looper.prepare();
-            Toast.makeText(SigninActivity.this, registerResponce.getMsg(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(SignupActivity.this, registerResponce.getMsg(), Toast.LENGTH_SHORT).show();
             Looper.loop();
             System.out.println(registerResponce.getData());
         }
@@ -175,7 +175,7 @@ public class SigninActivity extends AppCompatActivity {
         @Override
         public void onFailure(@NonNull Call call, IOException e) {
             Looper.prepare();
-            Toast.makeText( SigninActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText( SignupActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             Looper.loop();
         }
         @Override
@@ -192,7 +192,7 @@ public class SigninActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             Looper.prepare();
-            Toast.makeText(SigninActivity.this, codeResponcebean.getMsg(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(SignupActivity.this, codeResponcebean.getMsg(), Toast.LENGTH_SHORT).show();
             Looper.loop();
         }
     };
@@ -206,7 +206,7 @@ public class SigninActivity extends AppCompatActivity {
                 while (i > 0) {
                     i--;
                     //如果活动为空
-                    SigninActivity.this.runOnUiThread(() -> {
+                    SignupActivity.this.runOnUiThread(() -> {
                         getCodeButton.setText( i + "s");
                         getCodeButton.setClickable(false);
                     });
@@ -220,7 +220,7 @@ public class SigninActivity extends AppCompatActivity {
             }
             i = 60;
             tag = true;
-            SigninActivity.this.runOnUiThread(() -> {
+            SignupActivity.this.runOnUiThread(() -> {
                 getCodeButton.setText("输入验证码");
                 //getCodeButton.setClickable(false);
             });

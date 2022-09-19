@@ -29,21 +29,15 @@ public class Requestget {
         this.urlmyRelease = urlmyRelease;
     }
 
-    private String urlsouldout = "trading/sell?";//url2
-    private String urlmyRelease = "goods/myself?";//url2
-    private String current = "current=";
-    private String size = "&size=";
+    private String urlsouldout = "trading/sell?size=1000";//url2
+    private String urlmyRelease = "goods/myself?size=1000";//url2
     private String userId = "&userId=";
 
-    public void get(String url2, int currentint, int sizeint, int userid, Callback callback) {
-        new Thread(() -> {
+    public void get(String url2, long userid, Callback callback) {
 
             // url路径
             String urlget = this.url + url2
-                    + this.current + currentint
-                    + this.size + sizeint
                     + this.userId + userid;
-            Log.d("info", urlget);
             // 请求头
             Headers headers = new Headers.Builder()
                     .add("Accept", "application/json, text/plain, */*")
@@ -53,7 +47,7 @@ public class Requestget {
 
             //请求组合创建
             Request request = new Request.Builder()
-                    .url(url)
+                    .url(urlget)
                     // 将请求头加至请求中
                     .headers(headers)
                     .get()
@@ -65,6 +59,6 @@ public class Requestget {
             } catch (NetworkOnMainThreadException ex) {
                 ex.printStackTrace();
             }
-        }).start();
+
     }
 }

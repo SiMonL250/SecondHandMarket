@@ -31,10 +31,11 @@
             android:name=".MyReleaseActivity"
             android:exported="false" />
         <activity
-            android:name=".CommodityInformationActivity"
+            android:name=".singleGood.CommodityInformationActivity"
+            android:label="@string/spxx"
             android:exported="false" />
         <activity
-            android:name=".ui.account.SigninActivity"
+            android:name=".ui.account.SignupActivity"
             android:exported="false"
             android:label="@string/signin" />
         <activity

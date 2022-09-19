@@ -3,6 +3,9 @@ package com.example.secondhandmarket.ui.home;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.os.NetworkOnMainThreadException;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.secondhandmarket.CommodityInformationActivity;
+import com.example.secondhandmarket.singleGood.CommodityInformationActivity;
 import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.appkey.appMobSDK;
 import com.example.secondhandmarket.commoditybean.GotCommodityBean;
@@ -35,7 +38,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import kotlin.jvm.internal.Intrinsics;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
@@ -51,10 +53,8 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
     private commodityAdapter mAdapter;
     private Context mcontext;
     private ResponseBodyBean responseBodyBeanGoods = new ResponseBodyBean();
-    String FILENAME = "goods_file.json";
     private long userId;
 
-    private String jsonStr;
 
 
     @Override
@@ -72,43 +72,13 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
         View view = binding.getRoot();
         goodsList = view.findViewById(R.id.commodityList);
         tvEmpty = view.findViewById(R.id.ng);
-//        try{
-//            SharedPreferences sp = getContext().getSharedPreferences("mysp",Context.MODE_PRIVATE);
-//            userId = sp.getLong("userId",0);
-//        }catch (NullPointerException e){
-//            Log.d("NullPointer", e.getMessage());
-//        }
 
-        //getAllCommodity(14);
+        getAllCommodity(14);
 
-       //adapter
-        //货物id 在这个list里面
-
-        List<GotCommodityBean> l = new ArrayList<>();
-        if((l= initData()) != null){
-            mAdapter = new commodityAdapter(l,mcontext);
-            goodsList.setAdapter(mAdapter);
-            tvEmpty.setVisibility(View.GONE);
-        }
-
+        tvEmpty.setVisibility(View.GONE);
 
         goodsList.setOnItemClickListener(this);
         return view;
-    }
-
-
-
-
-    //将List改一改，将Commodity类放进去，直接用SimpleAdapter；
-    private  List<GotCommodityBean> initData() {
-
-        jsonStr = getFileFromSD(mcontext.getFilesDir()+"/"+FILENAME);
-
-        ResponseBodyBean bean = new ResponseBodyBean();
-        bean = new Gson().fromJson(jsonStr, bean.getClass());
-
-        return bean.getData().getRecords();
-
     }
 
     //从手机存储卡路径下解析json,并返回String
@@ -129,10 +99,8 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
 
     }
     private void getAllCommodity(long userId) {
-
-            // url路径
-        //String url = "http://47.107.52.7:88/member/tran/goods/all?current=0&size=0&typeId=0&keyword=string&userId=0";
-        String url = "http://47.107.52.7:88/member/tran/goods/all?current=1&size=10000"+"&userId="+userId;
+        new Thread(() -> {
+            String url = "http://47.107.52.7:88/member/tran/goods/all?size=1000&userId=" + userId;
 
             // 请求头
             Headers headers = new Headers.Builder()
@@ -152,15 +120,22 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
                 OkHttpClient client = new OkHttpClient();
                 //发起请求，传入callback进行回调
                 client.newCall(request).enqueue(callback);
-            }catch (NetworkOnMainThreadException ex){
+            } catch (NetworkOnMainThreadException ex) {
                 ex.printStackTrace();
             }
+        }
+        ).start();
+        // url路径
+        //String url = "http://47.107.52.7:88/member/tran/goods/all?current=0&size=0&typeId=0&keyword=string&userId=0";
+
     }
     private final Callback callback = new Callback() {
         @Override
         public void onFailure(@NonNull Call call, IOException e) {
             //TODO 请求失败处理
+            Looper.prepare();
             Toast.makeText(mcontext, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Looper.loop();
         }
         @Override
         public void onResponse(@NonNull Call call, Response response) throws IOException {
@@ -171,29 +146,35 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
             responseBodyBeanGoods = new Gson().fromJson(new String(body.bytes())
                     ,responseBodyBeanGoods.getClass());
 
-            FileOutputStream fos = null;
-            try{
-                fos = getContext().openFileOutput(FILENAME,Context.MODE_PRIVATE);
-                fos.write(responseBodyBeanGoods.toString().getBytes(StandardCharsets.UTF_8));
-                fos.close();
-            }catch (IOException e){
-                Log.d("IOExption", e.getMessage());
-            }
 
-
+            Message message = Message.obtain();
+            message.what = 0x11;
+            message.obj = responseBodyBeanGoods.getData().getRecords();
+            new Handler(Looper.getMainLooper()){
+                @Override
+                public void handleMessage(@NonNull Message msg) {
+                    super.handleMessage(msg);
+                    if(msg.what == 0x11){
+                        List<GotCommodityBean> list = (List<GotCommodityBean>) msg.obj;
+                        mAdapter = new commodityAdapter(list,mcontext);
+                        goodsList.setAdapter(mAdapter);
+                    }
+                }
+            }.sendMessage(message);
         }
     };
-
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         TextView tvcommodityID = view.findViewById(R.id.textViewidd);
+        TextView tvcmmodityPrice = view.findViewById(R.id.commodityPrice);
         Long commodityId = Long.parseLong(tvcommodityID.getText().toString());
         //可以用view.findViewById()方法来获取所点击item中的控件。
-
+        int commodityPrice =  Integer.parseInt(tvcmmodityPrice.getText().toString());
 //        System.out.println(commodityId);
         Intent intent = new Intent(HomeFragment.this.mcontext, CommodityInformationActivity.class);
         //send id to get infor
         intent.putExtra("commodityId",commodityId);
+        intent.putExtra("commodityPrice",commodityPrice);
         startActivity(intent);
 
     }

@@ -63,24 +63,26 @@ public class commodityAdapter extends BaseAdapter {
         vh.commodityPrice.setText(Integer.toString(cb.getPrice()));
         vh.commodityId.setText(Long.toString(cb.getId()));
 
-        new Thread(()->{
-            Bitmap bm = new getURLimage().getimage(cb.getImageUrlList().get(0));
-            Message msg = new Message();
-            msg.what = 0;
-            msg.obj = bm;
-            new Handler(Looper.getMainLooper()){
-                @Override
-                public void handleMessage(@NonNull Message msg) {
-                    super.handleMessage(msg);
-                    if (msg.what == 0) {
+        if(cb.getImageUrlList()!=null){
+            new Thread(() -> {
+                Bitmap bm = new getURLimage().getimage(cb.getImageUrlList().get(0));
+                Message msg = new Message();
+                msg.what = 0;
+                msg.obj = bm;
+                new Handler(Looper.getMainLooper()) {
+                    @Override
+                    public void handleMessage(@NonNull Message msg) {
+                        super.handleMessage(msg);
+                        if (msg.what == 0) {
 //                        System.out.println("111");
-                        Bitmap bmp = (Bitmap) msg.obj;
-                        vh.commodityPic.setImageBitmap(bmp);
-                    }
+                            Bitmap bmp = (Bitmap) msg.obj;
+                            vh.commodityPic.setImageBitmap(bmp);
+                        }
 
-                }
-            }.sendMessage(msg);
-        }).start();
+                    }
+                }.sendMessage(msg);
+            }).start();
+        }
 
         return view;
 

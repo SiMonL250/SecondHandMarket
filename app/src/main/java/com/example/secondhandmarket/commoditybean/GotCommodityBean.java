@@ -160,10 +160,14 @@ public class GotCommodityBean {
 
     public String img(List<String> imageUrlList){
         String s = "";
+
+
         for(int i=0; i<imageUrlList.size(); i++){
             s = s +"\""+ imageUrlList.get(i)+"\""+",";
         }
-        return "["+s.substring(0,s.length()-1)+"]";
+        return s.substring(0,s.length()-1);
+
+
     }
     @Override
     public String toString() {
@@ -175,7 +179,8 @@ public class GotCommodityBean {
                 ", \"createTime\":" +createTime +
                 ", \"id\":" + id +
                 ", \"imageCode\":" +imageCode +
-                ", \"imageUrlList\":" + img(this.imageUrlList) +
+                ", \"imageUrlList\":" +"["+
+                img(this.imageUrlList)+"]"+
                 ", \"price\":" +  price +
                 ", \"status\":" + status +
                 ", \"tUserId\":" + tUserId +

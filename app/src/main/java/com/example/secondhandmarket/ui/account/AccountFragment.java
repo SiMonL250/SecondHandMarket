@@ -28,7 +28,7 @@ import com.example.secondhandmarket.R;
 public class AccountFragment extends Fragment {
     private TextView userName;
     private TextView myInfor;
-    private TextView tvmyRelease;
+    private TextView tvmyRelease, tvmyRecord;
     private  SharedPreferences sharedPreferences;
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -73,8 +73,10 @@ public class AccountFragment extends Fragment {
         myInfor = view.findViewById(R.id.my_information);
         tvmyRelease = view.findViewById(R.id.myrelease);
         tvmyRelease.setOnClickListener(this::MainActivityClickListener);
+        tvmyRecord = view.findViewById(R.id.myrecord);
 
-        sharedPreferences =  getContext().getSharedPreferences("mysp", Context.MODE_PRIVATE);
+        sharedPreferences =  getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+
         if(!sharedPreferences.getString("username","null").equals("null")) {
             userName.setText(sharedPreferences.getString("username", "null"));
         }

@@ -98,53 +98,6 @@
         android:background="@color/black"
         app:layout_constraintTop_toBottomOf="@id/profile_blank"/>
 
-
-    <!--    <LinearLayout-->
-<!--        android:id="@+id/post_balnk"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="56dp"-->
-<!--        android:layout_marginTop="6dp"-->
-<!--        android:layout_margin="2dp"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/profile_blank"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:onClick="MainActivityClickListener">-->
-<!--        <Button-->
-<!--            android:id="@+id/btn1"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_weight="1"-->
-<!--            android:background="#ffffff"-->
-<!--            android:text="@string/waitforpay"-->
-<!--            style="?android:attr/buttonBarButtonStyle" />-->
-
-<!--        <Button-->
-<!--            android:id="@+id/btn2"-->
-<!--            style="?android:attr/buttonBarButtonStyle"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_weight="1"-->
-<!--            android:background="#ffffff"-->
-<!--            android:text="@string/waitforsend" />-->
-
-<!--        <Button-->
-<!--            android:id="@+id/btn3"-->
-<!--            style="?android:attr/buttonBarButtonStyle"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_weight="1"-->
-<!--            android:background="#ffffff"-->
-<!--            android:text="@string/waitforreceive" />-->
-
-<!--        <Button-->
-<!--            android:id="@+id/btn4"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_weight="1"-->
-<!--            android:background="#ffffff"-->
-<!--            android:text="@string/signed"-->
-<!--            style="?android:attr/buttonBarButtonStyle" />-->
-<!--    </LinearLayout>-->
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -164,7 +117,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/profile_blank"
         tools:ignore="UsingOnClickInXml" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"
+        app:layout_constraintTop_toTopOf="@id/myrecord"/>
 
+    <TextView
+        android:id="@+id/myrecord"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/re"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/myrelease"
+        tools:ignore="UsingOnClickInXml" />
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -177,7 +146,7 @@
         android:layout_height="wrap_content"
         android:text="@string/myinformation"
         android:textSize="36sp"
-        app:layout_constraintTop_toBottomOf="@id/myrelease"
+        app:layout_constraintTop_toBottomOf="@id/myrecord"
         tools:layout_editor_absoluteX="-1dp" />
 
     <View
@@ -185,4 +154,5 @@
         android:layout_height="1dp"
         android:background="@color/black"
         app:layout_constraintTop_toBottomOf="@id/my_information"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

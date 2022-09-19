@@ -44,7 +44,7 @@
     <string name="getcode">获取验证码</string>
     <string name="messager_name">name</string>
     <string name="notification">notification</string>
-    <string name="typeName">商品类型</string>
+    <string name="typeName">商品类型:</string>
     <string name="deletecommodity">deletecommodity</string>
     <string name="commoditypicture">commodityPicture</string>
     <string name="avatar">我的头像</string>
@@ -58,4 +58,8 @@
     <string name="selleraddr">卖家地址：</string>
     <string name="test">test</string>
     <string name="buyitnow">立刻购买</string>
+    <string name="spzhl">商品种类：</string>
+    <string name="spxx">商品信息</string>
+    <string name="prompt">选择商品种类</string>
+    <string name="re">交易记录</string>
 </resources>

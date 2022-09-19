@@ -1,14 +1,12 @@
 package com.example.secondhandmarket.ui.account;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.NetworkOnMainThreadException;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,16 +31,17 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class LoginActivity extends AppCompatActivity {
     private Button getCodeButton;
     private EditText inputCode;
     private EditText inputPhone;
-
+    private SharedPreferences sp;
+    private SharedPreferences.Editor editor;
     private boolean tag = true;
     private int i = 60;
 
-    private final Gson gson = new Gson();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
         inputPhone= findViewById(R.id.input_phone);
         Button loginButton = findViewById(R.id.login_button);
 
+        sp = getSharedPreferences("user", MODE_PRIVATE);
+        editor = sp.edit();
 
         getCodeButton.setOnClickListener(view -> {
              //获取验证码
@@ -69,8 +70,9 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(v->{
             String Phone = inputPhone.getText().toString().trim();
             String Code = inputCode.getText().toString().trim();
-             if(isMobileNO(Phone) && Code.length()== 6){
-                 post(Phone, Code);
+             if(!TextUtils.isEmpty(Phone) && !TextUtils.isEmpty(Code)){
+                 loginPost(Phone, Code);
+
              }else{
                  Toast.makeText(this, "账号格式不正确", Toast.LENGTH_SHORT).show();
              }
@@ -83,24 +85,22 @@ public class LoginActivity extends AppCompatActivity {
     public void loginActivityListener(View view) {
         int id = view.getId();
         if (id == R.id.sign_in) {
-            startActivity(new Intent(LoginActivity.this, SigninActivity.class));
+            startActivity(new Intent(LoginActivity.this, SignupActivity.class));
             finish();
         }
     }
 
-    private void post(String phone, String code) {
-        new Thread(()->{
+    private void loginPost(String phone, String code) {
             String url ="http://47.107.52.7:88/member/tran/user/login";
 
-            Headers headers = new Headers.Builder()
-                    .add("appId", new appMobSDK().appID)
-                    .add("appSecret", new appMobSDK().appSecret)
-                    .add("Accept", "application/json, text/plain, */*")
-                    .add("Content-Type", "application/json")
-                    .build();
+        Headers headers = new Headers.Builder()
+                .add("appId", new appMobSDK().appID)
+                .add("appSecret", new appMobSDK().appSecret)
+                .add("Accept", "application/json, text/plain, */*")
+                .build();
 
 
-            Map<String, String> bodyMap = new HashMap<>();
+            Map<String, Object> bodyMap = new HashMap<>();
             bodyMap.put("code", code);
             bodyMap.put("phone", phone);
             // 将Map转换为字符串类型加入请求体中
@@ -119,64 +119,46 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 OkHttpClient client = new OkHttpClient();
                 //发起请求，传入callback进行回调
-                client.newCall(request).enqueue(callbackLogin);
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(@NonNull Call call, IOException e) {
+                        Looper.prepare();
+                        Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                    }
+
+                    @Override
+                    public void onResponse(@NonNull Call call, Response response) throws IOException {//处理responce
+
+                        assert response.body() != null;
+                        ResponseBody body = response.body();
+
+                        String json = new String(body.bytes());
+                        LoginResponseBean responseBodylogin = new LoginResponseBean();
+                        Gson gson = new Gson();
+                        responseBodylogin = gson.fromJson(json, responseBodylogin.getClass());
+
+                        //ShareePreference 保存数据
+                        if(responseBodylogin.getCode() == 200){
+                            editor.putBoolean("islogin",true);
+                            user d = new user();
+                            d = responseBodylogin.getData();
+
+                            editor.putString("userName",d.getUsername());
+                            editor.putString("avatar",d.getAvatar());
+                            editor.putLong("userId",d.getId());
+                            editor.putInt("money",d.getMoney());
+                            editor.apply();
+                            finish();
+                        }
+
+
+                    }
+                });
             }catch (NetworkOnMainThreadException ex){
                 ex.printStackTrace();
             }
-        }).start();
     }
-    //回调
-    private final Callback callbackLogin = new Callback() {
-        @Override
-        public void onFailure(@NonNull Call call, IOException e) {
-            Looper.prepare();
-            Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            Looper.loop();
-        }
-        @Override
-        public void onResponse(@NonNull Call call, Response response) throws IOException {//处理responce
-
-            assert response.body() != null;
-            okhttp3.ResponseBody body = response.body();
-            //成功登录 把数据传给MainActivity，
-            String json = new String(body.bytes());
-            LoginResponseBean responseBodylogin = new LoginResponseBean();
-            Gson gson = new Gson();
-            responseBodylogin = gson.fromJson(json, responseBodylogin.getClass());
-
-
-
-            //ShareePreference 保存数据
-            SharedPreferences sp = getSharedPreferences("mysp", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putString("test","test");
-            try{
-                if(responseBodylogin.getCode() == 200){
-                    editor.putString("islogin","true");
-                    user d = new user();
-                    d = new Gson().fromJson(responseBodylogin.getData().toString(), d.getClass());
-
-                    editor.putString("userName",d.getUsername());
-                    editor.putString("avatar",d.getAvatar());
-                    editor.putLong("userId",d.getId());
-                    editor.putInt("money",d.getMoney());
-                    editor.apply();
-                    finish();
-                }
-
-                if(responseBodylogin.getCode() == 500){
-                    Looper.prepare();
-                    Toast.makeText(LoginActivity.this, "验证码已失效或服务器内部错误，请稍后获取", Toast.LENGTH_SHORT).show();
-                    Looper.loop();
-                    Log.d("info","no");
-                }
-            }catch (NullPointerException e){
-                Log.d("fuck", e.getMessage());
-            }
-
-        }
-    };
-
 
     private void get(String phone){
 
