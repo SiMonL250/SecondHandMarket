@@ -90,7 +90,7 @@ public class SignupActivity extends AppCompatActivity {
             bodyMap.put("code", code);
             bodyMap.put("phone", phone);
             // 将Map转换为字符串类型加入请求体中
-            String body = bodyMap.toString();
+            String body = new Gson().toJson(bodyMap);
 
             MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
 
