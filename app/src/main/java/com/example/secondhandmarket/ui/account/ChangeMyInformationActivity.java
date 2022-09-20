@@ -1,13 +1,20 @@
 package com.example.secondhandmarket.ui.account;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.os.NetworkOnMainThreadException;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -17,12 +24,17 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.loader.content.CursorLoader;
 
 import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.appkey.appMobSDK;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,15 +51,22 @@ import okhttp3.ResponseBody;
 
 public class ChangeMyInformationActivity extends AppCompatActivity {
     private ImageView ivAvatar;
-    private EditText etName, etAddr;
     private String imageUrl;
+    private Button btn;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_my_information);
         ivAvatar = findViewById(R.id.iv_avatar);
-        etName = findViewById(R.id.et_name);
-        etAddr = findViewById(R.id.et_addr);
+        btn = findViewById(R.id.btn_sumbit);
+        btn.setOnClickListener(v->{
+            if(imageUrl != null){
+                postchange(imageUrl,14);
+            }
+
+        });
     }
 
     public void ChangeInfoClick(View view) {
@@ -69,12 +88,6 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
             startActivityForResult(intent, 0x01);
 
         }
-        if(id == R.id.btn_sumbit){
-            String name = etName.getText().toString();
-            String addr = etAddr.getText().toString();
-
-
-        }
     }
 
     @Override
@@ -84,12 +97,16 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
             if (data != null) {
                 ivAvatar.setImageURI(data.getData());
                 Log.d("onActivityResult: ",data.getData().toString());
-                postfile();
+                Uri uri = data.getData();
+
+                List<File> list = new ArrayList<>();
+                File f = new File(uri.toString());
+                postfile(list);
             }
         }
     }
 
-    private void postfile(){
+    private void postfile(List<File> fList){
         String url = "http://47.107.52.7:88/member/tran/image/upload";
 
         Headers headers = new Headers.Builder()
@@ -99,13 +116,18 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
                 .add("Content-Type", "multipart/form-data")
                 .build();
 
+        Map<String,Object> map = new HashMap<>();
+
+        map.put("fileList",fList);
+        String body = map.toString();
+
         MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
 
         Request request = new Request.Builder()
                 .url(url)
                 // 将请求头加至请求中
                 .headers(headers)
-                .post(RequestBody.create(MEDIA_TYPE_JSON, ""))
+                .post(RequestBody.create(MEDIA_TYPE_JSON, body))
                 .build();
 
         try {
@@ -119,7 +141,7 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onResponse(Call call, Response response) throws IOException {
+                public void onResponse(Call call, Response response) {
                     ResponseBody body = response.body();
                     postFileBean mpostFileBean = new postFileBean();
                     try{
@@ -131,14 +153,38 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
                     }catch (IOException e){
                         e.printStackTrace();
                     }
-                    imageUrl = mpostFileBean.getData().getImageUrlList().get(0);
-                    Toast.makeText(ChangeMyInformationActivity.this, mpostFileBean.getMsg(), Toast.LENGTH_SHORT).show();
+                    System.out.println(mpostFileBean.getCode()+mpostFileBean.getMsg());
+                    //imageUrl = mpostFileBean.getData().getImageUrlList().get(0);
+                    if(mpostFileBean.getCode() == 200){
+                        Message msg = Message.obtain();
+                        msg.what = 0xc1;
+                        msg.obj = mpostFileBean.getData().getImageUrlList().get(0);
 
+                        new Handler(Looper.getMainLooper()){
+                            @Override
+                            public void handleMessage(@NonNull Message msg) {
+                                super.handleMessage(msg);
+                                if(msg.what == 0xc1){
+                                    imageUrl = (String) msg.obj;
+                                    System.out.println(imageUrl);
+                                }
+                            }
+                        }.sendMessage(msg);
+
+                    }
                 }
             });
         }catch (NetworkOnMainThreadException ex){
             ex.printStackTrace();
         }
+    }
+    public static String getRealPathFromURI(Uri contentUri, Context mContext) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        CursorLoader loader = new CursorLoader(mContext, contentUri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
     }
     /*
     复制
@@ -170,10 +216,10 @@ imageUrlList:[
         }
 
         class data{
-            private int imageCode;
+            private long imageCode;
             private List<String> imageUrlList;
 
-            public int getImageCode() {
+            public long getImageCode() {
                 return imageCode;
             }
 
@@ -183,7 +229,7 @@ imageUrlList:[
         }
     }
 
-    private void postchange(String avatar, String userid){
+    private void postchange(String avatar, long userid){
 
             // url路径
             String url = "http://47.107.52.7:88/member/tran/user/update";
@@ -218,7 +264,9 @@ imageUrlList:[
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, IOException e) {
+                        Looper.prepare();
                         Toast.makeText(ChangeMyInformationActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Looper.loop();
                     }
 
                     @Override
@@ -251,13 +299,13 @@ imageUrlList:[
         }
 
         class data {
-            private String id;
+            private long id;
             private String appKey;
             private String userName;
             private int money;
             private String avatar;
 
-            public String getId() {
+            public long getId() {
                 return id;
             }
 

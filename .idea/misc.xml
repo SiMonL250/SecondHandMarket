@@ -8,6 +8,7 @@
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/drawable/ic_baseline_remove_red_eye_24.xml" value="0.187" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout-w1240dp/activity_login.xml" value="0.2031459170013387" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout-w936dp/activity_login.xml" value="0.237109375" />
+        <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/activity_change_my_information.xml" value="0.3067708333333333" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/activity_commodity_info.xml" value="0.17083333333333334" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/activity_commodity_information.xml" value="0.33" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/activity_login.xml" value="0.33" />
@@ -24,10 +25,11 @@
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/fragment_blank.xml" value="0.33" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/fragment_home.xml" value="0.3067708333333333" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/fragment_new_release.xml" value="0.246875" />
-        <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/fragment_new_release_soldout.xml" value="0.13697916666666668" />
+        <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/fragment_new_release_soldout.xml" value="0.21" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/fragment_notifications.xml" value="0.25" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/fragment_release.xml" value="0.33" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/fragment_sold_out.xml" value="0.246875" />
+        <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/load_pic_items.xml" value="0.16927083333333334" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/my_cart_item_layout.xml" value="0.2328125" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/mynewreleaseorsoldoutlayout.xml" value="0.33" />
         <entry key="..\:/private/SecondHandMarket/app/src/main/res/layout/notification_items_layout.xml" value="0.25" />

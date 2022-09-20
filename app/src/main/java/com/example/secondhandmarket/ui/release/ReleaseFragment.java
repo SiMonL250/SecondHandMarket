@@ -6,6 +6,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -17,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +32,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -47,7 +48,8 @@ import okhttp3.ResponseBody;
  */
 public class ReleaseFragment extends Fragment {
     private Context context;
-    private ImageView ivUploadPicture;
+    private RecyclerView rvPic;
+    private TextView tvNum;
     private EditText etInputReleaseContents, etInputReleasePrice;
     private Spinner spCommoTypeName;
     private ArrayAdapter<String> adaptertypeNames;
@@ -55,12 +57,14 @@ public class ReleaseFragment extends Fragment {
     private long imageCode;
     private Handler handler1 = new MyHandler(this);
 
-    // TODO: Rename parameter arguments, choose names that match
+    List<LoadFileVo> fileList = new ArrayList<>();
+    LoadFileAdapter adapter = null;
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
+
     private String mParam1;
     private String mParam2;
 
@@ -68,15 +72,6 @@ public class ReleaseFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ReleaseFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static ReleaseFragment newInstance(String param1, String param2) {
         ReleaseFragment fragment = new ReleaseFragment();
         Bundle args = new Bundle();
@@ -101,11 +96,15 @@ public class ReleaseFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_release, container, false);
-        ivUploadPicture = view.findViewById(R.id.upload_picture);
+
         etInputReleaseContents = view.findViewById(R.id.input_released_commodity_contents);
         etInputReleasePrice = view.findViewById(R.id.input_released_commodity_price);
         spCommoTypeName = view.findViewById(R.id.spinner_released_commodity_typename);
         tvReleaseButton = view.findViewById(R.id.release_button);
+
+        rvPic = view.findViewById(R.id.rvPic);
+        initAdapter();
+        tvNum = view.findViewById(R.id.tvNum);
 
         getTypeNameList();
 //用来获取typeid 和typeName
@@ -121,13 +120,7 @@ public class ReleaseFragment extends Fragment {
             }
         });
 
-
         //选择，上传图片
-        ivUploadPicture.setOnClickListener(v->{
-            //选择图片后直接new  uplosdPicture对象
-            //构造函数参数是context、handler1
-        });
-
         tvReleaseButton.setOnClickListener(v->{
 
         });
@@ -135,6 +128,12 @@ public class ReleaseFragment extends Fragment {
        return view;
     }
 
+    private void initAdapter(){
+        fileList.add(new LoadFileVo());
+        adapter = new LoadFileAdapter(getContext(), fileList);
+        rvPic.setAdapter(adapter);
+        rvPic.setLayoutManager(new GridLayoutManager(getContext(), 3));
+    }
     private void getTypeNameList() {
             String url = "http://47.107.52.7:88/member/tran/goods/type";
             // 请求头
@@ -186,7 +185,8 @@ public class ReleaseFragment extends Fragment {
                                     for(int i=0; i<l.size(); i++){
 
                                         TypeNameListData tbd = l.get(i);
-                                        dataTypeNames.add(tbd.getId() + tbd.getType());
+                                        //处理这个字符串就可以直接拿到typeid和typename
+                                        dataTypeNames.add(tbd.getId() +"-"+ tbd.getType());
 //                                       System.out.println(tbd.getId() + tbd.getType());
                                     }
                                     adaptertypeNames = new ArrayAdapter<>(context,
@@ -204,7 +204,7 @@ public class ReleaseFragment extends Fragment {
             }
 
     }
-
+//上传图片用的handler
     private static class MyHandler extends Handler {
         private final WeakReference<ReleaseFragment> mTarget;
 

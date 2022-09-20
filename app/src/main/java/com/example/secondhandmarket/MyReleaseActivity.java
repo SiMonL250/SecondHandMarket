@@ -6,6 +6,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -55,17 +56,6 @@ public class MyReleaseActivity extends AppCompatActivity {
         public void onPageSelected(int position) {
             //可以来设置选中时tab的大小
             int tabCount = mTabLayout.getTabCount();
-//            for (int i = 0; i < tabCount; i++) {
-//                TabLayout.Tab tab = mTabLayout.getTabAt(i);
-//                TextView tabView = (TextView) tab.getCustomView();
-//                if (tab.getPosition() == position) {
-//                    tabView.setTextSize(activeSize);
-//                    tabView.setTypeface(Typeface.DEFAULT_BOLD);
-//                } else {
-//                    tabView.setTextSize(normalSize);
-//                    tabView.setTypeface(Typeface.DEFAULT);
-//                }
-           // }
         }
     };
     private class ScreenSlidePagerAdapter extends FragmentStateAdapter {
@@ -87,4 +77,6 @@ public class MyReleaseActivity extends AppCompatActivity {
             return NUM_PAGES;
         }
     }
+
+
 }

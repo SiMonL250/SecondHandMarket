@@ -9,6 +9,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.NetworkOnMainThreadException;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -54,7 +57,6 @@ public class CommodityInformationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_commodity_information);
-
         tvgoodName = findViewById(R.id.information_name);
         tvgoodPrice = findViewById(R.id.information_price);
         tvgoodTypeName = findViewById(R.id.tv_content);
@@ -157,16 +159,21 @@ public class CommodityInformationActivity extends AppCompatActivity {
 
 
                                     List<String> list = mgotBean.getData().getImageUrlList();
-                                    banner.setAdapter(new BannerImageAdapter<String>(list) {
-                                        @Override
-                                        public void onBindView(BannerImageHolder holder, String data, int position, int size) {
-                                            Glide.with(holder.itemView)
-                                                    .load(data)
-                                                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(30)))
-                                                    .into(holder.imageView);
-                                        }
-                                    }).addBannerLifecycleObserver(CommodityInformationActivity.this)
-                                            .setIndicator(new CircleIndicator(CommodityInformationActivity.this));
+                                    if(list.size()!=0){
+                                        banner.setAdapter(new BannerImageAdapter<String>(list) {
+                                                    @Override
+                                                    public void onBindView(BannerImageHolder holder, String data, int position, int size) {
+                                                        Glide.with(holder.itemView)
+                                                                .load(data)
+                                                                .apply(RequestOptions.bitmapTransform(new RoundedCorners(30)))
+                                                                .into(holder.imageView);
+                                                    }
+                                                }).addBannerLifecycleObserver(CommodityInformationActivity.this)
+                                                .setIndicator(new CircleIndicator(CommodityInformationActivity.this));
+                                    }else {
+                                        TextView t = findViewById(R.id.t);
+                                        t.setVisibility(View.VISIBLE);
+                                    }
 
                                 }
                             }

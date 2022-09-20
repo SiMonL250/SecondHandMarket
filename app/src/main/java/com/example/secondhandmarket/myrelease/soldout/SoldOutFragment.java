@@ -11,10 +11,12 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 
@@ -41,7 +43,7 @@ import okhttp3.ResponseBody;
 public class SoldOutFragment extends Fragment {
     private RecyclerView mRecyclerViewList;
     private MyReleaseAdapter myReleaseAdapter;
-
+    private TextView tvNone;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -84,7 +86,7 @@ public class SoldOutFragment extends Fragment {
         ViewBinding binding = inflate(inflater,container,false);
         View view= binding.getRoot();
         mRecyclerViewList = view.findViewById(R.id.recyeView);
-
+        tvNone = view.findViewById(R.id.none);
         Requestget rg = new Requestget();
         rg.get(rg.getUrlsouldout(), 14, new Callback() {
 
@@ -106,18 +108,23 @@ public class SoldOutFragment extends Fragment {
 
                 if(responseBodyBean.getCode() == 200){
                     Message msg = Message.obtain();
-                    msg.what = 0x08;
+                    msg.what = 0x09;
                     msg.obj = responseBodyBean.getData().getRecords();//List
 
                     new Handler(Looper.getMainLooper()) {
                         @Override
                         public void handleMessage(@NonNull Message msg) {
                             super.handleMessage(msg);
-                            if (msg.what == 0x08) {
-                                List<GotCommodityBean> list = (List<GotCommodityBean>) msg.obj;
-                                myReleaseAdapter = new MyReleaseAdapter(list);
-                                mRecyclerViewList.setAdapter(myReleaseAdapter);
+                            if (msg.what == 0x09) {
+                                if(msg.obj !=null){
+                                    List<GotCommodityBean> list = (List<GotCommodityBean>) msg.obj;
+                                    myReleaseAdapter = new MyReleaseAdapter(list);
+                                    mRecyclerViewList.setAdapter(myReleaseAdapter);
 
+                                    if(myReleaseAdapter.getItemCount()!= 0)
+                                        tvNone.setVisibility(View.GONE);
+
+                                }
                             }
                         }
                     }.sendMessage(msg);
@@ -125,6 +132,7 @@ public class SoldOutFragment extends Fragment {
 
             }
         });
+        mRecyclerViewList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return view;
     }

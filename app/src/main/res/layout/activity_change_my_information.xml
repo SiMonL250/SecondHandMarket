@@ -42,80 +42,12 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <View
-        android:id="@+id/view1"
+        android:id="@+id/view2"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="2dp"
         android:background="@color/black"
         app:layout_constraintTop_toBottomOf="@id/linear_avatar" />
 
-    <LinearLayout
-        android:id="@+id/linear_name"
-        android:layout_width="match_parent"
-        android:layout_height="38dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linear_avatar">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/yhm"
-            android:textSize="24sp"/>
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:gravity="end">
-
-            <EditText
-                android:id="@+id/et_name"
-                android:layout_width="176dp"
-                android:layout_height="match_parent"
-                android:height="24dp"
-                android:autofillHints="username"/>
-        </RelativeLayout>
-    </LinearLayout>
-    <View
-        android:id="@+id/view2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/linear_name" />
-
-
-
-
-    <LinearLayout
-        android:id="@+id/linear_addr"
-        android:layout_width="match_parent"
-        android:layout_height="38dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linear_name">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/addr"
-            android:textSize="24sp"/>
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:gravity="end">
-
-            <EditText
-                android:id="@+id/et_addr"
-                android:layout_width="276dp"
-                android:layout_height="match_parent"
-                android:height="24dp"
-                android:autofillHints="postalAddress" />
-        </RelativeLayout>
-    </LinearLayout>
-    <View
-        android:id="@+id/view4"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/linear_addr" />
 
     <Button
         android:id="@+id/btn_sumbit"
@@ -125,7 +57,7 @@
         android:text="@string/submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linear_addr"
+        app:layout_constraintTop_toBottomOf="@id/linear_avatar"
         android:onClick="ChangeInfoClick"
         tools:ignore="UsingOnClickInXml"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

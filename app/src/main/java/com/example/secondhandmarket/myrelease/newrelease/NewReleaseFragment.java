@@ -12,6 +12,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,8 @@ import com.example.secondhandmarket.commoditybean.ResponseBodyBean;
 import com.example.secondhandmarket.myrelease.MyReleaseAdapter;
 import com.example.secondhandmarket.myrelease.Requestget;
 import com.google.gson.Gson;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.List;
@@ -43,7 +46,7 @@ import okhttp3.ResponseBody;
 public class NewReleaseFragment extends Fragment {
     private RecyclerView mRecyclerViewList;
     private MyReleaseAdapter myReleaseAdapter;//Adapter
-
+    private TextView tvNone;
 
 
     private static final String ARG_PARAM1 = "param1";
@@ -91,7 +94,7 @@ public class NewReleaseFragment extends Fragment {
         ViewBinding binding = inflate(inflater,container,false);
         View view = binding.getRoot();
         mRecyclerViewList = view.findViewById(R.id.recyeView);
-
+        tvNone = view.findViewById(R.id.none);
 
         Requestget rg = new Requestget();
         rg.get(rg.getUrlmyRelease(), 14, new Callback() {
@@ -122,9 +125,15 @@ public class NewReleaseFragment extends Fragment {
                         public void handleMessage(@NonNull Message msg) {
                             super.handleMessage(msg);
                             if (msg.what == 0x08) {
-                                List<GotCommodityBean> list = (List<GotCommodityBean>) msg.obj;
-                                myReleaseAdapter = new MyReleaseAdapter(list);
-                                mRecyclerViewList.setAdapter(myReleaseAdapter);
+                                if(msg.obj !=null){
+                                    List<GotCommodityBean> list = (List<GotCommodityBean>) msg.obj;
+                                    myReleaseAdapter = new MyReleaseAdapter(list);
+                                    mRecyclerViewList.setAdapter(myReleaseAdapter);
+
+                                    if(myReleaseAdapter.getItemCount()!= 0)
+                                        tvNone.setVisibility(View.GONE);
+
+                                }
 
                             }
                         }
@@ -135,6 +144,7 @@ public class NewReleaseFragment extends Fragment {
         });
 
         mRecyclerViewList.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         return view;
     }
 

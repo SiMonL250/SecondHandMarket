@@ -62,4 +62,9 @@
     <string name="spxx">商品信息</string>
     <string name="prompt">选择商品种类</string>
     <string name="re">交易记录</string>
+    <string name="mjdz">卖家地址</string>
+    <string name="contents">contents</string>
+    <string name="deletepic">deletePic</string>
+    <string name="picture">picture</string>
+    <string name="wutp">无图片</string>
 </resources>

@@ -6,14 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".singleGood.CommodityInformationActivity">
 <!--TODO use viewPAger-->
+
     <com.youth.banner.Banner
         android:id="@+id/information_picture"
         android:layout_width="match_parent"
         android:layout_height="256dp"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="4dp"
         android:contentDescription="@string/commoditypicture"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -143,4 +144,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginBottom="15dp"/>
+
+    <TextView
+        android:id="@+id/t"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/wutp"
+        android:textColor="@color/black"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/information_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/information_picture" />
 </androidx.constraintlayout.widget.ConstraintLayout>

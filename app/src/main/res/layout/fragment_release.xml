@@ -7,12 +7,28 @@
     tools:context=".ui.release.ReleaseFragment"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/upload_picture"
-        android:layout_width="124dp"
-        android:layout_height="124dp"
-        android:src="@drawable/ic_baseline_add_photo_alternate_24"
-        android:contentDescription="@string/tianjiatupian" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/white">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPic"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal">
+        </androidx.recyclerview.widget.RecyclerView>
+        <TextView
+            android:id="@+id/tvNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0/8"
+            android:textColor="#666666"
+            android:layout_gravity="right|bottom"
+            android:paddingRight="10dp"
+            tools:ignore="RtlHardcoded" />
+
+    </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -39,6 +55,7 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:autofillHints="@string/describtionofcommodity"
+            android:hint="@string/contents"
             android:inputType="text"
             android:singleLine="true"
             app:layout_constraintEnd_toEndOf="parent"
@@ -68,6 +85,28 @@
             app:layout_constraintTop_toBottomOf="@id/input_released_commodity_contents" />
 
         <TextView
+            android:id="@+id/tvaddr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mjdz"
+            android:textSize="24sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/input_released_commodity_addr"
+            app:layout_constraintEnd_toStartOf="@id/input_released_commodity_addr"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvprice" />
+
+        <EditText
+            android:id="@+id/input_released_commodity_addr"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/mjdz"
+            android:inputType="number|numberDecimal"
+            android:singleLine="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvaddr"
+            app:layout_constraintTop_toBottomOf="@id/input_released_commodity_price" />
+
+        <TextView
             android:id="@+id/tv_typename"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -77,17 +116,17 @@
             android:textSize="24sp"
             app:layout_constraintEnd_toStartOf="@id/spinner_released_commodity_typename"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvprice" />
+            app:layout_constraintTop_toBottomOf="@id/tvaddr" />
 
         <Spinner
             android:id="@+id/spinner_released_commodity_typename"
-            android:layout_width="128dp"
+            android:layout_width="wrap_content"
             android:layout_height="34dp"
             android:layout_marginStart="2dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:prompt="@string/prompt"
             app:layout_constraintStart_toEndOf="@id/tv_typename"
-            app:layout_constraintTop_toBottomOf="@id/input_released_commodity_price" />
+            app:layout_constraintTop_toBottomOf="@id/input_released_commodity_addr" />
 
         <View
             android:layout_width="match_parent"

@@ -41,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private boolean tag = true;
     private int i = 60;
+    private Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         inputPhone= findViewById(R.id.input_phone);
         Button loginButton = findViewById(R.id.login_button);
 
-        sp = getSharedPreferences("user", MODE_PRIVATE);
-        editor = sp.edit();
+
 
         getCodeButton.setOnClickListener(view -> {
              //获取验证码
@@ -80,31 +80,26 @@ public class LoginActivity extends AppCompatActivity {
         
     }
 
-
-    @SuppressLint("NonConstantResourceId")
-    public void loginActivityListener(View view) {
-        int id = view.getId();
-        if (id == R.id.sign_in) {
-            startActivity(new Intent(LoginActivity.this, SignupActivity.class));
-            finish();
-        }
-    }
-
     private void loginPost(String phone, String code) {
-            String url ="http://47.107.52.7:88/member/tran/user/login";
+        new Thread(() -> {
 
-        Headers headers = new Headers.Builder()
-                .add("appId", new appMobSDK().appID)
-                .add("appSecret", new appMobSDK().appSecret)
-                .add("Accept", "application/json, text/plain, */*")
-                .build();
+            // url路径
+            String url = "http://47.107.52.7:88/member/tran/user/login";
 
+            // 请求头
+            Headers headers = new Headers.Builder()
+                    .add("appId", new appMobSDK().appID)
+                    .add("appSecret", new appMobSDK().appSecret)
+                    .add("Accept", "application/json, text/plain, */*")
+                    .build();
 
+            // 请求体
+            // PS.用户也可以选择自定义一个实体类，然后使用类似fastjson的工具获取json串
             Map<String, Object> bodyMap = new HashMap<>();
             bodyMap.put("code", code);
             bodyMap.put("phone", phone);
             // 将Map转换为字符串类型加入请求体中
-            String body = bodyMap.toString();
+            String body = gson.toJson(bodyMap);
 
             MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -115,29 +110,30 @@ public class LoginActivity extends AppCompatActivity {
                     .headers(headers)
                     .post(RequestBody.create(MEDIA_TYPE_JSON, body))
                     .build();
-
             try {
                 OkHttpClient client = new OkHttpClient();
                 //发起请求，传入callback进行回调
                 client.newCall(request).enqueue(new Callback() {
                     @Override
-                    public void onFailure(@NonNull Call call, IOException e) {
+                    public void onFailure(Call call, IOException e) {
                         Looper.prepare();
-                        Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        Looper.loop();
+
                     }
 
                     @Override
-                    public void onResponse(@NonNull Call call, Response response) throws IOException {//处理responce
-
+                    public void onResponse(Call call, Response response) throws IOException {
                         assert response.body() != null;
                         ResponseBody body = response.body();
 
                         String json = new String(body.bytes());
                         LoginResponseBean responseBodylogin = new LoginResponseBean();
-                        Gson gson = new Gson();
-                        responseBodylogin = gson.fromJson(json, responseBodylogin.getClass());
+                        responseBodylogin = new Gson().fromJson(json, responseBodylogin.getClass());
+                        Looper.prepare();
+                        Toast.makeText(LoginActivity.this, responseBodylogin.getCode()+responseBodylogin.getMsg()+ responseBodylogin.getData().getId(), Toast.LENGTH_SHORT).show();
+                        Looper.loop();
 
+                        sp = getSharedPreferences("user", MODE_PRIVATE);
+                        editor = sp.edit();
                         //ShareePreference 保存数据
                         if(responseBodylogin.getCode() == 200){
                             editor.putBoolean("islogin",true);
@@ -152,13 +148,25 @@ public class LoginActivity extends AppCompatActivity {
                             finish();
                         }
 
-
                     }
                 });
             }catch (NetworkOnMainThreadException ex){
                 ex.printStackTrace();
             }
+        }).start();
     }
+
+
+    @SuppressLint("NonConstantResourceId")
+    public void loginActivityListener(View view) {
+        int id = view.getId();
+        if (id == R.id.sign_in) {
+            startActivity(new Intent(LoginActivity.this, SignupActivity.class));
+            finish();
+        }
+    }
+
+
 
     private void get(String phone){
 
@@ -202,9 +210,7 @@ public class LoginActivity extends AppCompatActivity {
             codeResponce codeResponcebean = new codeResponce();
             assert body != null;
             try{
-                String json = new String(body.bytes());
-                Gson gson = new Gson();
-                codeResponcebean = gson.fromJson(json, codeResponcebean.getClass());
+                codeResponcebean = new Gson().fromJson(new String(body.bytes()), codeResponcebean.getClass());
             }catch (IOException e){
                 e.printStackTrace();
             }

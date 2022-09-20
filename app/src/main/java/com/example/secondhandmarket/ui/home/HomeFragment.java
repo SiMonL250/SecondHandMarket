@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.secondhandmarket.commoditybean.ResponceBodyDataBean;
 import com.example.secondhandmarket.singleGood.CommodityInformationActivity;
 import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.appkey.appMobSDK;
@@ -146,21 +147,24 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
             responseBodyBeanGoods = new Gson().fromJson(new String(body.bytes())
                     ,responseBodyBeanGoods.getClass());
 
-
-            Message message = Message.obtain();
-            message.what = 0x11;
-            message.obj = responseBodyBeanGoods.getData().getRecords();
-            new Handler(Looper.getMainLooper()){
-                @Override
-                public void handleMessage(@NonNull Message msg) {
-                    super.handleMessage(msg);
-                    if(msg.what == 0x11){
-                        List<GotCommodityBean> list = (List<GotCommodityBean>) msg.obj;
-                        mAdapter = new commodityAdapter(list,mcontext);
-                        goodsList.setAdapter(mAdapter);
+            ResponceBodyDataBean rb = responseBodyBeanGoods.getData();
+            if(rb !=null && rb.getRecords().size()!=0){
+                Message message = Message.obtain();
+                message.what = 0x11;
+                message.obj = responseBodyBeanGoods.getData().getRecords();
+                new Handler(Looper.getMainLooper()){
+                    @Override
+                    public void handleMessage(@NonNull Message msg) {
+                        super.handleMessage(msg);
+                        if(msg.what == 0x11){
+                            List<GotCommodityBean> list = (List<GotCommodityBean>) msg.obj;
+                            mAdapter = new commodityAdapter(list,mcontext);
+                            goodsList.setAdapter(mAdapter);
+                        }
                     }
-                }
-            }.sendMessage(message);
+                }.sendMessage(message);
+            }
+
         }
     };
     @Override
