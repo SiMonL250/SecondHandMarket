@@ -1,4 +1,4 @@
-package com.example.secondhandmarket.ui.account;
+package com.example.secondhandmarket;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.appkey.appMobSDK;
 import com.google.gson.Gson;
 
@@ -115,7 +114,6 @@ public class SignupActivity extends AppCompatActivity {
     private final Callback callbackSignin = new Callback() {
         @Override
         public void onFailure(@NonNull Call call, IOException e) {
-            //TODO 请求失败处理
             Looper.prepare();
             Toast.makeText(SignupActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             Looper.loop();

@@ -22,8 +22,7 @@ public class MyReleaseActivity extends AppCompatActivity {
     private FragmentStateAdapter myFragmentStateAdapter;
     private TabLayoutMediator mediator;
 
-//    private int activeSize = 20;
-//    private int normalSize = 14;
+
     final String[] tabs = new String[]{"新上传","已售出"};
 
     private TabLayout.Tab newRelease, soldOut;

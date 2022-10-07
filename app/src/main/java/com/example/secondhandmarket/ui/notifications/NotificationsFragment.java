@@ -32,7 +32,8 @@ public class NotificationsFragment extends Fragment {
 
         binding = FragmentNotificationsBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-        //构造数据
+        //API在这里获取数据，把for删除
+//        利用GetUserInfor 类获取用户Id
         for(int i=0; i<50; i++){
             myNotifi notice = new myNotifi();
             notice.notiName = "名字"+i;
@@ -52,7 +53,8 @@ public class NotificationsFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
-
+//根据API返回的数据改写notification_items_layout文件
+    //修改viewHolder  和Adapter
     private class NotiAdapter extends RecyclerView.Adapter<MyViewHolder>{
         @NonNull
         @Override

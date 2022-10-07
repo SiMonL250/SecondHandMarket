@@ -59,7 +59,14 @@ public class commodityAdapter extends BaseAdapter {
         view.setTag(vh);
 
         GotCommodityBean cb = list.get(i);
-        vh.commodityName.setText(cb.getContent() + "  "+cb.getTypeName());
+        String name = cb.getContent() + "  "+cb.getTypeName();
+        vh.commodityName.setText(name);
+        if(name.length()>10){
+            vh.commodityName.setFocusable(true);
+            vh.commodityName.setFocusableInTouchMode(true);
+            vh.commodityName.setSelected(true);
+        }
+
         vh.commodityPrice.setText(Integer.toString(cb.getPrice()));
         vh.commodityId.setText(Long.toString(cb.getId()));
        if(cb.getImageUrlList().size() !=0){

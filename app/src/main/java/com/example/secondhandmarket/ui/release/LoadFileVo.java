@@ -8,7 +8,6 @@ public class LoadFileVo {
 
     File file;
 
-    int pg; //图片下方的进度条
 
     boolean isUpload = false; //标识该文件是否上传
 
@@ -33,14 +32,13 @@ public class LoadFileVo {
     public LoadFileVo() {
     }
 
-    public LoadFileVo(File file, int pg) {
+    public LoadFileVo(File file) {
         this.file = file;
-        this.pg = pg;
     }
 
-    public LoadFileVo(File file, boolean isUpload, int pg,Bitmap bitmap) {
+    public LoadFileVo(File file, boolean isUpload,Bitmap bitmap) {
         this.file = file;
-        this.pg = pg;
+
         this.isUpload = isUpload;
         this.bitmap = bitmap;
     }
@@ -53,11 +51,4 @@ public class LoadFileVo {
         this.file = file;
     }
 
-    public int getPg() {
-        return pg;
-    }
-
-    public void setPg(int pg) {
-        this.pg = pg;
-    }
 }

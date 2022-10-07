@@ -22,11 +22,11 @@
             android:id="@+id/tvNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0/8"
+            android:text="@string/_0_8"
             android:textColor="#666666"
             android:layout_gravity="right|bottom"
-            android:paddingRight="10dp"
-            tools:ignore="RtlHardcoded" />
+            android:paddingEnd="10dp"
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
 
     </LinearLayout>
     <View

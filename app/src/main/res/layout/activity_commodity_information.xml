@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".singleGood.CommodityInformationActivity">
-<!--TODO use viewPAger-->
 
     <com.youth.banner.Banner
         android:id="@+id/information_picture"
@@ -22,14 +21,15 @@
         android:id="@+id/information_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
+        android:layout_marginStart="3dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="319dp"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
         android:text="@string/name"
         android:textColor="@color/black"
         android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.45"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/information_picture" />
 

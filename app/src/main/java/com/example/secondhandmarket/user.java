@@ -1,4 +1,4 @@
-package com.example.secondhandmarket.ui.account;
+package com.example.secondhandmarket;
 
 public class user{
     private String appKey;

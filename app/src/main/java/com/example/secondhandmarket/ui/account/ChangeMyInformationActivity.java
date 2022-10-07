@@ -15,7 +15,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -26,14 +25,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.loader.content.CursorLoader;
 
+import com.example.secondhandmarket.GetUserInfor;
 import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.appkey.appMobSDK;
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +61,11 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
         btn = findViewById(R.id.btn_sumbit);
         btn.setOnClickListener(v->{
             if(imageUrl != null){
-                postchange(imageUrl,14);
+                long userId = new GetUserInfor(ChangeMyInformationActivity.this).getUSerID();
+                if(userId != -1){
+                    postchange(imageUrl, userId);
+                }
+
             }
 
         });
@@ -74,9 +76,9 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
         if(id == R.id.iv_avatar){
             //检查权限
             if(ContextCompat.checkSelfPermission(ChangeMyInformationActivity.this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
                 ActivityCompat.requestPermissions(ChangeMyInformationActivity.this,new String[]{
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        Manifest.permission.READ_EXTERNAL_STORAGE
                 },1);
             }
             Intent intent = new Intent(Intent.ACTION_PICK,
@@ -86,19 +88,17 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
             Log.d("ChangeInfoClick",MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString());
             //noinspection deprecation
             startActivityForResult(intent, 0x01);
-
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0x1 && resultCode == RESULT_OK) {
+        if (requestCode == 0x01 && resultCode == RESULT_OK) {
             if (data != null) {
                 ivAvatar.setImageURI(data.getData());
-                Log.d("onActivityResult: ",data.getData().toString());
                 Uri uri = data.getData();
-
+//TODO try to post file
                 List<File> list = new ArrayList<>();
                 File f = new File(uri.toString());
                 postfile(list);

@@ -4,7 +4,7 @@
     <string name="title_release">Release</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_account">Account</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="sousuo">搜索</string>
     <string name="commodityname">CommodityName</string>
     <string name="commodityprice">CommodityPrice</string>
@@ -35,7 +35,6 @@
     <string name="jiage">价格</string>
     <string name="yishouchu">已售出</string>
     <string name="xinshangchuan">新上传</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="phone">电话</string>
     <string name="code">验证码</string>
@@ -55,6 +54,7 @@
     <string name="p">id:</string>
     <string name="goodid">货物id</string>
     <string name="nogoods">无商品</string>
+    <string name="norecord">无记录</string>
     <string name="selleraddr">卖家地址：</string>
     <string name="test">test</string>
     <string name="buyitnow">立刻购买</string>
@@ -67,4 +67,13 @@
     <string name="deletepic">deletePic</string>
     <string name="picture">picture</string>
     <string name="wutp">无图片</string>
+    <string name="jyjl">交易记录</string>
+    <string name="maijia">卖家:</string>
+    <string name="buyer">买家:</string>
+
+    <string name="sellername">卖家名字</string>
+    <string name="selleravatar">selleravatar</string>
+    <string name="goodspic">goodspic</string>
+    <string name="maijiamz">买家名字</string>
+    <string name="_0_8">0/8</string>
 </resources>

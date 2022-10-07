@@ -1,6 +1,8 @@
 package com.example.secondhandmarket.myrelease;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.secondhandmarket.GetUserInfor;
 import com.example.secondhandmarket.MyReleaseActivity;
 import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.commoditybean.GotCommodityBean;
@@ -30,10 +33,11 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class MyReleaseAdapter extends RecyclerView.Adapter<MyReleaseViewHolder> {
-    private List<GotCommodityBean> mDataList;//TODO 修改List
-
-    public MyReleaseAdapter(List<GotCommodityBean> list){
+    private List<GotCommodityBean> mDataList;
+    private Context context;
+    public MyReleaseAdapter(List<GotCommodityBean> list, Context context){
         this.mDataList = list;
+        this.context = context;
     }
     @NonNull
     @Override
@@ -44,24 +48,28 @@ public class MyReleaseAdapter extends RecyclerView.Adapter<MyReleaseViewHolder> 
        viewHolder.myReleaseDelete.setOnClickListener(v->{
            long goodid = Long.parseLong(viewHolder.myReleaseID.getText().toString());
 //           System.out.println(goodid);
-           //TODO get userId
-           new RequestDelete().delete(goodid, 14, new Callback() {
-               @Override
-               public void onFailure(Call call, IOException e) {
-                   Looper.prepare();
-                   Toast.makeText(parent.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                   Looper.loop();
-               }
 
-               @Override
-               public void onResponse(Call call, Response response) throws IOException {
-                   Looper.prepare();
-                   Toast.makeText(parent.getContext(), new String(response.body().bytes()), Toast.LENGTH_SHORT).show();
-                   Looper.loop();
-                   //刷新Fragment
+           long id = new GetUserInfor(context).getUSerID();
+           if(id != 0){
+               new RequestDelete().delete(goodid, id, new Callback() {
+                   @Override
+                   public void onFailure(Call call, IOException e) {
+                       Looper.prepare();
+                       Toast.makeText(parent.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                       Looper.loop();
+                   }
 
-               }
-           });
+                   @Override
+                   public void onResponse(Call call, Response response) throws IOException {
+                       Looper.prepare();
+                       Toast.makeText(parent.getContext(), new String(response.body().bytes()), Toast.LENGTH_SHORT).show();
+                       Looper.loop();
+                       //刷新Fragment
+
+                   }
+               });
+           }
+
        });
 
        return new MyReleaseViewHolder(item);

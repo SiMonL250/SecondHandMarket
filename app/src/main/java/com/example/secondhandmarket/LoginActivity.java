@@ -1,4 +1,4 @@
-package com.example.secondhandmarket.ui.account;
+package com.example.secondhandmarket;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -15,7 +15,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.appkey.appMobSDK;
 import com.google.gson.Gson;
 
@@ -110,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
                     .headers(headers)
                     .post(RequestBody.create(MEDIA_TYPE_JSON, body))
                     .build();
-            try {
+
                 OkHttpClient client = new OkHttpClient();
                 //发起请求，传入callback进行回调
                 client.newCall(request).enqueue(new Callback() {
@@ -128,31 +127,23 @@ public class LoginActivity extends AppCompatActivity {
                         String json = new String(body.bytes());
                         LoginResponseBean responseBodylogin = new LoginResponseBean();
                         responseBodylogin = new Gson().fromJson(json, responseBodylogin.getClass());
-                        Looper.prepare();
-                        Toast.makeText(LoginActivity.this, responseBodylogin.getCode()+responseBodylogin.getMsg()+ responseBodylogin.getData().getId(), Toast.LENGTH_SHORT).show();
-                        Looper.loop();
 
-                        sp = getSharedPreferences("user", MODE_PRIVATE);
+                        GetUserInfor ginfor = new GetUserInfor();
+                        sp = getSharedPreferences(ginfor.MYSP_USER, MODE_PRIVATE);
                         editor = sp.edit();
                         //ShareePreference 保存数据
-                        if(responseBodylogin.getCode() == 200){
-                            editor.putBoolean("islogin",true);
-                            user d = new user();
-                            d = responseBodylogin.getData();
+                        editor.putBoolean(ginfor.MYSP_ISLOGIN, true);
+                        editor.putString(ginfor.MYSP_USERNAME, responseBodylogin.getData().getUsername());
+                        editor.putString(ginfor.MYSP_AVATAR, responseBodylogin.getData().getAvatar());
+                        editor.putLong(ginfor.MYSP_USERID, responseBodylogin.getData().getId());
+                        editor.putInt(ginfor.MYSP_MONEY, responseBodylogin.getData().getMoney());
+                        editor.commit();
+                        finish();
 
-                            editor.putString("userName",d.getUsername());
-                            editor.putString("avatar",d.getAvatar());
-                            editor.putLong("userId",d.getId());
-                            editor.putInt("money",d.getMoney());
-                            editor.apply();
-                            finish();
-                        }
 
                     }
                 });
-            }catch (NetworkOnMainThreadException ex){
-                ex.printStackTrace();
-            }
+
         }).start();
     }
 

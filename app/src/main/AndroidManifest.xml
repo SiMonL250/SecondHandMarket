@@ -23,7 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SecondHandMarket"
         tools:targetApi="31">
-
+        <activity
+            android:name=".traderecord.MyTradeRecord"
+            android:exported="false" />
         <activity
             android:name=".ui.account.ChangeMyInformationActivity"
             android:exported="false" />
@@ -32,14 +34,14 @@
             android:exported="false" />
         <activity
             android:name=".singleGood.CommodityInformationActivity"
-            android:label="@string/spxx"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/spxx" />
         <activity
-            android:name=".ui.account.SignupActivity"
+            android:name=".SignupActivity"
             android:exported="false"
             android:label="@string/signin" />
         <activity
-            android:name=".ui.account.LoginActivity"
+            android:name=".LoginActivity"
             android:exported="false"
             android:label="@string/loginbtn" />
         <activity

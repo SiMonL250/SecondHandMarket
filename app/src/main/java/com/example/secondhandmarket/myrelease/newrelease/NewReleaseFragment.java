@@ -21,11 +21,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 
+import com.example.secondhandmarket.GetUserInfor;
 import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.commoditybean.GotCommodityBean;
 import com.example.secondhandmarket.commoditybean.ResponseBodyBean;
 import com.example.secondhandmarket.myrelease.MyReleaseAdapter;
 import com.example.secondhandmarket.myrelease.Requestget;
+import com.example.secondhandmarket.traderecord.MyTradeRecord;
 import com.google.gson.Gson;
 
 import org.w3c.dom.Text;
@@ -52,7 +54,6 @@ public class NewReleaseFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -97,51 +98,57 @@ public class NewReleaseFragment extends Fragment {
         tvNone = view.findViewById(R.id.none);
 
         Requestget rg = new Requestget();
-        rg.get(rg.getUrlmyRelease(), 14, new Callback() {
 
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Looper.prepare();
-                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                Looper.loop();
-            }
+        long userId = new GetUserInfor(getContext()).getUSerID();
+        if(userId != -1){
+            rg.get(rg.getUrlmyRelease(), userId, new Callback() {
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                ResponseBody body = response.body();
-                ResponseBodyBean responseBodyBean = new ResponseBodyBean();
-                assert body != null;
-                responseBodyBean = new Gson().fromJson(new String(body.bytes()),responseBodyBean.getClass());
-                System.out.println(responseBodyBean.getCode());
-
-
-                if(responseBodyBean.getCode() == 200){
-                    Message msg = Message.obtain();
-                    msg.what = 0x08;
-                    msg.obj = responseBodyBean.getData().getRecords();//List
-
-                    new Handler(Looper.getMainLooper()) {
-                        @Override
-                        public void handleMessage(@NonNull Message msg) {
-                            super.handleMessage(msg);
-                            if (msg.what == 0x08) {
-                                if(msg.obj !=null){
-                                    List<GotCommodityBean> list = (List<GotCommodityBean>) msg.obj;
-                                    myReleaseAdapter = new MyReleaseAdapter(list);
-                                    mRecyclerViewList.setAdapter(myReleaseAdapter);
-
-                                    if(myReleaseAdapter.getItemCount()!= 0)
-                                        tvNone.setVisibility(View.GONE);
-
-                                }
-
-                            }
-                        }
-                    }.sendMessage(msg);
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Looper.prepare();
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Looper.loop();
                 }
 
-            }
-        });
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    ResponseBody body = response.body();
+                    ResponseBodyBean responseBodyBean = new ResponseBodyBean();
+                    assert body != null;
+                    responseBodyBean = new Gson().fromJson(new String(body.bytes()),responseBodyBean.getClass());
+                    System.out.println(responseBodyBean.getCode());
+
+
+                    if(responseBodyBean.getCode() == 200){
+                        Message msg = Message.obtain();
+                        msg.what = 0x08;
+                        msg.obj = responseBodyBean.getData().getRecords();//List
+
+                        new Handler(Looper.getMainLooper()) {
+                            @Override
+                            public void handleMessage(@NonNull Message msg) {
+                                super.handleMessage(msg);
+                                if (msg.what == 0x08) {
+                                    if(msg.obj !=null){
+                                        List<GotCommodityBean> list = (List<GotCommodityBean>) msg.obj;
+                                        myReleaseAdapter = new MyReleaseAdapter(list,getContext());
+                                        mRecyclerViewList.setLayoutManager(new LinearLayoutManager(getContext()));
+                                        mRecyclerViewList.setAdapter(myReleaseAdapter);
+
+                                        if(myReleaseAdapter.getItemCount()!= 0)
+                                            tvNone.setVisibility(View.GONE);
+
+                                    }
+
+                                }
+                            }
+                        }.sendMessage(msg);
+                    }
+
+                }
+            });
+        }
+
 
         mRecyclerViewList.setLayoutManager(new LinearLayoutManager(getActivity()));
 

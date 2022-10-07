@@ -1,15 +1,10 @@
 package com.example.secondhandmarket.ui.release;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -24,15 +19,22 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.secondhandmarket.R;
+import com.example.secondhandmarket.R2;
 import com.example.secondhandmarket.appkey.appMobSDK;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
@@ -41,54 +43,49 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ReleaseFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class ReleaseFragment extends Fragment {
     private Context context;
-    private RecyclerView rvPic;
-    private TextView tvNum;
+
+
     private EditText etInputReleaseContents, etInputReleasePrice;
     private Spinner spCommoTypeName;
     private ArrayAdapter<String> adaptertypeNames;
     private TextView tvReleaseButton;
     private long imageCode;
-    private Handler handler1 = new MyHandler(this);
 
+    //上传图片用的handler 获取imagecode
+    private  Handler handler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            super.handleMessage(msg);
+
+            if (msg.what == 0xfa) {
+                imageCode = (long) msg.obj;
+            }
+
+        }
+    };
+
+    //选择图片的组件
     List<LoadFileVo> fileList = new ArrayList<>();
     LoadFileAdapter adapter = null;
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private RecyclerView rvPic;
 
+    @SuppressLint("NonConstantResourceId")
+    @BindView(R2.id.tvNum)
+    TextView tvNum;
 
-    private String mParam1;
-    private String mParam2;
 
     public ReleaseFragment() {
         // Required empty public constructor
     }
-
-    public static ReleaseFragment newInstance(String param1, String param2) {
-        ReleaseFragment fragment = new ReleaseFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getContext();
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -104,23 +101,21 @@ public class ReleaseFragment extends Fragment {
 
         rvPic = view.findViewById(R.id.rvPic);
         initAdapter();
-        tvNum = view.findViewById(R.id.tvNum);
 
         getTypeNameList();
 //用来获取typeid 和typeName
+        //TODO 完成点击事件获取 typeId TypeName
         spCommoTypeName.setOnItemSelectedListener(new Spinner.OnItemSelectedListener(){
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
               //获取id
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });
 
-        //选择，上传图片
         tvReleaseButton.setOnClickListener(v->{
 
         });
@@ -130,10 +125,33 @@ public class ReleaseFragment extends Fragment {
 
     private void initAdapter(){
         fileList.add(new LoadFileVo());
-        adapter = new LoadFileAdapter(getContext(), fileList);
+        adapter = new LoadFileAdapter(context, fileList,8);
         rvPic.setAdapter(adapter);
-        rvPic.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        rvPic.setLayoutManager(new GridLayoutManager(context, 3));//3 coloum
+        adapter.setListener(new LoadFileAdapter.OnItemClickListener() {
+            @Override
+            public void click(View view, int positon) {
+                if(fileList.size()>8){
+                    Toast.makeText(context, "一次最多上传8张图片", Toast.LENGTH_SHORT).show();
+                }else {
+                    selectPic();
+                }
+            }
+
+            @Override
+            public void del(View view) {
+                tvNum.setText((fileList.size()-1)+"/8");
+            }
+        });
     }
+
+    private void selectPic() {
+        if(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED){
+        }
+
+    }
+
     private void getTypeNameList() {
             String url = "http://47.107.52.7:88/member/tran/goods/type";
             // 请求头
@@ -155,21 +173,21 @@ public class ReleaseFragment extends Fragment {
                 //发起请求，传入callback进行回调
                 client.newCall(request).enqueue(new Callback() {
                     @Override
-                    public void onFailure(Call call, IOException e) {
+                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
                         Looper.prepare();
                         Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                         Looper.loop();
                     }
 
                     @Override
-                    public void onResponse(Call call, Response response) throws IOException {
+                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                         ResponseBody body = response.body();
                         assert body !=null;
                         TypeNameListBean typeNameListBean = new TypeNameListBean();
                         typeNameListBean = new Gson().fromJson(new String(body.bytes()),typeNameListBean.getClass());
 
                         Message msg = Message.obtain();
-                        msg.what = 0x01;
+                        msg.what = 0xfb;
                         msg.obj = typeNameListBean.getData();
 
                         new Handler(Looper.getMainLooper()){
@@ -177,7 +195,7 @@ public class ReleaseFragment extends Fragment {
                             @Override
                             public void handleMessage(@NonNull Message msg) {
                                 super.handleMessage(msg);
-                                if(msg.what == 0x01){//设置数据
+                                if(msg.what == 0xfb){//设置数据
 
                                     List<TypeNameListData> l = (List<TypeNameListData>) msg.obj;
 
@@ -204,29 +222,7 @@ public class ReleaseFragment extends Fragment {
             }
 
     }
-//上传图片用的handler
-    private static class MyHandler extends Handler {
-        private final WeakReference<ReleaseFragment> mTarget;
 
-        public MyHandler(ReleaseFragment activity) {
-            mTarget = new WeakReference<ReleaseFragment>(activity);
-        }
-
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            super.handleMessage(msg);
-            ReleaseFragment activity = mTarget.get();
-            super.handleMessage(msg);
-            if (null != activity) {
-                //执行业务逻辑
-                if (msg.what == 0) {
-                    ReleaseFragment ma = mTarget.get();
-                    ma.imageCode = (long) msg.obj;
-                }
-            }
-
-        }
-    }
 
 }
 

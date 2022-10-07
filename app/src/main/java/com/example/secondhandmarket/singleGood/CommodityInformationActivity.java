@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.secondhandmarket.GetUserInfor;
 import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.appkey.appMobSDK;
 import com.example.secondhandmarket.commoditybean.GoodSingleInfor;
@@ -35,7 +36,9 @@ import com.youth.banner.indicator.CircleIndicator;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import okhttp3.Call;
@@ -51,6 +54,53 @@ public class CommodityInformationActivity extends AppCompatActivity {
     private Button buyitBtn;
     private ImageView  releaserAvatar;
     private Banner banner;
+    Handler handler =  new Handler(Looper.getMainLooper()){
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            if(msg.what == 0){
+                GotInfoBean mgotBean = (GotInfoBean) msg.obj;
+                tvgoodName.setText(mgotBean.getData().getContent());
+                if(mgotBean.getData().getContent().length() > 10){
+                    tvgoodName.setFocusable(true);
+                    tvgoodName.setFocusableInTouchMode(true);
+                    tvgoodName.setSelected(true);
+                }
+                tvgoodPrice.setText(mgotBean.getData().getPrice() + "元");
+                tvgoodTypeName.setText(mgotBean.getData().getTypeName());
+                tvreleaserName.setText(mgotBean.getData().getUsername());
+                tvreleaserAddr.setText(mgotBean.getData().getAddr());
+                tvrelesearId.setText(Long.toString(mgotBean.getData().getTuserId()));
+
+                String avatar = mgotBean.getData().getAvatar();
+                if(avatar != null && avatar.length()!=0){
+                    Glide.with(CommodityInformationActivity.this)
+                            .load(avatar)
+                            .into(releaserAvatar);
+                }
+
+
+                List<String> list = mgotBean.getData().getImageUrlList();
+                if(list.size()!=0){
+                    banner.setAdapter(new BannerImageAdapter<String>(list) {
+                                @Override
+                                public void onBindView(BannerImageHolder holder, String data, int position, int size) {
+                                    Glide.with(holder.itemView)
+                                            .load(data)
+                                            .apply(RequestOptions.bitmapTransform(new RoundedCorners(30)))
+                                            .into(holder.imageView);
+                                }
+                            }).addBannerLifecycleObserver(CommodityInformationActivity.this)
+                            .setIndicator(new CircleIndicator(CommodityInformationActivity.this));
+                }else {
+                    TextView t = findViewById(R.id.t);
+                    t.setVisibility(View.VISIBLE);
+                }
+
+            }
+        }
+    };
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -66,14 +116,15 @@ public class CommodityInformationActivity extends AppCompatActivity {
         banner = findViewById(R.id.information_picture);
         releaserAvatar = findViewById(R.id.commo_info_user_avatar);
 
+        //good`s id and price;
         Intent intent = getIntent();
         long goodsId = intent.getLongExtra("commodityId",-1);//商品id
         int goodsPrice = intent.getIntExtra("commodityPrice",-1);//商品价格
 
-        //TODO get buyer id;and money
-        SharedPreferences sharedPreferences_getuser = getSharedPreferences("mysp",MODE_PRIVATE);//购买人 id
-        long buyerId = sharedPreferences_getuser.getLong("userId", -1);
-
+        //get buyer id;and money
+        GetUserInfor getUserInfor = new GetUserInfor(CommodityInformationActivity.this);
+        long buyerId = getUserInfor.getUSerID();
+        int buyMOney = getUserInfor.getUserMoney();
 
         if(goodsId != -1){
             getSingleInfo(goodsId);
@@ -82,10 +133,19 @@ public class CommodityInformationActivity extends AppCompatActivity {
 //        System.out.println(goodsId);
         buyitBtn = findViewById(R.id.buy_btn);
         buyitBtn.setOnClickListener(view ->{
+            //TODO 看看是否登录，未登录则跳到登陆界面，已登录就检查 ID
             //TODO complete purchase
-            //goodsId,goodsPrice,buyerId
-            long sellerId = Long.parseLong(tvrelesearId.getText().toString());
-            System.out.println("sellerId"+sellerId);
+            boolean isLogin = new GetUserInfor(CommodityInformationActivity.this).getIsLogin();
+            if(isLogin){
+                long sellerId = Long.parseLong(tvrelesearId.getText().toString());
+                String purchaseUrl = "http://47.107.52.7:88/member/tran/trading";
+
+
+            }else {
+                Toast.makeText(this, "please log in!", Toast.LENGTH_SHORT).show();
+            }
+
+//            System.out.println("sellerId"+sellerId);
         });
 
     }
@@ -127,7 +187,7 @@ public class CommodityInformationActivity extends AppCompatActivity {
                         GotInfoBean gotInfoBean = new GotInfoBean();
                         try {
                             gotInfoBean = new Gson().fromJson(new String(body.bytes()),GotInfoBean.class);
-                            //TODO process data
+
                         }catch (Exception e){
                             e.printStackTrace();
                         }
@@ -136,48 +196,7 @@ public class CommodityInformationActivity extends AppCompatActivity {
                         Message msg = new Message();
                         msg.what = 0;
                         msg.obj = gotInfoBean;
-                        new Handler(Looper.getMainLooper()){
-                            @SuppressLint("SetTextI18n")
-                            @Override
-                            public void handleMessage(@NonNull Message msg) {
-                                super.handleMessage(msg);
-                                if(msg.what == 0){
-                                    GotInfoBean mgotBean = (GotInfoBean) msg.obj;
-                                    tvgoodName.setText(mgotBean.getData().getContent());
-                                    tvgoodPrice.setText(mgotBean.getData().getPrice() + "元");
-                                    tvgoodTypeName.setText(mgotBean.getData().getTypeName());
-                                    tvreleaserName.setText(mgotBean.getData().getUsername());
-                                    tvreleaserAddr.setText(mgotBean.getData().getAddr());
-                                    tvrelesearId.setText(Long.toString(mgotBean.getData().getTuserId()));
-
-                                    String avatar = mgotBean.getData().getAvatar();
-                                    if(avatar != null && avatar.length()!=0){
-                                        Glide.with(CommodityInformationActivity.this)
-                                                .load(avatar)
-                                                .into(releaserAvatar);
-                                    }
-
-
-                                    List<String> list = mgotBean.getData().getImageUrlList();
-                                    if(list.size()!=0){
-                                        banner.setAdapter(new BannerImageAdapter<String>(list) {
-                                                    @Override
-                                                    public void onBindView(BannerImageHolder holder, String data, int position, int size) {
-                                                        Glide.with(holder.itemView)
-                                                                .load(data)
-                                                                .apply(RequestOptions.bitmapTransform(new RoundedCorners(30)))
-                                                                .into(holder.imageView);
-                                                    }
-                                                }).addBannerLifecycleObserver(CommodityInformationActivity.this)
-                                                .setIndicator(new CircleIndicator(CommodityInformationActivity.this));
-                                    }else {
-                                        TextView t = findViewById(R.id.t);
-                                        t.setVisibility(View.VISIBLE);
-                                    }
-
-                                }
-                            }
-                        }.sendMessage(msg);
+                        handler.sendMessage(msg);
                     }
 
 

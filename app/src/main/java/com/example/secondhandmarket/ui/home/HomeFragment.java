@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.secondhandmarket.GetUserInfor;
 import com.example.secondhandmarket.commoditybean.ResponceBodyDataBean;
 import com.example.secondhandmarket.singleGood.CommodityInformationActivity;
 import com.example.secondhandmarket.R;
@@ -73,8 +74,13 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
         View view = binding.getRoot();
         goodsList = view.findViewById(R.id.commodityList);
         tvEmpty = view.findViewById(R.id.ng);
+        long userId = new GetUserInfor(mcontext).getUSerID();
+        if(userId != -1){
+            getAllCommodity(userId);
+        }else {
+            Toast.makeText(mcontext, "No User Present! Please Log In", Toast.LENGTH_SHORT).show();
+        }
 
-        getAllCommodity(14);
 
         tvEmpty.setVisibility(View.GONE);
 
@@ -133,14 +139,14 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
     private final Callback callback = new Callback() {
         @Override
         public void onFailure(@NonNull Call call, IOException e) {
-            //TODO 请求失败处理
+
             Looper.prepare();
             Toast.makeText(mcontext, e.getMessage(), Toast.LENGTH_SHORT).show();
             Looper.loop();
         }
         @Override
         public void onResponse(@NonNull Call call, Response response) throws IOException {
-            //TODO 请求成功处理
+
             responseBodyBeanGoods = new ResponseBodyBean();
             ResponseBody body = response.body();
             assert body != null;
