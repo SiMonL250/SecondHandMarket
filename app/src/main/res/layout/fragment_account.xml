@@ -103,13 +103,13 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black"
+        android:background="@android:color/darker_gray"
         app:layout_constraintTop_toBottomOf="@id/profile_blank"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black"
+         android:background="@android:color/darker_gray"
         app:layout_constraintTop_toTopOf="@id/myrelease"/>
 
     <TextView
@@ -128,7 +128,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black"
+         android:background="@android:color/darker_gray"
         app:layout_constraintTop_toTopOf="@id/myrecord"/>
 
     <TextView
@@ -145,7 +145,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black"
+         android:background="@android:color/darker_gray"
         app:layout_constraintTop_toTopOf="@id/my_information"/>
 
     <TextView
@@ -160,7 +160,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black"
+         android:background="@color/dark_grey"
         app:layout_constraintTop_toBottomOf="@id/my_information"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

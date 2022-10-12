@@ -51,7 +51,7 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
     private ImageView ivAvatar;
     private String imageUrl;
     private Button btn;
-
+    private List<File> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +60,9 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
         ivAvatar = findViewById(R.id.iv_avatar);
         btn = findViewById(R.id.btn_sumbit);
         btn.setOnClickListener(v->{
+            if(list.size()!=0){
+                postfile(list);
+            }
             if(imageUrl != null){
                 long userId = new GetUserInfor(ChangeMyInformationActivity.this).getUSerID();
                 if(userId != -1){
@@ -98,10 +101,9 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
             if (data != null) {
                 ivAvatar.setImageURI(data.getData());
                 Uri uri = data.getData();
-//TODO try to post file
-                List<File> list = new ArrayList<>();
+                list = new ArrayList<>();
                 File f = new File(uri.toString());
-                postfile(list);
+                list.add(f);
             }
         }
     }
@@ -119,7 +121,7 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
         Map<String,Object> map = new HashMap<>();
 
         map.put("fileList",fList);
-        String body = map.toString();
+        String body = new Gson().toJson(map);
 
         MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -137,7 +139,9 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call call, IOException e) {
+                    Looper.prepare();
                     Toast.makeText(ChangeMyInformationActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Looper.loop();
                 }
 
                 @Override

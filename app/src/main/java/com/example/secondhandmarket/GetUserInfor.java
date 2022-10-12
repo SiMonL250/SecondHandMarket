@@ -22,7 +22,7 @@ public class GetUserInfor {
     public GetUserInfor() {
     }
     public String getUSerName(){
-        return sp.getString(MYSP_USERNAME,String.valueOf(R.string.username));
+        return sp.getString(MYSP_USERNAME,context.getString(R.string.username));
     }
     public String getAvatar(){
         return sp.getString(MYSP_AVATAR,null);

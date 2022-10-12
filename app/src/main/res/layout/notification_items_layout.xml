@@ -30,6 +30,6 @@
         android:id="@+id/view2"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/black"
+        android:background="@color/dark_grey"
         app:layout_constraintTop_toBottomOf="@id/tvnotifi" />
 </androidx.constraintlayout.widget.ConstraintLayout>

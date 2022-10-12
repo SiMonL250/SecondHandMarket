@@ -84,25 +84,9 @@ public class MyReleaseAdapter extends RecyclerView.Adapter<MyReleaseViewHolder> 
         holder.myReleaseID.setText(Long.toString(gc.getId()));//主键id
 
         if(gc.getImageUrlList()!=null){
-            new Thread(() -> {
-                Bitmap bm = new getURLimage().getimage(gc.getImageUrlList().get(0));
-                Message msg = new Message();
-                msg.what = 0x18;
-                msg.obj = bm;
-
-                new Handler(Looper.getMainLooper()) {
-                    @Override
-                    public void handleMessage(@NonNull Message msg) {
-                        super.handleMessage(msg);
-                        if (msg.what == 0x18) {
-//                        System.out.println("111");
-                            Bitmap bmp = (Bitmap) msg.obj;
-                            holder.myReleaseImage.setImageBitmap(bmp);
-                        }
-                    }
-                }.sendMessage(msg);
-
-            }).start();
+            Glide.with(context)
+                    .load(gc.getImageUrlList().get(0))
+                    .into(holder.myReleaseImage);
         }
     }
 

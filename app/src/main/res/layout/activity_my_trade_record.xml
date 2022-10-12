@@ -17,7 +17,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/black"/>
+        android:background="@color/dark_grey"/>
     <LinearLayout
         android:id="@+id/father"
         android:layout_width="match_parent"

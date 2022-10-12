@@ -2,15 +2,12 @@ package com.example.secondhandmarket.singleGood;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.NetworkOnMainThreadException;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,13 +15,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.secondhandmarket.EnsurePurchase;
 import com.example.secondhandmarket.GetUserInfor;
+import com.example.secondhandmarket.PurchaseMap;
 import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.appkey.appMobSDK;
 import com.example.secondhandmarket.commoditybean.GoodSingleInfor;
@@ -34,12 +31,11 @@ import com.youth.banner.adapter.BannerImageAdapter;
 import com.youth.banner.holder.BannerImageHolder;
 import com.youth.banner.indicator.CircleIndicator;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -54,6 +50,9 @@ public class CommodityInformationActivity extends AppCompatActivity {
     private Button buyitBtn;
     private ImageView  releaserAvatar;
     private Banner banner;
+    private String pic;
+    private long sellerId;
+    private String goodName;
     Handler handler =  new Handler(Looper.getMainLooper()){
         @SuppressLint("SetTextI18n")
         @Override
@@ -73,6 +72,8 @@ public class CommodityInformationActivity extends AppCompatActivity {
                 tvreleaserAddr.setText(mgotBean.getData().getAddr());
                 tvrelesearId.setText(Long.toString(mgotBean.getData().getTuserId()));
 
+                sellerId = mgotBean.getData().getTuserId();
+                goodName = mgotBean.getData().getContent();
                 String avatar = mgotBean.getData().getAvatar();
                 if(avatar != null && avatar.length()!=0){
                     Glide.with(CommodityInformationActivity.this)
@@ -93,6 +94,8 @@ public class CommodityInformationActivity extends AppCompatActivity {
                                 }
                             }).addBannerLifecycleObserver(CommodityInformationActivity.this)
                             .setIndicator(new CircleIndicator(CommodityInformationActivity.this));
+
+                    pic = list.get(0);
                 }else {
                     TextView t = findViewById(R.id.t);
                     t.setVisibility(View.VISIBLE);
@@ -124,7 +127,7 @@ public class CommodityInformationActivity extends AppCompatActivity {
         //get buyer id;and money
         GetUserInfor getUserInfor = new GetUserInfor(CommodityInformationActivity.this);
         long buyerId = getUserInfor.getUSerID();
-        int buyMOney = getUserInfor.getUserMoney();
+        int buyMoney = getUserInfor.getUserMoney();
 
         if(goodsId != -1){
             getSingleInfo(goodsId);
@@ -137,9 +140,17 @@ public class CommodityInformationActivity extends AppCompatActivity {
             //TODO complete purchase
             boolean isLogin = new GetUserInfor(CommodityInformationActivity.this).getIsLogin();
             if(isLogin){
-                long sellerId = Long.parseLong(tvrelesearId.getText().toString());
-                String purchaseUrl = "http://47.107.52.7:88/member/tran/trading";
-
+                Map<String,Object> Buyingparams = new HashMap<>();
+                Buyingparams.put("sellerId",sellerId);
+                Buyingparams.put("buyerId",buyerId);
+                Buyingparams.put("buyerMoney",buyMoney);
+                Buyingparams.put("goodId",goodsId);
+                Buyingparams.put("goodsPrice",goodsPrice);
+                Buyingparams.put("picture",pic);
+                Buyingparams.put("goodName",goodName);
+//                System.out.println(Buyingparams);
+                startActivity(new Intent(this, EnsurePurchase.class)
+                        .putExtra("purchaseParams", new PurchaseMap(Buyingparams)));
 
             }else {
                 Toast.makeText(this, "please log in!", Toast.LENGTH_SHORT).show();
@@ -149,7 +160,6 @@ public class CommodityInformationActivity extends AppCompatActivity {
         });
 
     }
-
     private void getSingleInfo(long goodsId){
         new Thread(()->{
             // url路径

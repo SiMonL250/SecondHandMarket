@@ -3,8 +3,6 @@ package com.example.secondhandmarket.myrelease.newrelease;
 import static com.example.secondhandmarket.databinding.FragmentNewReleaseSoldoutBinding.inflate;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,13 +22,10 @@ import androidx.viewbinding.ViewBinding;
 import com.example.secondhandmarket.GetUserInfor;
 import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.commoditybean.GotCommodityBean;
-import com.example.secondhandmarket.commoditybean.ResponseBodyBean;
+import com.example.secondhandmarket.commoditybean.AllGoodsBean;
 import com.example.secondhandmarket.myrelease.MyReleaseAdapter;
 import com.example.secondhandmarket.myrelease.Requestget;
-import com.example.secondhandmarket.traderecord.MyTradeRecord;
 import com.google.gson.Gson;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.List;
@@ -113,16 +108,16 @@ public class NewReleaseFragment extends Fragment {
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     ResponseBody body = response.body();
-                    ResponseBodyBean responseBodyBean = new ResponseBodyBean();
+                    AllGoodsBean allGoodsBean = new AllGoodsBean();
                     assert body != null;
-                    responseBodyBean = new Gson().fromJson(new String(body.bytes()),responseBodyBean.getClass());
-                    System.out.println(responseBodyBean.getCode());
+                    allGoodsBean = new Gson().fromJson(new String(body.bytes()), allGoodsBean.getClass());
+                    System.out.println(allGoodsBean.getCode());
 
 
-                    if(responseBodyBean.getCode() == 200){
+                    if(allGoodsBean.getCode() == 200){
                         Message msg = Message.obtain();
                         msg.what = 0x08;
-                        msg.obj = responseBodyBean.getData().getRecords();//List
+                        msg.obj = allGoodsBean.getData().getRecords();//List
 
                         new Handler(Looper.getMainLooper()) {
                             @Override

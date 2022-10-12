@@ -1,9 +1,7 @@
 package com.example.secondhandmarket.ui.release;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -20,13 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.secondhandmarket.R;
-import com.example.secondhandmarket.R2;
 import com.example.secondhandmarket.appkey.appMobSDK;
 import com.google.gson.Gson;
 
@@ -34,7 +29,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
@@ -67,18 +61,6 @@ public class ReleaseFragment extends Fragment {
 
         }
     };
-
-    //选择图片的组件
-    List<LoadFileVo> fileList = new ArrayList<>();
-    LoadFileAdapter adapter = null;
-
-    private RecyclerView rvPic;
-
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R2.id.tvNum)
-    TextView tvNum;
-
-
     public ReleaseFragment() {
         // Required empty public constructor
     }
@@ -98,9 +80,6 @@ public class ReleaseFragment extends Fragment {
         etInputReleasePrice = view.findViewById(R.id.input_released_commodity_price);
         spCommoTypeName = view.findViewById(R.id.spinner_released_commodity_typename);
         tvReleaseButton = view.findViewById(R.id.release_button);
-
-        rvPic = view.findViewById(R.id.rvPic);
-        initAdapter();
 
         getTypeNameList();
 //用来获取typeid 和typeName
@@ -123,34 +102,8 @@ public class ReleaseFragment extends Fragment {
        return view;
     }
 
-    private void initAdapter(){
-        fileList.add(new LoadFileVo());
-        adapter = new LoadFileAdapter(context, fileList,8);
-        rvPic.setAdapter(adapter);
-        rvPic.setLayoutManager(new GridLayoutManager(context, 3));//3 coloum
-        adapter.setListener(new LoadFileAdapter.OnItemClickListener() {
-            @Override
-            public void click(View view, int positon) {
-                if(fileList.size()>8){
-                    Toast.makeText(context, "一次最多上传8张图片", Toast.LENGTH_SHORT).show();
-                }else {
-                    selectPic();
-                }
-            }
 
-            @Override
-            public void del(View view) {
-                tvNum.setText((fileList.size()-1)+"/8");
-            }
-        });
-    }
 
-    private void selectPic() {
-        if(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED){
-        }
-
-    }
 
     private void getTypeNameList() {
             String url = "http://47.107.52.7:88/member/tran/goods/type";

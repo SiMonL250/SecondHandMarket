@@ -2,12 +2,12 @@ package com.example.secondhandmarket.ui.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.NetworkOnMainThreadException;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,25 +18,22 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.secondhandmarket.GetUserInfor;
-import com.example.secondhandmarket.commoditybean.ResponceBodyDataBean;
+import com.example.secondhandmarket.LoginActivity;
+import com.example.secondhandmarket.commoditybean.AllGoodsListBean;
 import com.example.secondhandmarket.singleGood.CommodityInformationActivity;
 import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.appkey.appMobSDK;
 import com.example.secondhandmarket.commoditybean.GotCommodityBean;
-import com.example.secondhandmarket.commoditybean.ResponseBodyBean;
+import com.example.secondhandmarket.commoditybean.AllGoodsBean;
 import com.example.secondhandmarket.databinding.FragmentHomeBinding;
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +51,6 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
     private FragmentHomeBinding binding;
     private commodityAdapter mAdapter;
     private Context mcontext;
-    private ResponseBodyBean responseBodyBeanGoods = new ResponseBodyBean();
     private long userId;
 
 
@@ -79,6 +75,28 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
             getAllCommodity(userId);
         }else {
             Toast.makeText(mcontext, "No User Present! Please Log In", Toast.LENGTH_SHORT).show();
+
+            TextView plsLogin = new TextView(mcontext);
+            plsLogin.setText("登录");
+            plsLogin.setTextSize(48);
+            plsLogin.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); //下划线
+            plsLogin.getPaint().setAntiAlias(true);//抗锯齿
+
+            plsLogin.setTextColor(getResources().getColor(android.R.color.darker_gray));
+            ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.
+                    LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
+            layoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
+            layoutParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
+            layoutParams.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
+
+            plsLogin.setLayoutParams(layoutParams);
+            ConstraintLayout constraintLayout = view.findViewById(R.id.hf);
+            constraintLayout.addView(plsLogin);
+            plsLogin.setId(R.id.pls_login);
+            plsLogin.setOnClickListener(v->{
+                startActivity(new Intent(mcontext, LoginActivity.class));
+            });
         }
 
 
@@ -88,23 +106,21 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
         return view;
     }
 
-    //从手机存储卡路径下解析json,并返回String
-    public static String getFileFromSD(String path) {
-        String result = "";
-
-        try {
-            FileInputStream f = new FileInputStream(path);
-            BufferedReader bis = new BufferedReader(new InputStreamReader(f));
-            String line = "";
-            while ((line = bis.readLine()) != null) {
-                result += line;
+    @Override
+    public void onStart() {
+        super.onStart();
+        long userIdonstart = new GetUserInfor(mcontext).getUSerID();
+        if(userIdonstart != -1){
+            getAllCommodity(userIdonstart);
+            try{
+                TextView plslogin = getView().findViewById(R.id.pls_login);
+                plslogin.setVisibility(View.GONE);
+            }catch (NullPointerException e){
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return result;
-
     }
+
     private void getAllCommodity(long userId) {
         new Thread(() -> {
             String url = "http://47.107.52.7:88/member/tran/goods/all?size=1000&userId=" + userId;
@@ -130,11 +146,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
             } catch (NetworkOnMainThreadException ex) {
                 ex.printStackTrace();
             }
-        }
-        ).start();
-        // url路径
-        //String url = "http://47.107.52.7:88/member/tran/goods/all?current=0&size=0&typeId=0&keyword=string&userId=0";
-
+        }).start();
     }
     private final Callback callback = new Callback() {
         @Override
@@ -147,30 +159,30 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
         @Override
         public void onResponse(@NonNull Call call, Response response) throws IOException {
 
-            responseBodyBeanGoods = new ResponseBodyBean();
+            AllGoodsBean allGoodsBean = new AllGoodsBean();
             ResponseBody body = response.body();
             assert body != null;
-            responseBodyBeanGoods = new Gson().fromJson(new String(body.bytes())
-                    ,responseBodyBeanGoods.getClass());
+            allGoodsBean = new Gson().fromJson(new String(body.bytes())
+                    , allGoodsBean.getClass());
 
-            ResponceBodyDataBean rb = responseBodyBeanGoods.getData();
-            if(rb !=null && rb.getRecords().size()!=0){
+            AllGoodsListBean data = allGoodsBean.getData();
+            if(data !=null && data.getRecords().size()!=0){
                 Message message = Message.obtain();
                 message.what = 0x11;
-                message.obj = responseBodyBeanGoods.getData().getRecords();
+                message.obj = data;
                 new Handler(Looper.getMainLooper()){
                     @Override
                     public void handleMessage(@NonNull Message msg) {
                         super.handleMessage(msg);
                         if(msg.what == 0x11){
-                            List<GotCommodityBean> list = (List<GotCommodityBean>) msg.obj;
+                            AllGoodsListBean allGoodsListBean = (AllGoodsListBean) msg.obj;
+                            List<GotCommodityBean> list = allGoodsListBean.getRecords();
                             mAdapter = new commodityAdapter(list,mcontext);
                             goodsList.setAdapter(mAdapter);
                         }
                     }
                 }.sendMessage(message);
             }
-
         }
     };
     @Override

@@ -2,7 +2,7 @@ package com.example.secondhandmarket.commoditybean;
 
 import java.util.List;
 
-public class ResponceBodyDataBean {
+public class AllGoodsListBean {
     private long current;
     private List<GotCommodityBean> records;
     private long size;
@@ -38,16 +38,6 @@ public class ResponceBodyDataBean {
 
     public void setTotal(int total) {
         this.total = total;
-    }
-
-    @Override
-    public String toString() {
-        return "{" +
-                "\"current\":" + current +
-                ", \"records\":" + records +
-                ", \"size\":" + size +
-                ", \"total\":" +  total +
-                '}';
     }
 }
 /*

@@ -1,9 +1,9 @@
 package com.example.secondhandmarket.commoditybean;
 
-public class ResponseBodyBean {//可以用来获取商品信息
+public class AllGoodsBean {//可以用来获取商品信息
     private String msg;
     private int code;
-    private ResponceBodyDataBean data;
+    private AllGoodsListBean data;
 
     public String getMsg() {
         return msg;
@@ -21,11 +21,11 @@ public class ResponseBodyBean {//可以用来获取商品信息
         this.code = code;
     }
 
-    public ResponceBodyDataBean getData() {
+    public AllGoodsListBean getData() {
         return data;
     }
 
-    public void setData(ResponceBodyDataBean data) {
+    public void setData(AllGoodsListBean data) {
         this.data = data;
     }
 

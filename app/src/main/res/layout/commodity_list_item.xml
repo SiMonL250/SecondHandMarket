@@ -67,7 +67,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="3dp"
-        android:background="@color/black"
+        android:background="@color/dark_grey"
         app:layout_constraintTop_toBottomOf="@id/commodityImg"/>
 
     <!--    <ImageView-->

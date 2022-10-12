@@ -76,4 +76,8 @@
     <string name="goodspic">goodspic</string>
     <string name="maijiamz">买家名字</string>
     <string name="_0_8">0/8</string>
+    <string name="account">account</string>
+    <string name="货物名称">货物名称</string>
+    <string name="cnyuan">￥</string>
+    <string name="sure">确认购买</string>
 </resources>

@@ -52,7 +52,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black" />
+        android:background="@color/dark_grey" />
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -78,7 +78,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black" />
+        android:background="@color/dark_grey" />
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -88,21 +88,15 @@
             android:textColor="@color/black"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="4dp"/>
-        <ImageView
-            android:id="@+id/record_buyer_avatar"
-            android:layout_height="48dp"
-            android:layout_width="48dp"
-            android:src="@drawable/ic_baseline_account_box_24"
-            android:contentDescription="@string/selleravatar" />
         <TextView
             android:id="@+id/record_buyer_name"
             android:text="@string/maijiamz"
             android:textColor="@color/black"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:layout_gravity="center_vertical"/>
     </GridLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="3dp"
-        android:background="@color/black" />
+        android:background="@color/dark_grey" />
 </LinearLayout>

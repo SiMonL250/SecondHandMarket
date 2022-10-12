@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,11 +21,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.secondhandmarket.GetUserInfor;
 import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.appkey.appMobSDK;
-import com.example.secondhandmarket.commoditybean.GotCommodityBean;
-import com.example.secondhandmarket.commoditybean.ResponseBodyBean;
 import com.example.secondhandmarket.getURLimage.getURLimage;
 import com.google.gson.Gson;
 
@@ -50,7 +49,7 @@ public class MyTradeRecord extends AppCompatActivity {
             super.handleMessage(msg);
             if(msg.what == 0xec){
                 list = (List<TradeRecordDataBean>) msg.obj;
-                RecordAdapter recordAdapter = new RecordAdapter(list);
+                RecordAdapter recordAdapter = new RecordAdapter(list,MyTradeRecord.this);
                 mRecyclerView.setLayoutManager(new LinearLayoutManager(MyTradeRecord.this));
                 mRecyclerView.setAdapter(recordAdapter);
 
@@ -141,9 +140,14 @@ public class MyTradeRecord extends AppCompatActivity {
 //adapter
     static class RecordAdapter extends RecyclerView.Adapter<viewholder>{
         List<TradeRecordDataBean> list;
-
+        private Context context;
     public RecordAdapter(List<TradeRecordDataBean> list) {
         this.list = list;
+    }
+
+    public RecordAdapter(List<TradeRecordDataBean> list, Context context) {
+        this.list = list;
+        this.context = context;
     }
 
     @NonNull
@@ -166,26 +170,10 @@ public class MyTradeRecord extends AppCompatActivity {
             holder.myRecordBuyerName.setText(trdb.getBuyerName());
             //卖家头像
             setAvatar(trdb.getSellerAvatar(), holder.myRecordSellerAvatar,0xee);
-            //买家头像
-            setAvatar(trdb.getBuyerAvatar(), holder.myRecoredBuyerAvatar,0xef);
             //商品图片
-            if(trdb.getImageUrlList().size()!=0){
-                new Thread(()->{
-                    Bitmap bmgoodpic = new getURLimage().getimage(trdb.getImageUrlList().get(0));
-                    Message msg = Message.obtain();
-                    msg.what = 0xed;
-                    msg.obj = bmgoodpic;
-
-                    new Handler(Looper.getMainLooper()){
-                        @Override
-                        public void handleMessage(@NonNull Message msg) {
-                            super.handleMessage(msg);
-                            if(msg.what == 0xed){
-                                holder.myRecordImage.setImageBitmap((Bitmap)msg.obj);
-                            }
-                        }
-                    }.sendMessage(msg);
-                }).start();
+            if(trdb.getImageUrlList()!=null && trdb.getImageUrlList().size()!=0){
+                Glide.with(context).load(trdb.getImageUrlList().get(0))
+                        .into(holder.myRecordImage);
             }
         }
 
@@ -196,29 +184,16 @@ public class MyTradeRecord extends AppCompatActivity {
 
         public void setAvatar(String avatarUrl,ImageView imageView, int wh){
             if(avatarUrl != null){
-                new Thread(()->{
-                    Bitmap bmavatar = new getURLimage().getimage(avatarUrl);
-                    Message msg = Message.obtain();
-                    msg.what = wh;
-                    msg.obj = bmavatar;
-
-                    new Handler(Looper.getMainLooper()){
-                        @Override
-                        public void handleMessage(@NonNull Message msg) {
-                            super.handleMessage(msg);
-                            if(msg.what == wh){
-                                imageView.setImageBitmap((Bitmap)msg.obj);
-                            }
-                        }
-                    }.sendMessage(msg);
-                }).start();
+               Glide.with(context)
+                       .load(avatarUrl)
+                       .into(imageView);
             }
         }
     }
 
     private static class viewholder extends RecyclerView.ViewHolder {
         TextView myRecordGoodName, myRecordPrice, myRecordSellerName,myRecordBuyerName;
-        ImageView myRecordImage, myRecordSellerAvatar, myRecoredBuyerAvatar;
+        ImageView myRecordImage, myRecordSellerAvatar;
         public viewholder(@NonNull View itemView) {
             super(itemView);
             myRecordGoodName = itemView.findViewById(R.id.record_goods_name);
@@ -228,7 +203,6 @@ public class MyTradeRecord extends AppCompatActivity {
 
             myRecordImage= itemView.findViewById(R.id.record_goods_pic);
             myRecordSellerAvatar= itemView.findViewById(R.id.record_seller_avatar);
-            myRecoredBuyerAvatar = itemView.findViewById(R.id.record_buyer_avatar);
         }
     }
 

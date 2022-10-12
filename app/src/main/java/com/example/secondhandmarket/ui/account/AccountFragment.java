@@ -3,21 +3,23 @@ package com.example.secondhandmarket.ui.account;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.NetworkOnMainThreadException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.secondhandmarket.GetUserInfor;
@@ -27,6 +29,15 @@ import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.getURLimage.getURLimage;
 import com.example.secondhandmarket.traderecord.MyTradeRecord;
 
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Headers;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link AccountFragment#newInstance} factory method to
@@ -34,7 +45,7 @@ import com.example.secondhandmarket.traderecord.MyTradeRecord;
  */
 public class AccountFragment extends Fragment {
     private TextView tvuserName, tvuserId, tvMoney;
-    private TextView myInfor;
+    private TextView changeInfor;
     private TextView tvmyRelease, tvmyRecord;
     private ImageView ivavatar;
     private ImageView ivClearLogin;
@@ -83,7 +94,7 @@ public class AccountFragment extends Fragment {
         tvuserName = (TextView) view.findViewById(R.id.account_name);
         tvuserId = view.findViewById(R.id.user_id);
         tvMoney = view.findViewById(R.id.user_money);
-        myInfor = view.findViewById(R.id.my_information);
+        changeInfor = view.findViewById(R.id.my_information);
         tvmyRelease = view.findViewById(R.id.myrelease);
         tvmyRelease.setOnClickListener(this::MainActivityClickListener);
         tvmyRecord = view.findViewById(R.id.myrecord);
@@ -102,17 +113,19 @@ public class AccountFragment extends Fragment {
 
         if(avatar != null){
             new Thread(() -> {
-                    Bitmap avatarbm = new getURLimage().getimage(avatar);
-                    if(avatarbm !=null){
+//                    Bitmap avatarbm = new getURLimage(getContext()).getimage(avatar);
+                Drawable drawable = new getURLimage(getContext()).getDrawableImage(avatar);
+                    if(drawable !=null){
                         Message msg = Message.obtain();
-                        msg.obj = avatarbm;
+                        msg.obj = drawable;
                         msg.what = 0x34;
                         new Handler(Looper.getMainLooper()){
                             @Override
                             public void handleMessage(@NonNull Message msg) {
                                 super.handleMessage(msg);
                                 if(msg.what == 0x34){
-                                    ivavatar.setImageBitmap((Bitmap) msg.obj);
+//                                    ivavatar.setImageBitmap((Bitmap) msg.obj);
+                                    ivavatar.setImageDrawable((Drawable) msg.obj);
                                 }
                             }
                         }.sendMessage(msg);
@@ -126,13 +139,15 @@ public class AccountFragment extends Fragment {
             }
         });
 
-        tvmyRecord.setOnClickListener(v->{
-            startActivity(new Intent(mcontext, MyTradeRecord.class));
-        });
+        if(new GetUserInfor(mcontext).getIsLogin()){
+            tvmyRecord.setOnClickListener(v -> {
+                startActivity(new Intent(mcontext, MyTradeRecord.class));
+            });
 
-        myInfor.setOnClickListener(v->{
-            startActivity(new Intent(mcontext, ChangeMyInformationActivity.class));
-        });
+            changeInfor.setOnClickListener(v -> {
+                startActivity(new Intent(mcontext, ChangeMyInformationActivity.class));
+            });
+        }
 
         ivClearLogin.setOnClickListener(v->{
             if(new GetUserInfor(mcontext).getIsLogin()){
@@ -141,7 +156,14 @@ public class AccountFragment extends Fragment {
                        .setMessage("确定注销登录？？")
                        //确认按钮
                        .setPositiveButton("确定", (dialogInterface, i) -> {
-
+                            SharedPreferences sp = mcontext
+                                    .getSharedPreferences(new GetUserInfor().MYSP_USER,Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor=sp.edit();
+                            editor.clear();
+                            editor.apply();
+                            Toast.makeText(mcontext, "注销成功", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(mcontext,LoginActivity.class));
+//                            getActivity().finish();
                        })
                        //取消按钮
                        .setNegativeButton("取消", (dialogInterface, i) -> {
@@ -159,18 +181,111 @@ public class AccountFragment extends Fragment {
         return view;
     }
 
+    @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n"})
     @Override
     public void onStart() {
         super.onStart();
+        GetUserInfor getUserInfor = new GetUserInfor(mcontext);
+        String userName = getUserInfor.getUSerName();
+        String avatar = getUserInfor.getAvatar();
+        long userId = getUserInfor.getUSerID();
+        int money = getUserInfor.getUserMoney();
+
+        tvuserName.setText(userName);
+        tvuserId.setText(Long.toString(userId));
+        tvMoney.setText(Integer.toString(money));
+        ivavatar.setImageDrawable(getResources()
+                .getDrawable(R.drawable.ic_baseline_account_circle_24,null));
     }
 
+    private void getCostRevenue(long userId){
+        new Thread(()->{
+            String url ="http://47.107.52.7:88/member/tran/trading/allMoney?userId=" +userId;
+            // 请求头
+            Headers headers = new Headers.Builder()
+                    .add("appId", "1c43b58c794448edba2992f973ff2120")
+                    .add("appSecret", "7428391e8fb7741f3458db716391b5526510b")
+                    .add("Accept", "application/json, text/plain, */*")
+                    .build();
+
+            //请求组合创建
+            Request request = new Request.Builder()
+                    .url(url)
+                    // 将请求头加至请求中
+                    .headers(headers)
+                    .get()
+                    .build();
+            try {
+                OkHttpClient client = new OkHttpClient();
+                //发起请求，传入callback进行回调
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+
+                    }
+                });
+            }catch (NetworkOnMainThreadException ex){
+                ex.printStackTrace();
+            }
+        }).start();
+    }
+    /*
+    {
+msg:"string"
+code:0
+data:{
+TotalRevenue:0
+TotalSpending:0
+totalRevenue:0
+totalSpending:0
+}
+}
+     */
+    static class costAndRevenue{
+        private String msg;
+        private int code;
+        private data data;
+
+        public String getMsg() {
+            return msg;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public data getDtat() {
+            return data;
+        }
+
+        private static class data {
+            private int TotalRevenue;
+            private int TotalSpending;
+            private int totalRevenue;
+            private int totalSpending;
+
+            public int getTotalRevenue() {
+                return TotalRevenue;
+            }
+
+            public int getTotalSpending() {
+                return TotalSpending;
+            }
+        }
+    }
     public void MainActivityClickListener(View view) {//完善点击事件
       //account Fragment 的点击监听
             int id = view.getId();
             //account Fragment
-            if(id == R.id.myrelease){
+            if(id == R.id.myrelease && new GetUserInfor(mcontext).getIsLogin()){
                 startActivity(new Intent(mcontext, MyReleaseActivity.class));
             }
 
     }
+
 }

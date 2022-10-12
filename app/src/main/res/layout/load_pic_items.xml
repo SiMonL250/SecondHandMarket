@@ -7,15 +7,16 @@
         android:id="@+id/ivPic"
         android:layout_width="64dp"
         android:layout_height="64dp"
+        android:contentDescription="@string/picture"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_baseline_add_photo_alternate_24"
-        android:contentDescription="@string/picture" />
+        android:src="@drawable/ic_baseline_add_photo_alternate_24" />
+
     <ImageView
         android:id="@+id/ivDel"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/ic_baseline_clear_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:contentDescription="@string/deletepic" />
+        android:contentDescription="@string/deletepic"
+        android:src="@drawable/ic_baseline_clear_24" />
 
 </RelativeLayout>

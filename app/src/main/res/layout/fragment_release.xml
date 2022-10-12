@@ -6,33 +6,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.release.ReleaseFragment"
     android:orientation="vertical">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/white">
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/add_pic"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_baseline_add_photo_alternate_24"/>
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvPic"
+            android:id="@+id/rv_pic"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal">
-        </androidx.recyclerview.widget.RecyclerView>
+            android:layout_height="wrap_content"/>
         <TextView
-            android:id="@+id/tvNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/_0_8"
-            android:textColor="#666666"
+            android:text="@string/account"
             android:layout_gravity="right|bottom"
-            android:paddingEnd="10dp"
-            tools:ignore="RtlHardcoded,RtlSymmetry" />
+            tools:ignore="RtlHardcoded" />
 
     </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black" />
+        android:background="@color/dark_grey" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -100,7 +98,6 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:hint="@string/mjdz"
-            android:inputType="number|numberDecimal"
             android:singleLine="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tvaddr"
@@ -131,7 +128,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/black"
+            android:background="@color/dark_grey"
             app:layout_constraintTop_toTopOf="@id/release_button" />
 
         <Button
@@ -150,7 +147,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/black"
+            android:background="@color/dark_grey"
             app:layout_constraintTop_toBottomOf="@id/release_button" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
