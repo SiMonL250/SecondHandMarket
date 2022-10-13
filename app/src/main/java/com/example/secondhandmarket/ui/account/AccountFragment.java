@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.secondhandmarket.GetUserInfor;
 import com.example.secondhandmarket.LoginActivity;
 import com.example.secondhandmarket.MyReleaseActivity;
@@ -110,28 +112,10 @@ public class AccountFragment extends Fragment {
         tvuserName.setText(userName);
         tvuserId.setText(Long.toString(userId));
         tvMoney.setText(Integer.toString(money));
+        Glide.with(mcontext)
+                .load(avatar)
+                .into(ivavatar);
 
-        if(avatar != null){
-            new Thread(() -> {
-//                    Bitmap avatarbm = new getURLimage(getContext()).getimage(avatar);
-                Drawable drawable = new getURLimage(getContext()).getDrawableImage(avatar);
-                    if(drawable !=null){
-                        Message msg = Message.obtain();
-                        msg.obj = drawable;
-                        msg.what = 0x34;
-                        new Handler(Looper.getMainLooper()){
-                            @Override
-                            public void handleMessage(@NonNull Message msg) {
-                                super.handleMessage(msg);
-                                if(msg.what == 0x34){
-//                                    ivavatar.setImageBitmap((Bitmap) msg.obj);
-                                    ivavatar.setImageDrawable((Drawable) msg.obj);
-                                }
-                            }
-                        }.sendMessage(msg);
-                    }
-            }).start();
-        }
 
         tvuserName.setOnClickListener(view1 -> {//如果没登陆，没登陆获取到的就是 !false
             if(!new GetUserInfor(mcontext).getIsLogin()){
@@ -169,7 +153,6 @@ public class AccountFragment extends Fragment {
                        .setNegativeButton("取消", (dialogInterface, i) -> {
 
                        }).create().show();
-                //TODO 清除登录
             }else {
                 new AlertDialog.Builder(mcontext)
                         .setTitle("你还没登陆呢！")

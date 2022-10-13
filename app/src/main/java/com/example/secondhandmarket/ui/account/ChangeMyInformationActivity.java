@@ -3,6 +3,7 @@ package com.example.secondhandmarket.ui.account;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -25,12 +26,14 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.loader.content.CursorLoader;
 
+import com.example.secondhandmarket.FileUtils;
 import com.example.secondhandmarket.GetUserInfor;
 import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.appkey.appMobSDK;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,6 +44,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -49,9 +53,8 @@ import okhttp3.ResponseBody;
 
 public class ChangeMyInformationActivity extends AppCompatActivity {
     private ImageView ivAvatar;
-    private String imageUrl;
     private Button btn;
-    private List<File> list;
+    private ArrayList<String> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +66,13 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
             if(list.size()!=0){
                 postfile(list);
             }
-            if(imageUrl != null){
-                long userId = new GetUserInfor(ChangeMyInformationActivity.this).getUSerID();
-                if(userId != -1){
-                    postchange(imageUrl, userId);
-                }
 
-            }
+//            if(imageUrl != null){
+//                long userId = new GetUserInfor(ChangeMyInformationActivity.this).getUSerID();
+//                if(userId != -1){
+//                    postchange(imageUrl, userId);
+//                }
+//            }
 
         });
     }
@@ -102,13 +105,15 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
                 ivAvatar.setImageURI(data.getData());
                 Uri uri = data.getData();
                 list = new ArrayList<>();
-                File f = new File(uri.toString());
-                list.add(f);
+                //PNG JPG
+                String path = new FileUtils().getRealPathFromUri(ChangeMyInformationActivity.this,uri);
+//                File f = new File(path);
+                list.add(path);
             }
         }
     }
 
-    private void postfile(List<File> fList){
+    private void postfile(ArrayList<String> fList){
         String url = "http://47.107.52.7:88/member/tran/image/upload";
 
         Headers headers = new Headers.Builder()
@@ -118,18 +123,20 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
                 .add("Content-Type", "multipart/form-data")
                 .build();
 
-        Map<String,Object> map = new HashMap<>();
-
-        map.put("fileList",fList);
-        String body = new Gson().toJson(map);
-
         MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        for(int i=0; i < fList.size(); i++){
+            String filepath = fList.get(i);
+            RequestBody requestBody = RequestBody.create(MEDIA_TYPE_JSON,filepath);
+            builder.addFormDataPart("fileList",filepath,requestBody);
+        }
+        MultipartBody multipartBody = builder.build();
 
         Request request = new Request.Builder()
                 .url(url)
                 // 将请求头加至请求中
                 .headers(headers)
-                .post(RequestBody.create(MEDIA_TYPE_JSON, body))
+                .post(multipartBody)
                 .build();
 
         try {
@@ -157,38 +164,22 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
                     }catch (IOException e){
                         e.printStackTrace();
                     }
-                    System.out.println(mpostFileBean.getCode()+mpostFileBean.getMsg());
-                    //imageUrl = mpostFileBean.getData().getImageUrlList().get(0);
+                    System.out.println(mpostFileBean.getData().getImageUrlList().get(0));
+
                     if(mpostFileBean.getCode() == 200){
-                        Message msg = Message.obtain();
-                        msg.what = 0xc1;
-                        msg.obj = mpostFileBean.getData().getImageUrlList().get(0);
-
-                        new Handler(Looper.getMainLooper()){
-                            @Override
-                            public void handleMessage(@NonNull Message msg) {
-                                super.handleMessage(msg);
-                                if(msg.what == 0xc1){
-                                    imageUrl = (String) msg.obj;
-                                    System.out.println(imageUrl);
-                                }
-                            }
-                        }.sendMessage(msg);
-
+                        String avatar = mpostFileBean.getData().getImageUrlList().get(0);
+                        long userId = new GetUserInfor(ChangeMyInformationActivity.this).getUSerID();
+                        if(userId != -1){
+                            postchange(avatar, userId);
+                            //TODO 图片不完整
+                            //java.lang.RuntimeException: setDataSource failed: status = 0x80000000
+                        }
                     }
                 }
             });
         }catch (NetworkOnMainThreadException ex){
             ex.printStackTrace();
         }
-    }
-    public static String getRealPathFromURI(Uri contentUri, Context mContext) {
-        String[] proj = { MediaStore.Images.Media.DATA };
-        CursorLoader loader = new CursorLoader(mContext, contentUri, proj, null, null, null);
-        Cursor cursor = loader.loadInBackground();
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
     }
     /*
     复制
@@ -276,16 +267,34 @@ imageUrlList:[
                     @Override
                     public void onResponse(@NonNull Call call, Response response) throws IOException {
                         ResponseBody body = response.body();
-                        ChangeRsponseBodyBean changresponsebodybean = new ChangeRsponseBodyBean();
+                        ChangeRsponseBodyBean changesponsebodybean = new ChangeRsponseBodyBean();
                         assert body != null;
-                        changresponsebodybean = new Gson().fromJson(new String(body.bytes()),changresponsebodybean.getClass());
+                        changesponsebodybean = new Gson().fromJson(new String(body.bytes()),changesponsebodybean.getClass());
+                        if(changesponsebodybean.getCode() == 200){
+
+                            long id = changesponsebodybean.getData().getId();
+                            String avatar = changesponsebodybean.getData().getAvatar();
+                            //sharedpreference 修改数据
+                            GetUserInfor getUserInfor = new GetUserInfor(ChangeMyInformationActivity.this);
+                            if(getUserInfor.getUSerID() == id){
+                                SharedPreferences sp = ChangeMyInformationActivity.this.getSharedPreferences("user",MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sp.edit();
+                                editor.putString(new GetUserInfor().MYSP_AVATAR,avatar);
+                                editor.apply();
+                                finish();
+                            }else{
+                                Looper.prepare();
+                                Toast.makeText(ChangeMyInformationActivity.this, "faild", Toast.LENGTH_SHORT).show();
+                                Looper.loop();
+                            }
+                        }
                     }
                 });
             }catch (NetworkOnMainThreadException ex){
                 ex.printStackTrace();
             }
     }
-    class ChangeRsponseBodyBean {
+    static class ChangeRsponseBodyBean {
         private int code;
         private String msg;
         private data data;
@@ -302,7 +311,7 @@ imageUrlList:[
             return data;
         }
 
-        class data {
+        static class data {
             private long id;
             private String appKey;
             private String userName;

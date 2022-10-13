@@ -151,7 +151,6 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
     private final Callback callback = new Callback() {
         @Override
         public void onFailure(@NonNull Call call, IOException e) {
-
             Looper.prepare();
             Toast.makeText(mcontext, e.getMessage(), Toast.LENGTH_SHORT).show();
             Looper.loop();

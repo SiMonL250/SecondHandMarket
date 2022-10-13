@@ -75,7 +75,7 @@ public class CommodityInformationActivity extends AppCompatActivity {
                 sellerId = mgotBean.getData().getTuserId();
                 goodName = mgotBean.getData().getContent();
                 String avatar = mgotBean.getData().getAvatar();
-                if(avatar != null && avatar.length()!=0){
+                if(avatar != null && avatar.length()!=0 && CommodityInformationActivity.this!=null){
                     Glide.with(CommodityInformationActivity.this)
                             .load(avatar)
                             .into(releaserAvatar);
@@ -136,8 +136,6 @@ public class CommodityInformationActivity extends AppCompatActivity {
 //        System.out.println(goodsId);
         buyitBtn = findViewById(R.id.buy_btn);
         buyitBtn.setOnClickListener(view ->{
-            //TODO 看看是否登录，未登录则跳到登陆界面，已登录就检查 ID
-            //TODO complete purchase
             boolean isLogin = new GetUserInfor(CommodityInformationActivity.this).getIsLogin();
             if(isLogin){
                 Map<String,Object> Buyingparams = new HashMap<>();

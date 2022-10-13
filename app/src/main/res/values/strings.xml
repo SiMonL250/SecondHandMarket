@@ -75,9 +75,10 @@
     <string name="selleravatar">selleravatar</string>
     <string name="goodspic">goodspic</string>
     <string name="maijiamz">买家名字</string>
-    <string name="_0_8">0/8</string>
-    <string name="account">account</string>
+    <string name="account">0</string>
     <string name="货物名称">货物名称</string>
     <string name="cnyuan">￥</string>
     <string name="sure">确认购买</string>
+    <string name="wjlj">文件路径</string>
+    <string name="addpicture">addPicture</string>
 </resources>
