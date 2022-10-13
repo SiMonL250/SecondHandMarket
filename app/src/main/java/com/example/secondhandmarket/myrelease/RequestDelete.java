@@ -17,7 +17,7 @@ public class RequestDelete {
 
             // url路径
             String url1 = this.url+"goodsId=" + goodsId+"&userId="+ userId;
-            System.out.println(url1);
+//            System.out.println(url1);
             // 请求头
             Headers headers = new Headers.Builder()
                     .add("Accept", "application/json, text/plain, */*")

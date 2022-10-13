@@ -148,9 +148,7 @@ public class ReleaseFragment extends Fragment {
                         pickPictureAdapter.setListener(new PickPictureAdapter.OnItemClickListener() {
                             @Override
                             public void click(View view, int positon) {
-
                             }
-
                             @Override
                             public void del(View view) {
                                 tv_account.setText(Integer.toString(imagesPath.size()));
@@ -158,8 +156,9 @@ public class ReleaseFragment extends Fragment {
                         });
                     }
                 });
-        tvReleaseButton.setOnClickListener(v->{
 
+        tvReleaseButton.setOnClickListener(v->{
+            System.out.println(imagesPath);
         });
         iv_Pic.setOnClickListener(v->{
             if(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
