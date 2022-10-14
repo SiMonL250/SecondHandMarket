@@ -139,8 +139,6 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putInt(ginfor.MYSP_MONEY, responseBodylogin.getData().getMoney());
                         editor.commit();
                         finish();
-
-
                     }
                 });
 
