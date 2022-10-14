@@ -231,8 +231,8 @@ imageUrlList:[
 
             // 请求头
             Headers headers = new Headers.Builder()
-                    .add("appId", "6e7ad529141b4ec18c355eff7abfd160")
-                    .add("appSecret", "63421994d54e2abe54902b678072a31a94e66")
+                    .add("appId", new appMobSDK().appID)
+                    .add("appSecret", new appMobSDK().appSecret)
                     .add("Accept", "application/json, text/plain, */*")
                     .build();
 

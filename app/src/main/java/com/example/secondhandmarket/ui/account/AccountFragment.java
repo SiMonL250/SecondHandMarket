@@ -28,6 +28,7 @@ import com.example.secondhandmarket.GetUserInfor;
 import com.example.secondhandmarket.LoginActivity;
 import com.example.secondhandmarket.MyReleaseActivity;
 import com.example.secondhandmarket.R;
+import com.example.secondhandmarket.appkey.appMobSDK;
 import com.example.secondhandmarket.getURLimage.getURLimage;
 import com.example.secondhandmarket.traderecord.MyTradeRecord;
 
@@ -186,8 +187,8 @@ public class AccountFragment extends Fragment {
             String url ="http://47.107.52.7:88/member/tran/trading/allMoney?userId=" +userId;
             // 请求头
             Headers headers = new Headers.Builder()
-                    .add("appId", "1c43b58c794448edba2992f973ff2120")
-                    .add("appSecret", "7428391e8fb7741f3458db716391b5526510b")
+                    .add("appId", new appMobSDK().appID)
+                    .add("appSecret", new appMobSDK().appSecret)
                     .add("Accept", "application/json, text/plain, */*")
                     .build();
 
