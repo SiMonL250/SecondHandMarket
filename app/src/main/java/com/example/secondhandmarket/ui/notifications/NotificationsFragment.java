@@ -1,15 +1,18 @@
 package com.example.secondhandmarket.ui.notifications;
 
-import android.app.Notification;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.NetworkOnMainThreadException;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,10 +36,8 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -44,7 +45,8 @@ public class NotificationsFragment extends Fragment {
     private Context mcontext;
     private RecyclerView mRecyclerView;
     private NotiAdapter mNotiAdapter;
-    List<myNotifi> myNotifiList = new ArrayList<>();//TODO 根据API返回参数修改myNotifi类
+    private LinearLayout lfa;
+    List<myNotifi.data> myNotifiList = new ArrayList<>();//TODO 根据API返回参数修改myNotifi类
     private FragmentNotificationsBinding binding;
     Handler handler = new Handler(Looper.getMainLooper()){
         @Override
@@ -53,10 +55,27 @@ public class NotificationsFragment extends Fragment {
             if(msg.what == 0xeeee){
                 //初始化myNotifiList；
                 //set adapter
-                myNotifiList = (List<myNotifi>) msg.obj;
-                mNotiAdapter = new NotiAdapter();
+                myNotifiList = (List<myNotifi.data>) msg.obj;
+                mNotiAdapter = new NotiAdapter(mcontext,myNotifiList);
                 mRecyclerView.setAdapter(mNotiAdapter);
                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                mNotiAdapter.setItemClickListener(position -> {
+                    Intent intent = new Intent(mcontext,NotiMessages.class);
+                    intent.putExtra("id",myNotifiList.get(position).getFromUserId());
+                    startActivity(intent);
+                });
+                if(mNotiAdapter.getItemCount() == 0){
+                    TextView noMsg = new TextView(mcontext);
+                    noMsg.setText("无消息");
+                    noMsg.setTextSize(48);
+                    noMsg.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                    noMsg.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.
+                            LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    noMsg.setLayoutParams(layoutParams);
+
+                    lfa.addView(noMsg);
+                }
             }
         }
     };
@@ -78,12 +97,11 @@ public class NotificationsFragment extends Fragment {
 //        利用GetUserInfor 类获取用户Id
 
         mRecyclerView = view.findViewById(R.id.notification_list);
-
+        lfa=view.findViewById(R.id.lfa);
         long userId = new GetUserInfor(mcontext).getUSerID();
         if(userId != -1){
             getnotification(userId);
         }
-
 
 
         return view;
@@ -91,7 +109,7 @@ public class NotificationsFragment extends Fragment {
 
     private void getnotification(long userId) {
         new Thread(()->{
-            String url = "";
+            String url = "http://47.107.52.7:88/member/tran/chat/user?userId="+userId;
             Headers headers = new Headers.Builder()
                     .add("Accept", "application/json, text/plain, */*")
                     .add("appId", new appMobSDK().appID)
@@ -124,10 +142,10 @@ public class NotificationsFragment extends Fragment {
                         assert body!=null;
                         myNotifi myNotifibean = new myNotifi();
                         myNotifibean = new Gson().fromJson(new String(body.bytes()),myNotifibean.getClass());
-
+                        System.out.println(myNotifibean.getData().size()+myNotifibean.getMsg());
                         Message message = Message.obtain();
                         message.what = 0xeeee;
-                        message.obj = myNotifibean;//应为list
+                        message.obj = myNotifibean.getData();//应为list
                         //handler
                         handler.sendMessage(message);
                     }
@@ -145,36 +163,5 @@ public class NotificationsFragment extends Fragment {
     }
 //根据API返回的数据改写notification_items_layout文件
     //修改viewHolder  和Adapter
-    private class NotiAdapter extends RecyclerView.Adapter<MyViewHolder>{
-        @NonNull
-        @Override
-        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = View.inflate(getContext(),R.layout.notification_items_layout,null);
-            MyViewHolder mViewHolder = new MyViewHolder(v);
-            return mViewHolder;
-        }
 
-        @Override
-        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-            myNotifi mNotification = myNotifiList.get(position);
-            holder.tvName.setText(mNotification.notiName);//TODO 修改这里
-            holder.tvNotifiText.setText(mNotification.notiText);
-        }
-
-        @Override
-        public int getItemCount() {
-            return myNotifiList.size();
-        }
-    }
-
-    private class MyViewHolder extends RecyclerView.ViewHolder {
-
-        TextView tvName, tvNotifiText;
-        public MyViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvName = itemView.findViewById(R.id.tvnotiname);
-            tvNotifiText = itemView.findViewById(R.id.tvnotifi);
-        }
-
-    }
 }

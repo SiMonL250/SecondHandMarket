@@ -2,34 +2,38 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="6dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/tvnotiname"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/l"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="3dp"
-        android:text="@string/messager_name"
-        android:textSize="24sp"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toTopOf="@id/tvnotifi"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toTopOf="@id/view2">
+        <TextView
+            android:id="@+id/tvnotiname"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/messager_name"
+            android:textSize="36sp"
+            android:gravity="center|start"
+            android:textColor="@color/black"/>
 
-    <TextView
-        android:id="@+id/tvnotifi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/notification"
-        android:textSize="12sp"
-        android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvnotiname"
-        android:layout_margin="3dp"/>
+        <TextView
+            android:id="@+id/tvnoRead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center|start"
+            android:layout_gravity="center|end"
+            android:text="@string/notification"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
+    </LinearLayout>
+
     <View
         android:id="@+id/view2"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/dark_grey"
-        app:layout_constraintTop_toBottomOf="@id/tvnotifi" />
+        app:layout_constraintTop_toBottomOf="@id/l" />
 </androidx.constraintlayout.widget.ConstraintLayout>

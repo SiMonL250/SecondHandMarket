@@ -24,6 +24,9 @@
         android:theme="@style/Theme.SecondHandMarket"
         tools:targetApi="31">
         <activity
+            android:name=".NotiMessages"
+            android:exported="false" />
+        <activity
             android:name=".EnsurePurchase"
             android:exported="false" />
         <activity

@@ -42,7 +42,7 @@
     <string name="money2">100</string>
     <string name="getcode">获取验证码</string>
     <string name="messager_name">name</string>
-    <string name="notification">notification</string>
+    <string name="notification">unRead</string>
     <string name="typeName">商品类型:</string>
     <string name="deletecommodity">deletecommodity</string>
     <string name="commoditypicture">commodityPicture</string>
@@ -81,4 +81,5 @@
     <string name="sure">确认购买</string>
     <string name="wjlj">文件路径</string>
     <string name="addpicture">addPicture</string>
+    <string name="textview">TextView</string>
 </resources>
