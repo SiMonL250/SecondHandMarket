@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".traderecord.MyTradeRecord"
+    tools:context=".ui.account.traderecord.MyTradeRecord"
     android:orientation="vertical">
 
     <TextView

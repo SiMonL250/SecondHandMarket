@@ -2,13 +2,11 @@ package com.example.secondhandmarket.ui.notifications;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.NetworkOnMainThreadException;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.secondhandmarket.GetUserInfor;
 import com.example.secondhandmarket.R;
-import com.example.secondhandmarket.appkey.appMobSDK;
+import com.example.secondhandmarket.appSecret.AppSecret;
 import com.example.secondhandmarket.databinding.FragmentNotificationsBinding;
 import com.google.gson.Gson;
 
@@ -112,8 +110,8 @@ public class NotificationsFragment extends Fragment {
             String url = "http://47.107.52.7:88/member/tran/chat/user?userId="+userId;
             Headers headers = new Headers.Builder()
                     .add("Accept", "application/json, text/plain, */*")
-                    .add("appId", new appMobSDK().appID)
-                    .add("appSecret", new appMobSDK().appSecret)
+                    .add("appId", new AppSecret().appID)
+                    .add("appSecret", new AppSecret().appSecret)
                     .add("Content-Type", "application/json")
                     .build();
 

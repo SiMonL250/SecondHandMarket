@@ -1,4 +1,4 @@
-package com.example.secondhandmarket.singleGood;
+package com.example.secondhandmarket.ui.home.singleGood;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.os.NetworkOnMainThreadException;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,12 +18,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.secondhandmarket.BaseResponseBody;
 import com.example.secondhandmarket.EnsurePurchase;
 import com.example.secondhandmarket.GetUserInfor;
 import com.example.secondhandmarket.PurchaseMap;
 import com.example.secondhandmarket.R;
-import com.example.secondhandmarket.appkey.appMobSDK;
-import com.example.secondhandmarket.commoditybean.GoodSingleInfor;
+import com.example.secondhandmarket.UseAPI;
+import com.example.secondhandmarket.ui.home.commodityResponseBody.GoodSingleInfor;
 import com.google.gson.Gson;
 import com.youth.banner.Banner;
 import com.youth.banner.adapter.BannerImageAdapter;
@@ -32,16 +32,12 @@ import com.youth.banner.holder.BannerImageHolder;
 import com.youth.banner.indicator.CircleIndicator;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.Headers;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -130,7 +126,8 @@ public class CommodityInformationActivity extends AppCompatActivity {
         int buyMoney = getUserInfor.getUserMoney();
 
         if(goodsId != -1){
-            getSingleInfo(goodsId);
+            String tail = "details?goodsId="+goodsId;
+            new UseAPI().getCommodity(tail,callback);
         }
 
 //        System.out.println(goodsId);
@@ -158,94 +155,37 @@ public class CommodityInformationActivity extends AppCompatActivity {
         });
 
     }
-    private void getSingleInfo(long goodsId){
-        new Thread(()->{
-            // url路径
-            String url = "http://47.107.52.7:88/member/tran/goods/details?goodsId="+goodsId;
 
-            // 请求头
-            Headers headers = new Headers.Builder()
-                    .add("appId", new appMobSDK().appID)
-                    .add("appSecret", new appMobSDK().appSecret)
-                    .add("Accept", "application/json, text/plain, */*")
-                    .build();
-
-            //请求组合创建
-            Request request = new Request.Builder()
-                    .url(url)
-                    // 将请求头加至请求中
-                    .headers(headers)
-                    .get()
-                    .build();
+    Callback callback = new Callback() {
+        @Override
+        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+            Looper.prepare();
+            Toast.makeText(CommodityInformationActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Looper.loop();
+        }
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            ResponseBody body = response.body();
+            assert body != null;
+            GotInfoBean gotInfoBean = new GotInfoBean();
             try {
-                OkHttpClient client = new OkHttpClient();
-                //发起请求，传入callback进行回调
-                client.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        Looper.prepare();
-                        Toast.makeText(CommodityInformationActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        Looper.loop();
-                    }
+                gotInfoBean = new Gson().fromJson(new String(body.bytes()),GotInfoBean.class);
 
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        ResponseBody body = response.body();
-                        assert body != null;
-                        GotInfoBean gotInfoBean = new GotInfoBean();
-                        try {
-                            gotInfoBean = new Gson().fromJson(new String(body.bytes()),GotInfoBean.class);
-
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-
-
-                        Message msg = new Message();
-                        msg.what = 0;
-                        msg.obj = gotInfoBean;
-                        handler.sendMessage(msg);
-                    }
-
-
-                });
-            }catch (NetworkOnMainThreadException ex){
-                ex.printStackTrace();
+            }catch (Exception e){
+                e.printStackTrace();
             }
+            Message msg = new Message();
+            msg.what = 0;
+            msg.obj = gotInfoBean;
+            handler.sendMessage(msg);
         }
 
-
-        ).start();
-
-    }
-
-    static class GotInfoBean{
-        private String msg;
-        private int code;
+    };
+    static class GotInfoBean extends BaseResponseBody {
         private GoodSingleInfor data;
-
-        public String getMsg() {
-            return msg;
-        }
-
-        public void setMsg(String msg) {
-            this.msg = msg;
-        }
-
-        public int getCode() {
-            return code;
-        }
-
-        public void setCode(int code) {
-            this.code = code;
-        }
 
         public GoodSingleInfor getData() {
             return data;
-        }
-
-        public void setData(GoodSingleInfor data) {
-            this.data = data;
         }
     }
 }

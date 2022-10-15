@@ -30,16 +30,16 @@
             android:name=".EnsurePurchase"
             android:exported="false" />
         <activity
-            android:name=".traderecord.MyTradeRecord"
+            android:name=".ui.account.traderecord.MyTradeRecord"
             android:exported="false" />
         <activity
             android:name=".ui.account.ChangeMyInformationActivity"
             android:exported="false" />
         <activity
-            android:name=".MyReleaseActivity"
+            android:name=".ui.account.MyReleaseActivity"
             android:exported="false" />
         <activity
-            android:name=".singleGood.CommodityInformationActivity"
+            android:name=".ui.home.singleGood.CommodityInformationActivity"
             android:exported="false"
             android:label="@string/spxx" />
         <activity

@@ -1,8 +1,8 @@
-package com.example.secondhandmarket.traderecord;
+package com.example.secondhandmarket.ui.account.traderecord;
 
 import java.util.List;
 
-public class TradeRecordDataBean {
+public class TradeRecordData {
     private String buyerAvatar;
     private long buyerId;
     private String buyerName;

@@ -1,4 +1,4 @@
-package com.example.secondhandmarket.commoditybean;
+package com.example.secondhandmarket.ui.home.commodityResponseBody;
 
 public class GoodSingleInfor extends GotCommodityBean{
     //继承，直接用

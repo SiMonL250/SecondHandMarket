@@ -1,4 +1,4 @@
-package com.example.secondhandmarket;
+package com.example.secondhandmarket.ui.account;
 
 import android.os.Bundle;
 import android.widget.TextView;
@@ -6,17 +6,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.secondhandmarket.R;
 import com.example.secondhandmarket.myrelease.newrelease.NewReleaseFragment;
 import com.example.secondhandmarket.myrelease.soldout.SoldOutFragment;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 public class MyReleaseActivity extends AppCompatActivity {
-    private final int  NUM_PAGES = 2;
     private TabLayout mTabLayout;
     private ViewPager2 mViewPager;
     private FragmentStateAdapter myFragmentStateAdapter;
@@ -50,14 +49,14 @@ public class MyReleaseActivity extends AppCompatActivity {
         });
         mediator.attach();
     }
-    private ViewPager2.OnPageChangeCallback changeCallback = new ViewPager2.OnPageChangeCallback() {
+    private final ViewPager2.OnPageChangeCallback changeCallback = new ViewPager2.OnPageChangeCallback() {
         @Override
         public void onPageSelected(int position) {
             //可以来设置选中时tab的大小
             int tabCount = mTabLayout.getTabCount();
         }
     };
-    private class ScreenSlidePagerAdapter extends FragmentStateAdapter {
+    private static class ScreenSlidePagerAdapter extends FragmentStateAdapter {
         public ScreenSlidePagerAdapter(MyReleaseActivity myReleaseActivity) {
             super(myReleaseActivity);
         }
@@ -73,7 +72,7 @@ public class MyReleaseActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return NUM_PAGES;
+            return 2;
         }
     }
 

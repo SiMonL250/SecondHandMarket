@@ -1,4 +1,4 @@
-package com.example.secondhandmarket.commoditybean;
+package com.example.secondhandmarket.ui.home.commodityResponseBody;
 
 import java.util.List;
 

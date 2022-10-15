@@ -1,9 +1,8 @@
 package com.example.secondhandmarket.myrelease;
 
 import android.os.NetworkOnMainThreadException;
-import android.util.Log;
 
-import com.example.secondhandmarket.appkey.appMobSDK;
+import com.example.secondhandmarket.appSecret.AppSecret;
 
 import okhttp3.Callback;
 import okhttp3.Headers;
@@ -41,8 +40,8 @@ public class Requestget {
             // 请求头
             Headers headers = new Headers.Builder()
                     .add("Accept", "application/json, text/plain, */*")
-                    .add("appId", new appMobSDK().appID)
-                    .add("appSecret", new appMobSDK().appSecret)
+                    .add("appId", new AppSecret().appID)
+                    .add("appSecret", new AppSecret().appSecret)
                     .build();
 
             //请求组合创建

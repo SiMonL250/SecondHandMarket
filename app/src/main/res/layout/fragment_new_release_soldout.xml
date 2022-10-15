@@ -16,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/nogoods"
+        android:visibility="gone"
         android:textAlignment="center"
         android:textSize="30sp"
         android:textColor="@color/black"/>

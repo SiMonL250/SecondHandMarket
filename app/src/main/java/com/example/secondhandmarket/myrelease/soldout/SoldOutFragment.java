@@ -20,8 +20,8 @@ import androidx.viewbinding.ViewBinding;
 
 import com.example.secondhandmarket.GetUserInfor;
 import com.example.secondhandmarket.R;
-import com.example.secondhandmarket.commoditybean.GotCommodityBean;
-import com.example.secondhandmarket.commoditybean.AllGoodsBean;
+import com.example.secondhandmarket.ui.home.commodityResponseBody.GotCommodityBean;
+import com.example.secondhandmarket.ui.home.commodityResponseBody.AllGoodsBean;
 import com.example.secondhandmarket.myrelease.MyReleaseAdapter;
 import com.example.secondhandmarket.myrelease.Requestget;
 import com.google.gson.Gson;
@@ -107,7 +107,11 @@ public class SoldOutFragment extends Fragment {
                     allGoodsBean = new Gson().fromJson(new String(body.bytes()), allGoodsBean.getClass());
                     System.out.println(allGoodsBean.getCode());
 
-
+                    if(allGoodsBean.getCode() == 5311){
+                        Looper.prepare();
+                        Toast.makeText(getContext(), "调用次数不足", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                    }
                     if(allGoodsBean.getCode() == 200){
                         Message msg = Message.obtain();
                         msg.what = 0x09;
@@ -124,9 +128,8 @@ public class SoldOutFragment extends Fragment {
                                         mRecyclerViewList.setLayoutManager(new LinearLayoutManager(getContext()));
                                         mRecyclerViewList.setAdapter(myReleaseAdapter);
 
-                                        if(myReleaseAdapter.getItemCount()!= 0)
-                                            tvNone.setVisibility(View.GONE);
-
+                                        if(list.size()== 0)
+                                            tvNone.setVisibility(View.VISIBLE);
                                     }
                                 }
                             }

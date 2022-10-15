@@ -1,4 +1,4 @@
-package com.example.secondhandmarket.getURLimage;
+package com.example.secondhandmarket;
 
 import android.Manifest;
 import android.app.Activity;

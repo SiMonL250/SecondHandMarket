@@ -1,17 +1,18 @@
 package com.example.secondhandmarket.ui.account;
 
 import android.Manifest;
-import android.content.Context;
+import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.os.NetworkOnMainThreadException;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -24,16 +25,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.loader.content.CursorLoader;
 
+import com.example.secondhandmarket.BaseResponseBody;
 import com.example.secondhandmarket.FileUtils;
 import com.example.secondhandmarket.GetUserInfor;
 import com.example.secondhandmarket.R;
-import com.example.secondhandmarket.appkey.appMobSDK;
+import com.example.secondhandmarket.appSecret.AppSecret;
 import com.google.gson.Gson;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +55,8 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
     private ImageView ivAvatar;
     private Button btn;
     private ArrayList<String> list;
+    private File file;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +65,10 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
         ivAvatar = findViewById(R.id.iv_avatar);
         btn = findViewById(R.id.btn_sumbit);
         btn.setOnClickListener(v->{
-            if(list.size()!=0){
-                postfile(list);
+            if(file!=null){
+                postfile(file);
+            }else {
+                Toast.makeText(this, "请一张选择图片", Toast.LENGTH_SHORT).show();
             }
 
 //            if(imageUrl != null){
@@ -90,8 +94,6 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_PICK,
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-
-            Log.d("ChangeInfoClick",MediaStore.Images.Media.EXTERNAL_CONTENT_URI.toString());
             //noinspection deprecation
             startActivityForResult(intent, 0x01);
         }
@@ -107,36 +109,45 @@ public class ChangeMyInformationActivity extends AppCompatActivity {
                 list = new ArrayList<>();
                 //PNG JPG
                 String path = new FileUtils().getRealPathFromUri(ChangeMyInformationActivity.this,uri);
-//                File f = new File(path);
-                list.add(path);
+                file = new File(path);
             }
         }
     }
-
-    private void postfile(ArrayList<String> fList){
+    private void postfile(File img){
         String url = "http://47.107.52.7:88/member/tran/image/upload";
 
         Headers headers = new Headers.Builder()
                 .add("Accept","application/json, text/plain, */*")
-                .add("appId", new appMobSDK().appID)
-                .add("appSecret", new appMobSDK().appSecret)
+                .add("appId", new AppSecret().appID)
+                .add("appSecret", new AppSecret().appSecret)
                 .add("Content-Type", "multipart/form-data")
                 .build();
+//
+//        MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
+//        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+//        for(int i=0; i < fList.size(); i++){
+//            String filepath = fList.get(i);
+//            RequestBody requestBody = RequestBody.create(MEDIA_TYPE_JSON,filepath);
+//            builder.addFormDataPart("fileList",filepath,requestBody);
+//        }
+//        MultipartBody multipartBody = builder.build();
 
-        MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
-        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        for(int i=0; i < fList.size(); i++){
-            String filepath = fList.get(i);
-            RequestBody requestBody = RequestBody.create(MEDIA_TYPE_JSON,filepath);
-            builder.addFormDataPart("fileList",filepath,requestBody);
+        ArrayList<File> fList = new ArrayList<>();
+        fList.add(img);
+        MediaType mediaType = MediaType.Companion.parse("text/x-markdown; charset=utf-8");
+
+        MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        for (int i = 0; i <= fList.size() - 1; i++) {
+            RequestBody fileBody = RequestBody.Companion.create(fList.get(i), mediaType);
+            requestBody.addFormDataPart("fileList", fList.get(i).toString(), fileBody);
         }
-        MultipartBody multipartBody = builder.build();
+        RequestBody body = requestBody.build();
 
         Request request = new Request.Builder()
                 .url(url)
                 // 将请求头加至请求中
                 .headers(headers)
-                .post(multipartBody)
+                .post(body)
                 .build();
 
         try {
@@ -193,24 +204,15 @@ imageUrlList:[
 ]
 }
 }*/
-    static class postFileBean{
-        private String msg;
-        private int code;
+    static class postFileBean extends BaseResponseBody {
+
         private data data;
-
-        public String getMsg() {
-            return msg;
-        }
-
-        public int getCode() {
-            return code;
-        }
 
         public postFileBean.data getData() {
             return data;
         }
 
-        class data{
+        static class data{
             private long imageCode;
             private List<String> imageUrlList;
 
@@ -231,8 +233,8 @@ imageUrlList:[
 
             // 请求头
             Headers headers = new Headers.Builder()
-                    .add("appId", new appMobSDK().appID)
-                    .add("appSecret", new appMobSDK().appSecret)
+                    .add("appId", new AppSecret().appID)
+                    .add("appSecret", new AppSecret().appSecret)
                     .add("Accept", "application/json, text/plain, */*")
                     .build();
 

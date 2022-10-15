@@ -1,4 +1,4 @@
-package com.example.secondhandmarket.traderecord;
+package com.example.secondhandmarket.ui.account.traderecord;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,8 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,8 +22,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.secondhandmarket.GetUserInfor;
 import com.example.secondhandmarket.R;
-import com.example.secondhandmarket.appkey.appMobSDK;
-import com.example.secondhandmarket.getURLimage.getURLimage;
+import com.example.secondhandmarket.appSecret.AppSecret;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -41,14 +38,14 @@ import okhttp3.ResponseBody;
 
 public class MyTradeRecord extends AppCompatActivity {
     private RecyclerView mRecyclerView;
-    List<TradeRecordDataBean> list;
+    List<TradeRecordData> list;
 
     Handler handler = new Handler(Looper.getMainLooper()){//handler 用于线程间的通信
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             if(msg.what == 0xec){
-                list = (List<TradeRecordDataBean>) msg.obj;
+                list = (List<TradeRecordData>) msg.obj;
                 RecordAdapter recordAdapter = new RecordAdapter(list,MyTradeRecord.this);
                 mRecyclerView.setLayoutManager(new LinearLayoutManager(MyTradeRecord.this));
                 mRecyclerView.setAdapter(recordAdapter);
@@ -95,8 +92,8 @@ public class MyTradeRecord extends AppCompatActivity {
             // 请求头
             Headers headers = new Headers.Builder()
                     .add("Accept", "application/json, text/plain, */*")
-                    .add("appId", new appMobSDK().appID)
-                    .add("appSecret", new appMobSDK().appSecret)
+                    .add("appId", new AppSecret().appID)
+                    .add("appSecret", new AppSecret().appSecret)
                     .build();
 
             //请求组合创建
@@ -139,13 +136,13 @@ public class MyTradeRecord extends AppCompatActivity {
 
 //adapter
     static class RecordAdapter extends RecyclerView.Adapter<viewholder>{
-        List<TradeRecordDataBean> list;
+        List<TradeRecordData> list;
         private Context context;
-    public RecordAdapter(List<TradeRecordDataBean> list) {
+    public RecordAdapter(List<TradeRecordData> list) {
         this.list = list;
     }
 
-    public RecordAdapter(List<TradeRecordDataBean> list, Context context) {
+    public RecordAdapter(List<TradeRecordData> list, Context context) {
         this.list = list;
         this.context = context;
     }
@@ -162,7 +159,7 @@ public class MyTradeRecord extends AppCompatActivity {
         @SuppressLint("SetTextI18n")
         @Override
         public void onBindViewHolder(@NonNull viewholder holder, int position) {
-            TradeRecordDataBean trdb = list.get(position);
+            TradeRecordData trdb = list.get(position);
 
             holder.myRecordGoodName.setText(trdb.getGoodsDescription());
             holder.myRecordPrice.setText(Integer.toString(trdb.getPrice()));

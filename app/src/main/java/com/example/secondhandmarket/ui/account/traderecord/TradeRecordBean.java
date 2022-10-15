@@ -1,39 +1,20 @@
-package com.example.secondhandmarket.traderecord;
+package com.example.secondhandmarket.ui.account.traderecord;
+
+import com.example.secondhandmarket.BaseResponseBody;
 
 import java.util.List;
 
-public class TradeRecordBean {
-    private String msg;
-    private int code;
+public class TradeRecordBean extends BaseResponseBody {
+
     private data data;
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
 
     public TradeRecordBean.data getData() {
         return data;
     }
 
-    public void setData(TradeRecordBean.data data) {
-        this.data = data;
-    }
-
     static class data{
         int current;
-        List<TradeRecordDataBean> records;//用到的是这个list
+        List<TradeRecordData> records;//用到的是这个list
         int size;
         int total;
 
@@ -41,7 +22,7 @@ public class TradeRecordBean {
             return current;
         }
 
-        public List<TradeRecordDataBean> getRecords() {
+        public List<TradeRecordData> getRecords() {
             return records;
         }
 

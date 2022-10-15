@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".singleGood.CommodityInformationActivity">
+    tools:context=".ui.home.singleGood.CommodityInformationActivity">
 
     <com.youth.banner.Banner
         android:id="@+id/information_picture"

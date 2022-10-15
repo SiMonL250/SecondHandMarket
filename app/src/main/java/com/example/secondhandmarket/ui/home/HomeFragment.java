@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.os.NetworkOnMainThreadException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,24 +23,20 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.secondhandmarket.GetUserInfor;
 import com.example.secondhandmarket.LoginActivity;
-import com.example.secondhandmarket.commoditybean.AllGoodsListBean;
-import com.example.secondhandmarket.singleGood.CommodityInformationActivity;
 import com.example.secondhandmarket.R;
-import com.example.secondhandmarket.appkey.appMobSDK;
-import com.example.secondhandmarket.commoditybean.GotCommodityBean;
-import com.example.secondhandmarket.commoditybean.AllGoodsBean;
+import com.example.secondhandmarket.UseAPI;
 import com.example.secondhandmarket.databinding.FragmentHomeBinding;
+import com.example.secondhandmarket.ui.home.commodityResponseBody.AllGoodsBean;
+import com.example.secondhandmarket.ui.home.commodityResponseBody.AllGoodsListBean;
+import com.example.secondhandmarket.ui.home.commodityResponseBody.GotCommodityBean;
+import com.example.secondhandmarket.ui.home.singleGood.CommodityInformationActivity;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.Headers;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -72,7 +67,8 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
         tvEmpty = view.findViewById(R.id.ng);
         long userId = new GetUserInfor(mcontext).getUSerID();
         if(userId != -1){
-            getAllCommodity(userId);
+            String tail = "all?size=1000&userId=" + userId;
+            new UseAPI().getCommodity(tail,callback);
         }else {
             Toast.makeText(mcontext, "No User Present! Please Log In", Toast.LENGTH_SHORT).show();
 
@@ -111,7 +107,8 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
         super.onStart();
         long userIdonstart = new GetUserInfor(mcontext).getUSerID();
         if(userIdonstart != -1){
-            getAllCommodity(userIdonstart);
+            String tail = "all?size=1000&userId=" + userId;
+            new UseAPI().getCommodity(tail,callback);
             try{
                 TextView plslogin = getView().findViewById(R.id.pls_login);
                 plslogin.setVisibility(View.GONE);
@@ -121,33 +118,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
         }
     }
 
-    private void getAllCommodity(long userId) {
-        new Thread(() -> {
-            String url = "http://47.107.52.7:88/member/tran/goods/all?size=1000&userId=" + userId;
 
-            // 请求头
-            Headers headers = new Headers.Builder()
-                    .add("appId", new appMobSDK().appID)
-                    .add("appSecret", new appMobSDK().appSecret)
-                    .add("Accept", "application/json, text/plain, */*")
-                    .build();
-
-            //请求组合创建
-            Request request = new Request.Builder()
-                    .url(url)
-                    // 将请求头加至请求中
-                    .headers(headers)
-                    .get()
-                    .build();
-            try {
-                OkHttpClient client = new OkHttpClient();
-                //发起请求，传入callback进行回调
-                client.newCall(request).enqueue(callback);
-            } catch (NetworkOnMainThreadException ex) {
-                ex.printStackTrace();
-            }
-        }).start();
-    }
     private final Callback callback = new Callback() {
         @Override
         public void onFailure(@NonNull Call call, IOException e) {
@@ -181,6 +152,11 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
                         }
                     }
                 }.sendMessage(message);
+            }
+            if(allGoodsBean.getCode() == 5311){
+                Looper.prepare();
+                Toast.makeText(mcontext, "调用次数不足", Toast.LENGTH_SHORT).show();
+                Looper.loop();
             }
         }
     };

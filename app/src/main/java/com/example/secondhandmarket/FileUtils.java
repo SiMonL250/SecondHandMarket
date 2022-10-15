@@ -26,7 +26,6 @@ public final class FileUtils {
     /**
      * 适配api19以上,根据uri获取图片的绝对路径
      */
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     private static String getRealPathFromUri_AboveApi19(Context context, Uri uri) {
         if (DocumentsContract.isDocumentUri(context, uri)) {
             if (isExternalStorageDocument(uri)) {
