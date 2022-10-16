@@ -19,7 +19,7 @@ import java.util.List;
 
 public class PickPictureAdapter extends RecyclerView.Adapter<PickPictureAdapter.ViewHolderPick> {
     private Context context;
-    private List<String> list;
+    private List<File> list;
 
     public interface OnItemClickListener{
         void click(View view, int positon);
@@ -28,7 +28,7 @@ public class PickPictureAdapter extends RecyclerView.Adapter<PickPictureAdapter.
     }
 
     OnItemClickListener listener;
-    public PickPictureAdapter(Context context, List<String> list) {
+    public PickPictureAdapter(Context context, List<File> list) {
         this.context = context;
         this.list = list;
     }
@@ -46,7 +46,7 @@ public class PickPictureAdapter extends RecyclerView.Adapter<PickPictureAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolderPick holder, int position) {
-        String path = list.get(position);
+        String path = list.get(position).getPath();
         TextView tv = holder.filePath;
         tv.setText(path);
         tv.setSingleLine(true);

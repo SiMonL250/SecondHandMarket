@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="@id/text_notifications"/>
     <LinearLayout
         android:id="@+id/lfa"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"/>
 

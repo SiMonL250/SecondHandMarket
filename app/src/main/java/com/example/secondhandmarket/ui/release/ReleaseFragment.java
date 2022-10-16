@@ -122,6 +122,7 @@ public class ReleaseFragment extends Fragment {
             });
 
         }
+
         ActivityResultLauncher launcher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result -> {
                     if(result.getResultCode() == Activity.RESULT_OK){
@@ -136,7 +137,7 @@ public class ReleaseFragment extends Fragment {
                         images.add(new File(path));
                         paths.add(path);
 
-                        PickPictureAdapter pickPictureAdapter = new PickPictureAdapter(context,paths);
+                        PickPictureAdapter pickPictureAdapter = new PickPictureAdapter(context,images);
                         rv_Pic.setAdapter(pickPictureAdapter);
                         rv_Pic.setLayoutManager(new LinearLayoutManager(context));
                         System.out.println(images.size());
